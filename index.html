@@ -4,44 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./css/reset.css" />
-    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/dark_style.css" />
+    <script src="https://kit.fontawesome.com/fe364aecc5.js" crossorigin="anonymous"></script>
     <title>提示词生成工具</title>
+
   </head>
 
   <body>
 
     <div id="full_screen">
-      <div class="view_bar">
-        <div></div>
+      <div class="full_screen-wrap">
+        <div class="view_bar">
+          <i class="fa-solid fa-bars"></i>
+          <button id="view_bar-add">添加</button>
+          <button id="view_bar-unselect">取消选择</button>
+          <button id="view_bar-options">视图选项</button>
+          <button class="close">关闭(Esc)</button>
+        </div>
 
-
+        <div class="imagelist" id="imagelist2">
+          <ul>
+            <li><h2>兔子风格</h2><p class="load"><img data-src="./img/Midjourney-102.png" alt=""></p></li>
+          </ul>
+        </div>
       </div>
-      <div class="imagelist">
-        <ul>
-          <li><h2>兔子风格</h2><p><img src="./img/Midjourney-102.png" alt=""></p></li>
-          <li><h2>兔子风格</h2><p><img src="./img/Midjourney-103.png" alt=""></p></li>
-          <li><h2>兔子风格</h2><p><img src="./img/Midjourney-104.png" alt=""></p></li>
-          <li><h2>兔子风格</h2><p><img src="./img/Midjourney-105.png" alt=""></p></li>
-          <li><h2>兔子风格</h2><p><img src="./img/Midjourney-106.png" alt=""></p></li>
-          <li><h2>兔子风格</h2><p><img src="./img/Midjourney-106.png" alt=""></p></li>
-          <li><h2>兔子风格</h2><p><img src="./img/Midjourney-102.png" alt=""></p></li>
-          <li><h2>兔子风格</h2><p><img src="./img/Midjourney-103.png" alt=""></p></li>
-          <li><h2>兔子风格</h2><p><img src="./img/Midjourney-104.png" alt=""></p></li>
-          <li><h2>兔子风格</h2><p><img src="./img/Midjourney-105.png" alt=""></p></li>
-          <li><h2>兔子风格</h2><p><img src="./img/Midjourney-106.png" alt=""></p></li>
-          <li><h2>兔子风格</h2><p><img src="./img/Midjourney-106.png" alt=""></p></li>
-          <li><h2>兔子风格</h2><p><img src="./img/Midjourney-102.png" alt=""></p></li>
-          <li><h2>兔子风格</h2><p><img src="./img/Midjourney-103.png" alt=""></p></li>
-          <li><h2>兔子风格</h2><p><img src="./img/Midjourney-104.png" alt=""></p></li>
-          <li><h2>兔子风格</h2><p><img src="./img/Midjourney-105.png" alt=""></p></li>
-          <li><h2>兔子风格</h2><p><img src="./img/Midjourney-106.png" alt=""></p></li>
-          <li><h2>兔子风格</h2><p><img src="./img/Midjourney-106.png" alt=""></p></li>
-        </ul>
-        
-      </div>
-      <button class="close">关闭(Esc)</button>
-
-
     </div>
 
     <div id="main_wrap">
@@ -57,7 +43,14 @@
                 <p></p>
                 <button id="bt_zh">翻译</button>
               </div>
+
+
+              <!-- <i class="fa-solid fa-plus"></i>  -->
+
+              <div class="next"></div>
+
             </div>
+
       
             <!-- 英文指令 -->
             <div class="main">
@@ -68,7 +61,7 @@
               <div class="status_bar div_edit">
                 <p id="p_words" spellcheck="false"></p>
                 <div>
-                  <button id="bt_add">添加(~)</button>
+                  <button id="bt_add">添加</button>
                   <button id="bt_deleteall">清空</button>
                   <button id="bt_paste">粘贴</button>
                   <button id="bt_save">保存</button>
@@ -203,7 +196,6 @@
             </section>
           </div>
     </div>
-   
     <script type="module" src="main.js"></script>
   </body>
 </html>

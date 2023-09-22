@@ -3,7 +3,7 @@ import { uuid, random_bkcolor, startCountdown } from "./js/func.js";
 import {
   prompts_DeleteCommand,
   prompts_GetCommand,
-  prompts_splitwords
+  prompts_splitwords,
 } from "./js/prompts.js";
 
 const p_zh = document.getElementById("p_zh"); // 英文指令编辑区
@@ -15,6 +15,18 @@ let lastparent_uuid = "";
 let currenuuid;
 let Translated;
 
+// 延迟加载图片
+window.addEventListener("load", function () {
+  const images = document.querySelectorAll("img[data-src]");
+  images.forEach(function (img) {
+    img.onload = function () {
+      img.parentElement.classList.remove("load");
+    };
+    // 将图片的src设置为data-src以开始加载
+    // img.src = img.getAttribute("data-src");
+  });
+});
+
 // 载入最后一次指令
 const last_text = localStorage.getItem("last_text");
 if (last_text === "") {
@@ -22,6 +34,100 @@ if (last_text === "") {
   p_en.innerText = localStorage.getItem("last_text");
   p_zh.innerText = localStorage.getItem(last_text);
 }
+
+// 添加所选关键词
+document
+  .getElementById("view_bar-add")
+  .addEventListener("click", function (event) {
+    const lis = document.querySelectorAll("#full_screen li.selected");
+    let words_zh, words_en;
+    lis.forEach((li) => {
+      words_zh = li.dataset.zh + "," + words_zh;
+      words_en = li.dataset.en + "," + words_en;
+    });
+
+    if (p_zh.textContent.length === 0) {
+      p_zh.textContent = words_zh;
+    } else {
+      p_zh.textContent += ", " + words_zh;
+    }
+
+    if (p_en.textContent.length === 0) {
+      p_en.textContent = words_en;
+    } else {
+      p_en.textContent += ", " + words_en;
+    }
+
+    let full_screen = document.getElementById("full_screen");
+    full_screen.style.zIndex = "-99";
+  });
+
+// 全屏显示并加载json
+document.getElementById("bt_add").addEventListener("click", function (event) {
+  let full_screen = document.getElementById("full_screen");
+  full_screen.style.zIndex = "99";
+  let imagelist2 = document.getElementById("imagelist2");
+  fetch("data.json")
+    .then((response) => response.json())
+    .then((data) => {
+      // console.log(data);
+      renderJSON(imagelist2, data);
+    })
+    .catch((error) => {
+      console.error("加载 JSON 文件时出错：", error);
+    });
+});
+
+// 渲染 JSON 数据的函数
+function renderJSON(container, data) {
+  const div = document.createElement("div");
+  // console.log("typeof data: ", typeof data);
+  let json = JSON.stringify(data);
+  // console.log("typeof json: ", typeof json);
+  for (let key in data["关键词"]) {
+    // console.log(data["关键词"][key]);
+    for (let key2 in data["关键词"][key]) {
+      const h3 = document.createElement("h3");
+      const ul = document.createElement("ul");
+      h3.textContent = key2;
+      div.appendChild(h3);
+      div.appendChild(ul);
+      // console.log("key2", key2);
+      for (let key3 in data["关键词"][key][key2]) {
+        const h2 = document.createElement("h2");
+        const li = document.createElement("li");
+        const span = document.createElement("span");
+        h2.textContent = data["关键词"][key][key2][key3];
+        span.textContent = key3;
+        // h2.appendChild(span);
+        li.dataset.zh = key3;
+        li.dataset.en = data["关键词"][key][key2][key3];
+
+        li.appendChild(h2);
+        ul.appendChild(li);
+        // console.log("key3", key3);
+        // console.log("key4", data["关键词"][key][key2][key3]);
+      }
+    }
+  }
+  var childNodes = div.childNodes;
+  for (var i = 0; i < childNodes.length; i++) {
+    container.appendChild(childNodes[i].cloneNode(true));
+  }
+}
+
+// 取消选择
+document
+  .getElementById("view_bar-unselect")
+  .addEventListener("click", function (event) {
+    const result = window.confirm("您确定要执行此操作吗？");
+    if (result) {
+      const lis = document.querySelectorAll("#full_screen .selected");
+      lis.forEach((li) => {
+        li.classList.remove("selected");
+      });
+    }
+  });
 
 prompts_format(); // 格式化描述词
 AddSplitWords(); // 添加拆分词
@@ -32,7 +138,7 @@ let ctrlPressed = false;
 p_en.onmouseover = function (event) {
   let anchorElem = event.target.closest("[data-tooltip]");
   if (!anchorElem) return;
-  tooltip = showTooltip(anchorElem, anchorElem.dataset.tooltip);
+  // tooltip = showTooltip(anchorElem, anchorElem.dataset.tooltip);
 };
 
 p_en.onmouseout = function () {
@@ -100,8 +206,8 @@ document.addEventListener("keydown", function (event) {
 document
   .getElementById("full_screen")
   .addEventListener("click", function (event) {
-    console.log(event.target.tagName);
-    console.log(event);
+    // console.log(event.target.tagName);
+    // console.log(event);
     let full_screen = document.getElementById("full_screen");
 
     if (event.target.tagName === "DIV") {
@@ -112,45 +218,22 @@ document
 
     if (event.target.tagName === "H2") {
       const li = event.target.parentElement;
-      if (ctrlPressed) {
+      if (li.tagName === "LI") {
         li.classList.toggle("selected");
-      } else {
-        const selectes = full_screen.querySelectorAll(".selected");
-        selectes.forEach((selecte) => {
-          if (selecte !== li) {
-            selecte.classList.remove("selected");
-          }
-        });
-        li.classList.add("selected");
       }
       return;
     }
 
     if (event.target.tagName === "IMG") {
-      const img = event.target.parentElement;
-      if (ctrlPressed) {
-        img.classList.toggle("selected");
-      } else {
-        const selectes = full_screen.querySelectorAll(".selected");
-        selectes.forEach((selecte) => {
-          if (selecte !== img) {
-            selecte.classList.remove("selected");
-          }
-        });
-        img.classList.add("selected");
+      const li = event.target.parentElement.parentElement;
+      if (li.tagName === "LI") {
+        li.classList.toggle("selected");
       }
-      return;
     }
   });
 
 // 取消选择
 function unselect() {}
-
-// 点击弹出关键词列表
-document.getElementById("bt_add").addEventListener("click", function (event) {
-  let full_screen = document.getElementById("full_screen");
-  full_screen.style.zIndex = "99";
-});
 
 // 点击弹出关键词列表
 document
@@ -361,7 +444,7 @@ function prompts_format(prompts = "") {
         return `<strong uuid="${uuid()}">${command}</strong>`;
       })
       .join("");
-    console.log(htmlcommand);
+    // console.log(htmlcommand);
   }
 
   // 描述词标签
