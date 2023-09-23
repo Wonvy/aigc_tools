@@ -14,6 +14,16 @@ const word_edit_ul = document.querySelector("#word_edit ul");
 let lastparent_uuid = "";
 let currenuuid;
 let Translated;
+let tooltip;
+let ctrlPressed = false;
+
+function getById(id) {
+  return document.getElementById(id);
+}
+
+function getElement(selector) {
+  return document.querySelector(selector);
+}
 
 // 延迟加载图片
 window.addEventListener("load", function () {
@@ -35,10 +45,18 @@ if (last_text === "") {
   p_zh.innerText = localStorage.getItem(last_text);
 }
 
-// 添加所选关键词
-document
-  .getElementById("view_bar-add")
-  .addEventListener("click", function (event) {
+// 显示大字号说明
+getById("imagelist2").addEventListener("mouseover", function (event) {
+  if (event.target.tagName === "LI") {
+    getById("zh_preview").innerText = event.target.dataset.zh;
+    getById("en_preview").innerText = event.target.dataset.en;
+    console.log(event.target.tagName);
+  }
+});
+
+// 显示参考提示词界面
+let event_show_keyword_add = {
+  handleEvent(event) {
     const lis = document.querySelectorAll("#full_screen li.selected");
     let words_zh, words_en;
     lis.forEach((li) => {
@@ -60,23 +78,26 @@ document
 
     let full_screen = document.getElementById("full_screen");
     full_screen.style.zIndex = "-99";
-  });
+  },
+};
 
-// 全屏显示并加载json
-document.getElementById("bt_add").addEventListener("click", function (event) {
-  let full_screen = document.getElementById("full_screen");
-  full_screen.style.zIndex = "99";
-  let imagelist2 = document.getElementById("imagelist2");
-  fetch("data.json")
-    .then((response) => response.json())
-    .then((data) => {
-      // console.log(data);
-      renderJSON(imagelist2, data);
-    })
-    .catch((error) => {
-      console.error("加载 JSON 文件时出错：", error);
-    });
-});
+// 显示参考提示词界面
+let event_show_keyword_load = {
+  handleEvent(event) {
+    let full_screen = document.getElementById("full_screen");
+    full_screen.style.zIndex = "99";
+    let imagelist2 = document.getElementById("imagelist2");
+    getById("temp_en_edit").innerHTML = getById("p_en").innerHTML;
+    fetch("data.json")
+      .then((response) => response.json())
+      .then((data) => {
+        renderJSON(imagelist2, data);
+      })
+      .catch((error) => {
+        console.error("加载 JSON 文件时出错：", error);
+      });
+  },
+};
 
 // 渲染 JSON 数据的函数
 function renderJSON(container, data) {
@@ -100,13 +121,10 @@ function renderJSON(container, data) {
         h2.textContent = data["关键词"][key][key2][key3];
         span.textContent = key3;
         // h2.appendChild(span);
-        li.dataset.zh = key3;
-        li.dataset.en = data["关键词"][key][key2][key3];
-
+        li.dataset.en = key3;
+        li.dataset.zh = data["关键词"][key][key2][key3];
         li.appendChild(h2);
         ul.appendChild(li);
-        // console.log("key3", key3);
-        // console.log("key4", data["关键词"][key][key2][key3]);
       }
     }
   }
@@ -116,62 +134,30 @@ function renderJSON(container, data) {
   }
 }
 
-// 取消选择
-document
-  .getElementById("view_bar-unselect")
-  .addEventListener("click", function (event) {
+let event_keywords_unselect = {
+  handleEvent(event) {
     const result = window.confirm("您确定要执行此操作吗？");
     if (result) {
+      getById("temp_en_edit").innerText = "";
       const lis = document.querySelectorAll("#full_screen .selected");
       lis.forEach((li) => {
         li.classList.remove("selected");
       });
     }
-  });
+  },
+};
+
+let event_show_keyword_add2 = {
+  handleEvent(event) {},
+};
 
 prompts_format(); // 格式化描述词
 AddSplitWords(); // 添加拆分词
 
-let tooltip;
-let ctrlPressed = false;
-
-p_en.onmouseover = function (event) {
-  let anchorElem = event.target.closest("[data-tooltip]");
-  if (!anchorElem) return;
-  // tooltip = showTooltip(anchorElem, anchorElem.dataset.tooltip);
-};
-
-p_en.onmouseout = function () {
-  if (tooltip) {
-    tooltip.remove();
-    tooltip = false;
-  }
-};
-
-// 显示提示
-function showTooltip(anchorElem, html) {
-  let tooltipElem = document.createElement("div");
-  tooltipElem.className = "tooltip";
-  tooltipElem.innerHTML = html;
-  document.body.append(tooltipElem);
-
-  let coords = anchorElem.getBoundingClientRect();
-
-  // position the tooltip over the center of the element
-  let left =
-    coords.left + (anchorElem.offsetWidth - tooltipElem.offsetWidth) / 2;
-  if (left < 0) left = 0;
-
-  let top = coords.top - tooltipElem.offsetHeight - 5;
-  if (top < 0) {
-    top = coords.top + anchorElem.offsetHeight + 5;
-  }
-
-  tooltipElem.style.left = left + "px";
-  tooltipElem.style.top = top + "px";
-
-  return tooltipElem;
-}
+getById("view_bar-add").addEventListener("click", event_show_keyword_add);
+getElement(".next").addEventListener("click", event_show_keyword_load);
+getById("bt_add").addEventListener("click", event_show_keyword_load);
+getById("view_bar-unselect").addEventListener("click", event_keywords_unselect);
 
 // 键盘弹起
 document.addEventListener("keyup", function (event) {
@@ -181,76 +167,82 @@ document.addEventListener("keyup", function (event) {
   }
 });
 
-// 添加键盘事件监听器
-document.addEventListener("keydown", function (event) {
+document.addEventListener("keydown", (e) => {
   // 检查是否按下 Ctrl 键 (键码为 17)
-  if (event.keyCode === 17) {
+  if (e.keyCode === 17) {
     ctrlPressed = true;
   }
 
   // 检查是否按下 ESC 键 (键码为 27)
-  if (event.keyCode === 27) {
+  if (e.keyCode === 27) {
     // 处理 ESC 键事件
-    let full_screen = document.getElementById("full_screen");
+    let full_screen = getById("full_screen");
     full_screen.style.zIndex = "-99";
   }
 
   // 检查是否按下 `~` 键 (键码为 192)
-  if (event.keyCode === 192) {
+  if (e.keyCode === 192) {
     // 处理 `~` 键事件
-    let full_screen = document.getElementById("full_screen");
+    let full_screen = getById("full_screen");
     full_screen.style.zIndex = "99";
   }
 });
 
-document
-  .getElementById("full_screen")
-  .addEventListener("click", function (event) {
-    // console.log(event.target.tagName);
-    // console.log(event);
-    let full_screen = document.getElementById("full_screen");
+getById("full_screen").addEventListener("click", function (event) {
+  const temp_en_edit = getById("temp_en_edit");
+  console.log(event.target.tagName);
+  // console.log(event);
+  let full_screen = getById("full_screen");
 
-    if (event.target.tagName === "DIV") {
-      let full_screen = document.getElementById("full_screen");
-      full_screen.style.zIndex = "-99";
-      return;
+  if (event.target.tagName === "DIV") {
+    let full_screen = getById("full_screen");
+    full_screen.style.zIndex = "-99";
+    return;
+  }
+
+  if (event.target.tagName === "H2") {
+    const li = event.target.parentElement;
+    if (li.tagName === "LI") {
+      li.classList.toggle("selected");
+      temp_en_edit.innerText += "," + li.dataset.en;
     }
+    return;
+  }
 
-    if (event.target.tagName === "H2") {
-      const li = event.target.parentElement;
-      if (li.tagName === "LI") {
-        li.classList.toggle("selected");
-      }
-      return;
+  if (event.target.tagName === "LI") {
+    const li = event.target;
+    if (li.tagName === "LI") {
+      li.classList.toggle("selected");
+      temp_en_edit.innerText += "," + li.dataset.en;
     }
+    return;
+  }
 
-    if (event.target.tagName === "IMG") {
-      const li = event.target.parentElement.parentElement;
-      if (li.tagName === "LI") {
-        li.classList.toggle("selected");
-      }
+  if (event.target.tagName === "IMG") {
+    const li = event.target.parentElement.parentElement;
+    if (li.tagName === "LI") {
+      li.classList.toggle("selected");
     }
-  });
-
-// 取消选择
-function unselect() {}
+  }
+});
 
 // 点击弹出关键词列表
-document
-  .querySelector("#full_screen button.close")
-  .addEventListener("click", function (event) {
+getElement("#full_screen button.close").addEventListener(
+  "click",
+  function (event) {
     let full_screen = document.getElementById("full_screen");
     full_screen.style.zIndex = "-99";
-  });
+  },
+);
 
-// 保存按钮 单击事件
-document.getElementById("bt_save").addEventListener("click", function (event) {
+// 保存
+getById("bt_save").addEventListener("click", function (event) {
   localStorage.setItem("last_text", p_en.innerText);
   startCountdown(document.getElementById("bt_save"));
 });
 
-// 复制按钮 单击事件
-document.getElementById("bt_copy").addEventListener("click", function (event) {
+// 复制
+getById("bt_copy").addEventListener("click", function (event) {
   let textToCopy = document.getElementById("p_en").innerText;
   navigator.clipboard
     .writeText(textToCopy)
@@ -263,8 +255,8 @@ document.getElementById("bt_copy").addEventListener("click", function (event) {
     });
 });
 
-// 粘贴按钮 单击事件
-document.getElementById("bt_paste").addEventListener("click", function (event) {
+// 粘贴
+getById("bt_paste").addEventListener("click", function (event) {
   navigator.clipboard
     .readText()
     .then(function (clipboardText) {
@@ -280,7 +272,7 @@ document.getElementById("bt_paste").addEventListener("click", function (event) {
     });
 });
 
-// 中文翻译按钮 单击事件
+// 中文翻译按钮
 bt_zh.addEventListener("click", function (event) {
   let p_zh = document.getElementById("p_zh").textContent;
   //翻译
@@ -313,9 +305,10 @@ bt_zh.addEventListener("click", function (event) {
   }
 });
 
-// 英文翻译按钮 单击事件
+// 英文翻译按钮
 bt_en.addEventListener("click", bt_en_translate);
 
+//
 function bt_en_translate() {
   let text_en = p_en.textContent;
 
@@ -498,4 +491,42 @@ function AddSplitWords() {
     li.appendChild(span1);
     word_edit_ul.appendChild(li);
   });
+}
+
+p_en.onmouseover = function (event) {
+  let anchorElem = event.target.closest("[data-tooltip]");
+  if (!anchorElem) return;
+  // tooltip = showTooltip(anchorElem, anchorElem.dataset.tooltip);
+};
+
+p_en.onmouseout = function () {
+  if (tooltip) {
+    tooltip.remove();
+    tooltip = false;
+  }
+};
+
+// 显示提示
+function showTooltip(anchorElem, html) {
+  let tooltipElem = document.createElement("div");
+  tooltipElem.className = "tooltip";
+  tooltipElem.innerHTML = html;
+  document.body.append(tooltipElem);
+
+  let coords = anchorElem.getBoundingClientRect();
+
+  // position the tooltip over the center of the element
+  let left =
+    coords.left + (anchorElem.offsetWidth - tooltipElem.offsetWidth) / 2;
+  if (left < 0) left = 0;
+
+  let top = coords.top - tooltipElem.offsetHeight - 5;
+  if (top < 0) {
+    top = coords.top + anchorElem.offsetHeight + 5;
+  }
+
+  tooltipElem.style.left = left + "px";
+  tooltipElem.style.top = top + "px";
+
+  return tooltipElem;
 }

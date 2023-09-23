@@ -1,201 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
+  
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./css/reset.css" />
+    <link rel="stylesheet" href="./css/layout.css" />
     <link rel="stylesheet" href="./css/dark_style.css" />
-    <script src="https://kit.fontawesome.com/fe364aecc5.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="./css/layout_media.css" />
+    <script src="https://kit.fontawesome.com/fe364aecc5.js" crossorigin="anonymous">
+    </script>
     <title>提示词生成工具</title>
-
   </head>
-
+  
   <body>
-
     <div id="full_screen">
+      <div id="fixed-header">
+       <h1 id="en_preview">AIGC</h1>
+       <p id="zh_preview">东方山水画</p>
+      </div>
       <div class="full_screen-wrap">
+       
         <div class="view_bar">
-          <i class="fa-solid fa-bars"></i>
+          <div id="temp_en_edit">列表</div>
           <button id="view_bar-add">添加</button>
           <button id="view_bar-unselect">取消选择</button>
           <button id="view_bar-options">视图选项</button>
           <button class="close">关闭(Esc)</button>
         </div>
-
         <div class="imagelist" id="imagelist2">
-          <ul>
-            <li><h2>兔子风格</h2><p class="load"><img data-src="./img/Midjourney-102.png" alt=""></p></li>
-          </ul>
+          <!-- <ul>
+            <li>
+              <h2>兔子风格</h2>
+              <p class="load">
+                <img data-src="./img/Midjourney-102.png" alt="">
+              </p>
+            </li>
+          </ul> -->
         </div>
       </div>
     </div>
+    
+    <div id="main">
+      <div class="main-wrap">
 
-    <div id="main_wrap">
- 
-        <div class="wrap">
-            <div class="zh">
-              <h2>输入中文指令</h2>
-              <div class="div_edit">
-                  <p id="p_zh" contenteditable="true" spellcheck="false"></p>
+        <!-- 中文指令 -->
+        <div class="zh_wrap">
+
+          <nav class="tab-container">
+            <h2>输入中文指令</h2>
+            <ul>
+              <li data-tab="tab1" class="active"><i class="fa-solid fa-align-justify"></i></li>
+              <li data-tab="tab2"><i class="fa-solid fa-align-left"></i></li>
+            </ul>
+          </nav>
+
+          <div id="zh_tabs">
+            <div id="word_edit" class="ci" data-tab="tab1" spellcheck="false" >
+              <div class="left">
               </div>
-              
-              <div class="status_bar div_edit">
-                <p></p>
-                <button id="bt_zh">翻译</button>
-              </div>
-
-
-              <!-- <i class="fa-solid fa-plus"></i>  -->
-
-              <div class="next"></div>
-
-            </div>
-
-      
-            <!-- 英文指令 -->
-            <div class="main">
-              <h2>输入英文指令</h2>
-              <div class="div_edit">
-                <p id="p_en" contenteditable="true" spellcheck="false">...</p>
-              </div>
-              <div class="status_bar div_edit">
-                <p id="p_words" spellcheck="false"></p>
-                <div>
-                  <button id="bt_add">添加</button>
-                  <button id="bt_deleteall">清空</button>
-                  <button id="bt_paste">粘贴</button>
-                  <button id="bt_save">保存</button>
-                  <button id="bt_en">翻译</button>
-                  <button id="bt_copy">复制</button>
-                </div>
-              </div>
-            </div>
-      
-            <div id="commonds">
-      
-                <div>
-                  <label for="id_aspect">比例</label>
-                  <select id="id_aspect" name="aspect">
-                    <option value="1:1">1:1</option>
-                    <option value="5:4">5:4</option>
-                    <option value="3:2">3:2</option>
-                    <option value="7:4">7:4</option>
-                    <option value="16:9">16:9</option>
-                    <option value="2:1">2:1</option>
-                    <option value="9:16">9:16</option>
-                    <option value="1:2">1:2</option>
-                  </select>
-                </div>
-        
-                <div>
-                    <label for="id_version">版本</label>
-                    <select id="id_version" name="version">
-                      <option value="5.2">5.2</option>
-                      <option value="5.1">5.1</option>
-                      <option value="5">5</option>
-                      <option value="4">4</option>
-                      <option value="3">3</option>
-                      <option value="2">2</option>
-                      <option value="1">1</option>
-                      <option value="niji">niji</option>
-                    </select>
-                </div>
-        
-                <div>
-                    <label for="id_quality">质量</label>
-                    <select id="id_quality" name="id_quality">
-                      <option value=".25">.25</option>
-                      <option value=".5">.5</option>
-                      <option value="1">1</option>
-                    </select>
-                </div>
-        
-                <div>
-                    <label for="id_stylize">风格化</label>
-                    <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
-                </div>
-        
-                <div>
-                    <label for="id_chaos">chaos</label>
-                    <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
-                </div>
-        
-                <div>
-                    <label for="id_stop">停止</label>
-                    <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
-                </div>
-                
-                <div>
-                    <label for="id_Repeat">重复</label>
-                    <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
-                </div>
-        
-                <div>
-                    <label for="id_Weird">奇怪</label>
-                    <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
-                </div>
-                 
-                <div>
-                    <label for="id_tile">重复</label>
-                    <select id="id_tile" name="id_tile">
-                      <option value="yes">重复</option>
-                      <option value="no">不重复</option>
-                    </select>
-                </div>
-        
-                <div>
-                    <label for="id_seed">种子</label>
-                    <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
-                </div>
-                
-              </div>
-      
-          </div>
-      
-          <div class="wrap">
-            <!-- 分词 -->
-            <div id="word_edit" class="ci" spellcheck="false">
-              <div class="left"></div>
               <div class="right">
-                <ul></ul>
+                <ul>
+                </ul>
               </div>
             </div>
-      
-      
+  
+            <div class="div_edit" data-tab="tab2">
+              <p id="p_zh" contenteditable="true" spellcheck="false">
+              </p>
+            </div>
           </div>
+
+
           
-          <div class="wrap">
-         
-      
+          <div class="status_bar div_edit">
+            <button id="bt_zh">翻译</button>
           </div>
-      
-          <!-- 中文编辑 -->
-          <div class="zh2"">
-            <section>
-              <h4>主题内容</h4>
-              <p contenteditable="true" spellcheck="false">
-                ...
-              </p>
-            </section>
-            <section>
-              <h4>环境</h4>
-              <p contenteditable="true" spellcheck="false">...</p>
-            </section>
-            <section>
-              <h4>构图 · 镜头</h4>
-              <p contenteditable="true" spellcheck="false">...</p>
-            </section>
-            <section>
-              <h4>风格化 · 参考方向</h4>
-              <p contenteditable="true" spellcheck="false">
-                <span>潜意识⻛格</span>
-                <span>黑白⻛格</span>
-                <span>新现实⻛格</span>
-                <span>水墨⻛格</span>
-              </p>
-            </section>
+          <!-- <i class="fa-solid fa-plus"></i>  -->
+          <div class="next">
           </div>
+        </div>
+
+        <!-- 英文指令 -->
+        <div class="en_wrap main">
+          <nav class="tab-container">
+            <h2>输入英文指令</h2>
+            <ul>
+              <li data-tab="tab1" class="active"><i class="fa-solid fa-align-justify"></i></li>
+              <li data-tab="tab2"><i class="fa-solid fa-align-left"></i></li>
+            </ul>
+          </nav>
+          <div class="div_edit">
+            <p id="p_en" contenteditable="true" spellcheck="false">...</p>
+          </div>
+          <div class="status_bar div_edit">
+            <p id="p_words" spellcheck="false">
+            </p>
+            <div>
+              <button id="bt_add" data-name="添加"><i class="fa-solid fa-plus"></i></button>
+              <button id="bt_deleteall" data-name="清空"><i class="fa-solid fa-eraser"></i></button>
+              <button id="bt_paste" data-name="粘贴"><i class="fa-regular fa-paste"></i></button>
+              <button id="bt_save" data-name="保存"><i class="fa-regular fa-floppy-disk"></i></button>
+              <button id="bt_en" data-name="翻译"><i class="fa-solid fa-language"></i></button>
+              <button id="bt_copy" data-name="复制">复制</button>
+            </div>
+          </div>
+        </div>
+        <div class="commonds_wrap"  id="commonds">
+          <div>
+            <label for="id_aspect">比例</label>
+            <select id="id_aspect" name="aspect">
+              <option value="1:1">1:1</option>
+              <option value="5:4">5:4</option>
+              <option value="3:2">3:2</option>
+              <option value="7:4">7:4</option>
+              <option value="16:9">16:9</option>
+              <option value="2:1">2:1</option>
+              <option value="9:16">9:16</option>
+              <option value="1:2">1:2</option>
+            </select>
+          </div>
+          <div>
+            <label for="id_version">版本</label>
+            <select id="id_version" name="version">
+              <option value="5.2">5.2</option>
+              <option value="5.1">5.1</option>
+              <option value="5">5</option>
+              <option value="4">4</option>
+              <option value="3">3</option>
+              <option value="2">2</option>
+              <option value="1">1</option>
+              <option value="niji">niji</option>
+            </select>
+          </div>
+          <div>
+            <label for="id_quality">质量</label>
+            <select id="id_quality" name="id_quality">
+              <option value=".25">.25</option>
+              <option value=".5">.5</option>
+              <option value="1">1</option>
+            </select>
+          </div>
+          <div>
+            <label for="id_stylize">风格化</label>
+            <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
+          </div>
+          <div>
+            <label for="id_chaos">chaos</label>
+            <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
+          </div>
+          <div>
+            <label for="id_stop">停止</label>
+            <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
+          </div>
+          <div>
+            <label for="id_Repeat">重复</label>
+            <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
+          </div>
+          <div>
+            <label for="id_Weird">奇怪</label>
+            <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
+          </div>
+          <div>
+            <label for="id_tile">重复</label>
+            <select id="id_tile" name="id_tile">
+              <option value="yes">重复</option>
+              <option value="no">不重复</option>
+            </select>
+          </div>
+          <div>
+            <label for="id_seed">种子</label>
+            <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
+          </div>
+        </div>
+      </div>
     </div>
-    <script type="module" src="main.js"></script>
+    <script type="module" src="main.js">
+    </script>
   </body>
+
 </html>

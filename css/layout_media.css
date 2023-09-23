@@ -1,0 +1,21 @@
+@media (max-width: 900px) {
+  main {
+    justify-content: flex-start;
+  }
+  .main-wrap {
+    flex-direction: column;
+  }
+  .main-wrap .zh_wrap,
+  .main-wrap .main {
+    width: 100%;
+  }
+  .wrap {
+    row-gap: 20px;
+  }
+  #commonds {
+    width: 100%;
+  }
+  #commonds div {
+    width: calc(50% - 12px);
+  }
+}
