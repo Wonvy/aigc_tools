@@ -15,30 +15,42 @@
   
   <body>
     <div id="full_screen">
-      <div id="fixed-header">
-       <h1 id="en_preview">AIGC</h1>
-       <p id="zh_preview">东方山水画</p>
+        <div class="full_screen-wrap">
+
+          <div id="fixed-header">
+            <div class="top">
+              <img src="../img/Midjourney-102.png" alt="">
+              <h1 id="en_preview">AIGC</h1>
+              <p id="zh_preview">东方山水画</p>
+            </div>
+            <div id="temp_en_edit">列表</div>
+          </div>
+
+          <div class="right">
+            <div class="imagelist" id="imagelist2">
+              <!-- <ul>
+                <li>
+                  <h2>兔子风格</h2>
+                  <p class="load">
+                    <img data-src="./img/Midjourney-102.png" alt="">
+                  </p>
+                </li>
+              </ul> -->
+            </div>
+  
+            <div class="view_bar">
+              <button id="view_bar-add">确定</button>
+              <button id="view_bar-unselect">重置</button>
+              <button id="view_bar-options">视图</button>
+              <button class="close">取消</button>
+            </div>
+          </div>
+
+
+
+
       </div>
-      <div class="full_screen-wrap">
-       
-        <div class="view_bar">
-          <div id="temp_en_edit">列表</div>
-          <button id="view_bar-add">添加</button>
-          <button id="view_bar-unselect">取消选择</button>
-          <button id="view_bar-options">视图选项</button>
-          <button class="close">关闭(Esc)</button>
-        </div>
-        <div class="imagelist" id="imagelist2">
-          <!-- <ul>
-            <li>
-              <h2>兔子风格</h2>
-              <p class="load">
-                <img data-src="./img/Midjourney-102.png" alt="">
-              </p>
-            </li>
-          </ul> -->
-        </div>
-      </div>
+      
     </div>
     
     <div id="main">
@@ -51,18 +63,14 @@
             <h2>输入中文指令</h2>
             <ul>
               <li data-tab="tab1" class="active"><i class="fa-solid fa-align-justify"></i></li>
-              <li data-tab="tab2"><i class="fa-solid fa-align-left"></i></li>
+              <li data-tab="tab2"><i class="fa-solid fa-align-left"></i></li> 
             </ul>
           </nav>
 
           <div id="zh_tabs">
             <div id="word_edit" class="ci" data-tab="tab1" spellcheck="false" >
-              <div class="left">
-              </div>
-              <div class="right">
                 <ul>
                 </ul>
-              </div>
             </div>
   
             <div class="div_edit" data-tab="tab2">

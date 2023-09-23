@@ -1,41 +1,29 @@
 import { translate_API } from "./js/translate.js";
-import { uuid, random_bkcolor, startCountdown } from "./js/func.js";
+import {
+  getById,
+  getElement,
+  uuid,
+  random_bkcolor,
+  startCountdown,
+} from "./js/func.js";
 import {
   prompts_DeleteCommand,
   prompts_GetCommand,
   prompts_splitwords,
 } from "./js/prompts.js";
 
-const p_zh = document.getElementById("p_zh"); // 英文指令编辑区
-const p_en = document.getElementById("p_en"); // 中文指令编辑区
-const bt_zh = document.getElementById("bt_zh"); // 中文翻译按钮
-const bt_en = document.getElementById("bt_en"); // 英文翻译按钮
-const word_edit_ul = document.querySelector("#word_edit ul");
+const p_zh = getById("p_zh"); // 英文指令编辑区
+const p_en = getById("p_en"); // 中文指令编辑区
+const bt_zh = getById("bt_zh"); // 中文翻译按钮
+const bt_en = getById("bt_en"); // 英文翻译按钮
+const word_edit_ul = getElement("#word_edit ul");
 let lastparent_uuid = "";
 let currenuuid;
 let Translated;
 let tooltip;
 let ctrlPressed = false;
 
-function getById(id) {
-  return document.getElementById(id);
-}
-
-function getElement(selector) {
-  return document.querySelector(selector);
-}
-
-// 延迟加载图片
-window.addEventListener("load", function () {
-  const images = document.querySelectorAll("img[data-src]");
-  images.forEach(function (img) {
-    img.onload = function () {
-      img.parentElement.classList.remove("load");
-    };
-    // 将图片的src设置为data-src以开始加载
-    // img.src = img.getAttribute("data-src");
-  });
-});
+// tab-container
 
 // 载入最后一次指令
 const last_text = localStorage.getItem("last_text");
@@ -530,3 +518,15 @@ function showTooltip(anchorElem, html) {
 
   return tooltipElem;
 }
+
+// 延迟加载图片
+window.addEventListener("load", function () {
+  const images = document.querySelectorAll("img[data-src]");
+  images.forEach(function (img) {
+    img.onload = function () {
+      img.parentElement.classList.remove("load");
+    };
+    // 将图片的src设置为data-src以开始加载
+    // img.src = img.getAttribute("data-src");
+  });
+});

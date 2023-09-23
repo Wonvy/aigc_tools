@@ -1,4 +1,14 @@
-export { random_bkcolor, startCountdown, uuid };
+export { getById, getElement, random_bkcolor, startCountdown, uuid };
+
+// 根据id后去元素
+function getById(id) {
+  return document.getElementById(id);
+}
+
+// 根据表达式获取元素
+function getElement(selector) {
+  return document.querySelector(selector);
+}
 
 // 随机背景色
 function random_bkcolor(trans = 1) {

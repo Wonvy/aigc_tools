@@ -11,7 +11,7 @@ body,
 
 #full_screen {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   flex-direction: column;
   align-items: center;
   column-gap: 15px;
@@ -19,7 +19,7 @@ body,
   width: 100%;
   height: 100%;
   /* padding-top: 5%; */
-  background-color: #222;
+  background-color: rgba(20, 20, 20, 0.8);
   opacity: 1;
   box-sizing: border-box;
   overflow: hidden;
@@ -27,17 +27,20 @@ body,
 }
 
 #fixed-header {
-  width: 100%;
-  height: 15%;
+  width: 30%;
+  height: 100%;
   display: flex;
-  align-items: center;
+  padding: 10px;
+  align-items: flex-start;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
 }
 
 #fixed-header h1 {
+  text-align: center;
   color: #fff;
-  font-size: 40px;
+  line-height: 35px;
+  font-size: 22px;
 }
 
 #fixed-header p {
@@ -46,15 +49,34 @@ body,
 }
 
 #temp_en_edit {
-  border: 1px solid #999;
+  font-family: Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.5em;
+  color: rgb(180, 180, 180);
+  border: 1px solid transparent;
   padding: 10px;
-  min-height: 200px;
-  max-height: 600%;
+  width: 100%;
   height: 100%;
-  margin-bottom: 50px;
+  /* min-height: 200px; */
+  max-height: 400px;
+  /* margin-bottom: 50px; */
   background: #111;
   border-radius: 5px;
   overflow-y: auto;
+}
+
+#fixed-header .top {
+  padding-top: 40px;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  row-gap: 5px;
+  align-items: center;
+}
+
+#fixed-header .top img {
+  width: 150px;
+  height: 150px;
 }
 
 #main {
@@ -129,6 +151,7 @@ body,
 .zh_wrap {
   position: relative;
   width: 50%;
+  height: 100%;
   display: flex;
   min-height: 120px;
   /* padding: 20px; */
@@ -176,4 +199,74 @@ body,
   align-items: flex-start;
   column-gap: 12px;
   row-gap: 12px;
+}
+
+#zh_tabs {
+  height: 100%;
+}
+
+#word_edit {
+  width: 100%;
+  height: 100%;
+  font-size: 15px;
+  color: #a0a0a0;
+  /* margin: 40px 0 80px 0; */
+}
+
+#word_edit ul {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding: 20px;
+  column-gap: 10px;
+  row-gap: 5px;
+}
+
+#word_edit ul li {
+  position: relative;
+  top: 0;
+  display: flex;
+  color: #fff;
+  border: 1px solid transparent;
+  padding: 3px 6px 4px 8px;
+  border-radius: 5px;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  /* 添加过渡效果 */
+  /* background: linear-gradient(to bottom, rgb(81 81 81) 50%, #272727 50%); */
+  /* background: #3e3e3e; */
+  cursor: pointer;
+}
+
+#word_edit ul li:hover,
+#word_edit ul li.on {
+  top: -2px;
+  /* background: #fff !important; */
+  background-color: transparent !important;
+  border: 1px solid #999;
+}
+
+#word_edit ul li:hover span,
+#word_edit ul li.on span {
+  color: #fff;
+  /* font-weight: bold; */
+}
+
+#word_edit ul li i {
+  font-family: "" Open Sans "";
+  color: #c7c7c7;
+  font-size: 12px;
+  position: relative;
+  top: -3px;
+  display: none;
+}
+
+#word_edit ul li span {
+  position: relative;
+  color: #b0b0b0;
+  font-size: 15px;
+  position: relative;
+  top: 1px;
+  font-family: "" Open Sans "";
 }

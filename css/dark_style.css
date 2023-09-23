@@ -85,25 +85,40 @@ button#bt_copy {
 /* 全屏样式 */
 #full_screen .full_screen-wrap {
   display: flex;
-  width: 100%;
+  width: 70%;
   height: 85%;
-  flex-direction: row-reverse;
+  flex-direction: row;
   align-items: flex-start;
   overflow-y: auto;
-  column-gap: 20px;
+  column-gap: 5px;
   justify-content: center;
+  background-color: #222;
+  border: 2px solid #333;
+  border-radius: 15px;
+  box-shadow:
+    0px 10px 38px -3px rgba(0, 0, 0, 0.1),
+    0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.full_screen-wrap .right {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 #full_screen .view_bar {
   display: flex;
-  width: 20%;
-  max-width: 1200px;
-  padding: 0 30px 0 30px;
-  flex-direction: column;
+  width: 100%;
+  height: 10%;
+  /* max-width: 1200px; */
+  padding: 0 15px 10px 10px;
+  flex-direction: row;
   flex-wrap: nowrap;
-  row-gap: 15px;
-  align-items: flex-start;
-  justify-content: center;
+  column-gap: 5px;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 #full_screen .view_bar i {
@@ -113,9 +128,9 @@ button#bt_copy {
 #full_screen .imagelist {
   display: flex;
   box-sizing: border-box;
-  width: 80%;
-  height: 100%;
-  padding: 30px;
+  width: 100%;
+  height: 90%;
+  padding: 10px;
   overflow-y: auto;
   max-width: 1200px;
   flex-wrap: nowrap;
@@ -126,7 +141,7 @@ button#bt_copy {
 
 #full_screen .imagelist ul {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   /* grid-template-rows: repeat(5, 1fr); */
   grid-column-gap: 8px;
   grid-row-gap: 8px;
@@ -359,8 +374,7 @@ div.zh p {
   visibility: visible;
 }
 
-#p_en,
-#temp_en_edit {
+#p_en {
   /* font-family: ""Segoe UI"", sans-serif; */
   /* font-weight: normal; */
   font-family: Consolas, monospace;
@@ -485,68 +499,4 @@ div.zh p {
   background-color: rgb(255, 255, 255);
   transition: all 0.1s ease-in;
   /* 添加过渡效果 */
-}
-
-#word_edit {
-  width: 80%;
-  font-size: 15px;
-  color: #a0a0a0;
-  /* margin: 40px 0 80px 0; */
-}
-
-#word_edit ul {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  column-gap: 10px;
-  row-gap: 5px;
-}
-
-#word_edit ul li {
-  position: relative;
-  top: 0;
-  display: flex;
-  color: #fff;
-  border: 1px solid transparent;
-  padding: 3px 6px 4px 8px;
-  border-radius: 5px;
-  flex-direction: column;
-  transition: all 0.3s ease;
-  /* 添加过渡效果 */
-  /* background: linear-gradient(to bottom, rgb(81 81 81) 50%, #272727 50%); */
-  /* background: #3e3e3e; */
-  cursor: pointer;
-}
-
-#word_edit ul li:hover,
-#word_edit ul li.on {
-  top: -2px;
-  /* background: #fff !important; */
-  background-color: transparent !important;
-  border: 1px solid #999;
-}
-
-#word_edit ul li:hover span,
-#word_edit ul li.on span {
-  color: #fff;
-  /* font-weight: bold; */
-}
-
-#word_edit ul li i {
-  font-family: "" Open Sans "";
-  color: #c7c7c7;
-  font-size: 12px;
-  position: relative;
-  top: -3px;
-  display: none;
-}
-
-#word_edit ul li span {
-  position: relative;
-  color: #b0b0b0;
-  font-size: 15px;
-  position: relative;
-  top: 1px;
-  font-family: "" Open Sans "";
 }
