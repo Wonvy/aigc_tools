@@ -33,6 +33,13 @@ if (last_text === "") {
   p_zh.innerText = localStorage.getItem(last_text);
 }
 
+// 切换多行
+getElement(".tab-container").addEventListener("click", function (event) {
+  if (event.target.tagName === "LI") {
+    alert(event.target.dataset.tab);
+  }
+});
+
 // 显示大字号说明
 getById("imagelist2").addEventListener("mouseover", function (event) {
   if (event.target.tagName === "LI") {
