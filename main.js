@@ -129,7 +129,9 @@ function setFontToLargeSize(event) {
   if (event.target.tagName === "LI") {
     getById("zh_preview").innerText = event.target.dataset.zh;
     getById("en_preview").innerText = event.target.dataset.en;
-    // console.log(event.target.tagName);
+    let image = document.querySelector("#fixed-header img");
+    let randomParam = Math.random(); // 生成一个随机数作为参数
+    image.src = "https://picsum.photos/200?" + randomParam;
   }
 }
 
