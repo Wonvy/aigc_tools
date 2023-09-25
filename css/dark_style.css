@@ -355,6 +355,7 @@ div.zh p {
 .div_edit {
   padding: 20px;
   width: 100%;
+  height: 100%;
 }
 
 .main button:nth-child(1) {
@@ -421,12 +422,13 @@ div.zh p {
 
 .status_bar {
   position: relative;
-  margin-top: 18px;
   display: flex;
   width: 100%;
+  height: 80px;
   justify-content: space-between;
   flex-direction: row;
-  flex-wrap: nowrap;
+  align-content: center;
+  align-items: center;
 }
 
 .status_bar p {

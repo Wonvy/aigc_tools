@@ -56,40 +56,6 @@
     <div id="main">
       <div class="main-wrap">
 
-        <!-- 中文指令 -->
-        <div class="zh_wrap">
-
-          <nav class="tab-container">
-            <h2>中文咒语</h2>
-            <ul>
-              <li data-tab="tab1" class="active"><i class="fa-solid fa-align-justify"></i></li>
-              <li data-tab="tab2"><i class="fa-solid fa-align-left"></i></li> 
-            </ul>
-          </nav>
-
-          <div id="zh_tabs">
-            <div id="word_edit" class="ci" data-tab="tab1" spellcheck="false" >
-                <ul>
-                </ul>
-            </div>
-  
-            <div class="div_edit" data-tab="tab2">
-              <p id="p_zh" contenteditable="true" spellcheck="false">
-              </p>
-            </div>
-          </div>
-
-
-          
-          <div class="status_bar div_edit">
-            <button id="bt_zh">翻译</button>
-          </div>
-          <!-- <i class="fa-solid fa-plus"></i>  -->
-          <div class="next">
-            <i class="fa-solid fa-plus"></i>
-          </div>
-        </div>
-
         <!-- 英文指令 -->
         <div class="en_wrap main">
           <nav class="tab-container">
@@ -106,15 +72,58 @@
             <p id="p_words" spellcheck="false">
             </p>
             <div>
-              <button id="bt_add" data-name="添加"><i class="fa-solid fa-plus"></i></button>
-              <button id="bt_deleteall" data-name="清空"><i class="fa-solid fa-eraser"></i></button>
-              <button id="bt_paste" data-name="粘贴"><i class="fa-regular fa-paste"></i></button>
-              <button id="bt_save" data-name="保存"><i class="fa-regular fa-floppy-disk"></i></button>
-              <button id="bt_en" data-name="翻译"><i class="fa-solid fa-language"></i></button>
-              <button id="bt_copy" data-name="复制">复制</button>
+              
+              <button id="bt_paste" title="粘贴" data-name="粘贴" class="fa-regular fa-paste"></button>
+              <button id="bt_clear" title="清空" data-name="清空" class="fa-solid fa-eraser"></button>
+              <button id="bt_save" title="保存" data-name="保存" class="fa-regular fa-floppy-disk"></button>
+              <button id="bt_en" title="翻译" data-name="翻译" class="fa-solid fa-language"></button>
+              <button id="bt_copy" title="复制" data-name="复制">复制</button>
             </div>
           </div>
         </div>
+
+
+        <!-- 中文指令 -->
+        <div class="zh_wrap">
+
+          <nav class="tab-container">
+            <h2>中文咒语</h2>
+            <ul>
+              <li data-tab="tab1" class="active"><i class="fa-solid fa-align-justify"></i></li>
+              <li data-tab="tab2"><i class="fa-solid fa-align-left"></i></li> 
+            </ul>
+          </nav>
+
+          <div id="zh_tabs">
+
+            <div class="div_edit" data-tab="tab2">
+              <!-- <input type="text" id="p_zh" placeholder="请输入文字"> -->
+              <p id="p_zh" contenteditable="true" spellcheck="false">
+              </p>
+            </div>
+
+            <div id="word_edit" class="ci" data-tab="tab1" spellcheck="false" >
+                <ul>
+                </ul>
+            </div>
+
+          </div>
+
+
+          
+          <div class="status_bar div_edit">
+            <button id="bt_add"  title="添加" data-name="添加" class="fa-solid fa-plus"></button>
+            <button id="bt_zh" style="visibility: hidden;">翻译</button>
+          </div>
+          <!-- <i class="fa-solid fa-plus"></i>  -->
+          <div class="next">
+            <i class="fa-solid fa-plus"></i>
+          </div>
+        </div>
+
+
+
+        <!-- 指令 -->
         <div class="commonds_wrap"  id="commonds">
           <div>
             <label for="id_aspect">比例</label>
