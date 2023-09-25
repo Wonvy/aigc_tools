@@ -86,6 +86,7 @@ button#bt_copy {
 #full_screen .full_screen-wrap {
   display: flex;
   width: 70%;
+  max-width: 1200px;
   height: 85%;
   flex-direction: row;
   align-items: flex-start;
@@ -108,6 +109,7 @@ button#bt_copy {
 .full_screen-wrap .right {
   display: flex;
   width: 100%;
+  padding: 20px;
   height: 100%;
   flex-direction: column;
   justify-content: space-between;
@@ -186,27 +188,27 @@ button#bt_copy {
 
 .imagelist ul li:hover {
   color: #fff;
-  border-color: #464646;
-  border-width: 1px;
+  /* border-color: #464646; */
+  /* border-width: 1px; */
   background-color: #000000;
 }
 
 .imagelist ul li:hover {
   color: #fff;
-  border-color: #464646;
-  border-width: 1px;
+  /* border-color: #464646; */
+  /* border-width: 1px; */
   background-color: #000000;
 }
 
 .imagelist ul li.selected:hover {
-  border-color: #333;
-  border-width: 1px;
+  /* border-color: #333; */
+  /* border-width: 1px; */
   background-color: #fff;
 }
 
 .imagelist ul li.selected h2 {
   /* border-color: rgb(17, 124, 17); */
-  border-width: 1px;
+  /* border-width: 1px; */
   color: #000000;
   background-color: #ffffff;
 }

@@ -66,8 +66,14 @@
               <li data-tab="tab2"><i class="fa-solid fa-align-left"></i></li>
             </ul>
           </nav>
-          <div class="div_edit">
-            <p id="p_en" contenteditable="true" spellcheck="false">...</p>
+
+          <div id="en_tabs">
+            <div class="div_edit tab1">
+              <p id="p_en" contenteditable="true" spellcheck="false">...</p>
+            </div>
+            <div class="tab2" id="word_edit_en">
+              <ul></ul>
+            </div>
           </div>
           <div class="status_bar div_edit">
             <p id="p_words" spellcheck="false">
@@ -97,13 +103,13 @@
 
           <div id="zh_tabs">
 
-            <div class="div_edit" data-tab="tab2">
+            <div class="div_edit tab1" data-tab="tab1">
               <!-- <input type="text" id="p_zh" placeholder="请输入文字"> -->
               <p id="p_zh" contenteditable="true" spellcheck="false">
               </p>
             </div>
 
-            <div id="word_edit" class="ci" data-tab="tab1" spellcheck="false" >
+            <div id="word_edit" class="ci tab2" data-tab="tab2" spellcheck="false" >
                 <ul>
                 </ul>
             </div>
@@ -114,6 +120,12 @@
           
           <div class="status_bar div_edit">
             <button id="bt_add"  title="添加" data-name="添加" class="fa-solid fa-plus"></button>
+            <button id="bt_zh1">环境</button>
+            <button id="bt_zh2">情绪</button>
+            <button id="bt_zh3">风格</button>
+            <button id="bt_zh4">艺术家</button>
+            <button id="bt_zh5">构图</button>
+            <button id="bt_zh6">细节</button>
             <button id="bt_zh" style="visibility: hidden;">翻译</button>
           </div>
           <!-- <i class="fa-solid fa-plus"></i>  -->

@@ -29,6 +29,31 @@ function clearPlaceholder() {
   }
 }
 
+const leftDiv = document.getElementById("word_edit_en");
+const rightDiv = document.getElementById("word_edit");
+
+// 记录左右两个 div 的滚动状态
+let isLeftScrolling = false;
+let isRightScrolling = false;
+
+// 监听左侧 div 的滚动事件
+leftDiv.addEventListener("scroll", function () {
+  if (!isLeftScrolling) {
+    isRightScrolling = true;
+    rightDiv.scrollTop = leftDiv.scrollTop;
+  }
+  isLeftScrolling = false;
+});
+
+// 监听右侧 div 的滚动事件
+rightDiv.addEventListener("scroll", function () {
+  if (!isRightScrolling) {
+    isLeftScrolling = true;
+    leftDiv.scrollTop = rightDiv.scrollTop;
+  }
+  isRightScrolling = false;
+});
+
 // 载入最后一次使用的提示词
 loadRecentPrompt();
 
@@ -137,9 +162,83 @@ function setFontToLargeSize(event) {
 
 // 提示词多行显示
 function switchToMultiLinePrompt(event) {
-  if (event.target.tagName === "LI" || event.target.closest("li")) {
-    alert(event.target.dataset.tab);
+  const tagName = event.target.tagName;
+  let li;
+  if (event.target.closest("li")) {
+    if (tagName === "LI") {
+      li = event.target;
+    }
+    if (tagName === "I") {
+      li = event.target.parentElement;
+    }
+    const tabtext = li.dataset.tab;
+    // console.log("#zh_tabs ." + tabtext);
+
+    convertToMultiLinePrompt_cn();
+    convertToMultiLinePrompt_en();
+
+    const nav_zh = document.querySelector(".en_wrap .active");
+    if (nav_zh) {
+      nav_zh.classList.remove("active");
+    }
+    const nav_en = document.querySelector(".zh_wrap .active");
+    if (nav_en) {
+      nav_en.classList.remove("active");
+    }
+
+    document
+      .querySelector('.zh_wrap [data-tab="' + tabtext + '"]')
+      .classList.add("active");
+    document
+      .querySelector('.en_wrap [data-tab="' + tabtext + '"]')
+      .classList.add("active");
+
+    const ontopElement_zh = document.querySelector("#zh_tabs .ontop");
+    if (ontopElement_zh) {
+      ontopElement_zh.classList.remove("ontop");
+    }
+    const ontopElement_en = document.querySelector("#en_tabs .ontop");
+    if (ontopElement_en) {
+      ontopElement_en.classList.remove("ontop");
+    }
+    document.querySelector("#zh_tabs ." + tabtext).classList.add("ontop");
+    document.querySelector("#en_tabs ." + tabtext).classList.add("ontop");
   }
+}
+convertToMultiLinePrompt_cn();
+convertToMultiLinePrompt_en();
+
+// 提示词转换为多行
+function convertToMultiLinePrompt_cn() {
+  const text = getById("p_zh").innerText;
+  const punctuations = [",", "，", ".", "。", "、", ";", "；"];
+  const lines = text.split(new RegExp(`[${punctuations.join("")}]`));
+  const ul_local = document.querySelector("#word_edit ul");
+  const ul = document.createElement("ul");
+  lines.forEach((line) => {
+    if (line.trim() !== "") {
+      const li = document.createElement("li");
+      li.textContent = line.trim();
+      ul.appendChild(li);
+    }
+  });
+  ul_local.innerHTML = ul.innerHTML;
+}
+// 提示词转换为多行
+function convertToMultiLinePrompt_en() {
+  const text = getById("p_en").innerText;
+  const punctuations = [",", "，", ".", "。", "、", ";", "；"];
+  const lines = text.split(new RegExp(`[${punctuations.join("")}]`));
+  const ul = document.createElement("ul");
+  const ul_local = document.querySelector("#en_tabs .tab2 ul");
+  lines.forEach((line) => {
+    if (line.trim() !== "") {
+      const li = document.createElement("li");
+      li.textContent = line.trim();
+      ul.appendChild(li);
+    }
+  });
+  ul_local.innerHTML = ul.innerHTML;
 }
 
 // 添加所选提示词

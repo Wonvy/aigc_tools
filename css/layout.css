@@ -26,8 +26,9 @@ body,
   width: 100%;
   height: 100%;
   /* padding-top: 5%; */
-  background-color: rgba(20, 20, 20, 0.8);
-  opacity: 1;
+  background-color: rgba(20, 20, 20, 0.5);
+  backdrop-filter: blur(5px);
+  /* opacity: 1; */
   box-sizing: border-box;
   overflow: hidden;
   z-index: -99;
@@ -37,7 +38,7 @@ body,
   width: 30%;
   height: 100%;
   display: flex;
-  padding: 10px;
+  padding: 15px;
   align-items: flex-start;
   flex-direction: column;
   justify-content: space-between;
@@ -100,6 +101,7 @@ body,
 
 .main-wrap {
   display: flex;
+  min-height: 50%;
   flex-direction: row;
   flex-wrap: wrap;
   row-gap: 30px;
@@ -137,11 +139,13 @@ body,
   font-size: 18px;
   line-height: 40px;
   cursor: pointer;
+  color: #666;
   background-color: transparent;
   user-select: none;
 }
 
 .main-wrap nav ul li.active {
+  color: #ccc;
   background-color: #252525;
 }
 
@@ -216,26 +220,47 @@ p#p_zh {
   row-gap: 12px;
 }
 
-#zh_tabs {
+#zh_tabs,
+#en_tabs {
   position: relative;
   width: 100%;
   height: 100%;
 }
 
-#zh_tabs .tab1 {
+.tab1,
+.tab2 {
   position: absolute;
   width: 100%;
   height: 100%;
+  overflow-y: auto;
+}
+
+#zh_tabs .tab1 {
   background: #222;
-  z-index: 21;
+  z-index: 23;
 }
 
 #zh_tabs .tab2 {
-  position: absolute;
-  width: 100%;
-  height: 100%;
   background: #222;
   z-index: 22;
+}
+
+#en_tabs .tab1 {
+  background: #171717;
+  z-index: 23;
+}
+
+#en_tabs .tab2 {
+  background: #171717;
+  z-index: 22;
+}
+
+#zh_tabs div.ontop {
+  z-index: 29;
+}
+
+#en_tabs div.ontop {
+  z-index: 29;
 }
 
 #word_edit {
@@ -246,9 +271,10 @@ p#p_zh {
   /* margin: 40px 0 80px 0; */
 }
 
-#word_edit ul {
+#word_edit ul,
+#en_tabs .tab2 ul {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: flex-start;
   flex-wrap: wrap;
   padding: 20px;
@@ -256,11 +282,17 @@ p#p_zh {
   row-gap: 5px;
 }
 
-#word_edit ul li {
+#en_tabs .tab2 ul {
+  align-items: flex-end;
+}
+
+#word_edit ul li,
+#en_tabs .tab2 ul li {
   position: relative;
   top: 0;
   display: flex;
-  color: #fff;
+  height: 20px;
+  color: #999;
   border: 1px solid transparent;
   padding: 3px 6px 4px 8px;
   border-radius: 5px;
