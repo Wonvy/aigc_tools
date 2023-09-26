@@ -437,7 +437,12 @@ div.zh p {
   flex-direction: row;
   align-content: center;
   align-items: center;
+  overflow: hidden;
 }
+
+/* .status_bar::webkit-scrollbar {
+  display: none;
+} */
 
 .status_bar p {
   max-width: 60%;

@@ -9,6 +9,10 @@
   .main-wrap .main {
     width: 100%;
   }
+
+  .zh_wrap {
+    height: auto;
+  }
   .wrap {
     row-gap: 20px;
   }
