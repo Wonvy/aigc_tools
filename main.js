@@ -77,6 +77,10 @@ getById("view_bar-add").addEventListener("click", prompt_addSelectedPrompt);
 // 载入提示词库
 getElement(".next").addEventListener("click", prompt_loadPromptLibrary);
 getById("bt_add").addEventListener("click", prompt_loadPromptLibrary);
+getElement(".zh_wrap .status_bar").addEventListener(
+  "click",
+  prompt_loadPromptLibrary,
+);
 
 // 取消所选提示词
 getById("view_bar-unselect").addEventListener("click", prompt_unselectPrompt);
@@ -141,12 +145,12 @@ function loadRecentPrompt() {
 if (p_zh.innerText === "") {
   // p_zh.innerText = "请输入提示词";
 }
-p_zh.focus();
 
+// 设置输入框焦点
+p_zh.focus();
 getById("zh_tabs").addEventListener("click", function (event) {
   p_zh.focus();
 });
-
 getById("en_tabs").addEventListener("click", function (event) {
   p_en.focus();
 });
@@ -291,6 +295,8 @@ function prompt_addSelectedPrompt(event) {
 
 // 载入提示词库
 function prompt_loadPromptLibrary(event) {
+  console.log(event.target.tagName);
+  alert(event.target.dataset.name);
   let full_screen = document.getElementById("full_screen");
   full_screen.style.zIndex = "99";
   let imagelist2 = document.getElementById("imagelist2");
@@ -298,7 +304,7 @@ function prompt_loadPromptLibrary(event) {
   fetch("data.json")
     .then((response) => response.json())
     .then((data) => {
-      renderJSON(imagelist2, data);
+      renderJSON(imagelist2, data); //载入json
     })
     .catch((error) => {
       console.error("加载 JSON 文件时出错：", error);
@@ -472,6 +478,7 @@ function translateToEnglish(event) {
   while (p_en.firstChild) {
     p_en.removeChild(p_en.firstChild);
   }
+
   // 清空p标签
   while (word_edit_ul.firstChild) {
     word_edit_ul.removeChild(word_edit_ul.firstChild);

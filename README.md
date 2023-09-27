@@ -15,7 +15,7 @@
 
 
 [BUG]
-- [ ] 添加提示词，末尾一个是undefined？
+- [x] 添加提示词，末尾一个是undefined？
 
 
 
