@@ -345,10 +345,12 @@ function renderJSON(container, data) {
       }
     }
   }
-  var childNodes = div.childNodes;
+  let childNodes = div.childNodes;
+  let div2 = document.createElement("div");
   for (var i = 0; i < childNodes.length; i++) {
-    container.appendChild(childNodes[i].cloneNode(true));
+    div2.appendChild(childNodes[i].cloneNode(true));
   }
+  container.innerHTML = div2.innerHTML;
 }
 
 // 取消所选提示词
