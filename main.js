@@ -58,10 +58,10 @@ rightDiv.addEventListener("scroll", function () {
 loadRecentPrompt();
 
 //添加拆分词
-AddSplitWords();
+// AddSplitWords();
 
 //格式化提示词
-prompts_format();
+// prompts_format();
 
 // 所选字体显示为大字号
 getById("imagelist2").addEventListener("mouseover", setFontToLargeSize);
@@ -129,11 +129,11 @@ function loadRecentPrompt() {
   if (last_text === "") {
   } else {
     getById("p_en").innerText = last_text;
-    translate_tmt(last_text, "en", "zh").then((result) => {
-      getById("p_zh").innerText = result.translation;
-      prompts_format(); // 拆分段落
-      AddSplitWords();
-    });
+    // translate_tmt(last_text, "en", "zh").then((result) => {
+    // getById("p_zh").innerText = result.translation;
+    // prompts_format(); // 拆分段落
+    // AddSplitWords();
+    // });
     // getById("p_zh").innerText = localStorage.getItem(last_text);
   }
 }
@@ -152,7 +152,7 @@ getById("en_tabs").addEventListener("click", function (event) {
 });
 
 // 实时翻译
-getById("p_zh").addEventListener("input", debounce(liveTranslate, 500));
+// getById("p_zh").addEventListener("input", debounce(liveTranslate, 500));
 
 // 实时翻译
 function liveTranslate(event) {
@@ -218,8 +218,9 @@ function switchToMultiLinePrompt(event) {
     document.querySelector("#en_tabs ." + tabtext).classList.add("ontop");
   }
 }
-convertToMultiLinePrompt_cn();
-convertToMultiLinePrompt_en();
+
+// convertToMultiLinePrompt_cn();
+// convertToMultiLinePrompt_en();
 
 // 提示词转换为多行
 function convertToMultiLinePrompt_cn() {
