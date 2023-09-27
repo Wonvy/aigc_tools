@@ -13,7 +13,7 @@ function getElement(selector) {
 // 随机背景色
 function random_bkcolor(trans = 1) {
   const hue = Math.floor(Math.random() * 361);
-  const saturation = 15; // 饱和度
+  const saturation = 30; // 饱和度
   const lightness = 30; // 亮度
   const randomColor = `hsla(${hue}, ${saturation}%, ${lightness}%,${trans})`;
   return randomColor;

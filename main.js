@@ -128,8 +128,13 @@ function loadRecentPrompt() {
   const last_text = localStorage.getItem("last_text");
   if (last_text === "") {
   } else {
-    getById("p_en").innerText = localStorage.getItem("last_text");
-    getById("p_zh").innerText = localStorage.getItem(last_text);
+    getById("p_en").innerText = last_text;
+    translate_tmt(last_text, "en", "zh").then((result) => {
+      getById("p_zh").innerText = result.translation;
+      prompts_format(); // 拆分段落
+      AddSplitWords();
+    });
+    // getById("p_zh").innerText = localStorage.getItem(last_text);
   }
 }
 
@@ -137,6 +142,14 @@ if (p_zh.innerText === "") {
   // p_zh.innerText = "请输入提示词";
 }
 p_zh.focus();
+
+getById("zh_tabs").addEventListener("click", function (event) {
+  p_zh.focus();
+});
+
+getById("en_tabs").addEventListener("click", function (event) {
+  p_en.focus();
+});
 
 // 实时翻译
 getById("p_zh").addEventListener("input", debounce(liveTranslate, 500));
@@ -218,6 +231,7 @@ function convertToMultiLinePrompt_cn() {
   lines.forEach((line) => {
     if (line.trim() !== "") {
       const li = document.createElement("li");
+      li.style.backgroundColor = random_bkcolor(1);
       li.textContent = line.trim();
       ul.appendChild(li);
     }
