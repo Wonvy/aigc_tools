@@ -295,8 +295,7 @@ function prompt_addSelectedPrompt(event) {
 
 // 载入提示词库
 function prompt_loadPromptLibrary(event) {
-  console.log(event.target.tagName);
-  alert(event.target.dataset.name);
+  const bt_title = event.target.dataset.name;
   let full_screen = document.getElementById("full_screen");
   full_screen.style.zIndex = "99";
   let imagelist2 = document.getElementById("imagelist2");
@@ -305,6 +304,11 @@ function prompt_loadPromptLibrary(event) {
     .then((response) => response.json())
     .then((data) => {
       renderJSON(imagelist2, data); //载入json
+      document.querySelector("h3[data-title=" + bt_title + "]").scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest",
+      });
     })
     .catch((error) => {
       console.error("加载 JSON 文件时出错：", error);
@@ -323,6 +327,7 @@ function renderJSON(container, data) {
       const h3 = document.createElement("h3");
       const ul = document.createElement("ul");
       h3.textContent = key2;
+      h3.dataset.title = key2;
       div.appendChild(h3);
       div.appendChild(ul);
       // console.log("key2", key2);
