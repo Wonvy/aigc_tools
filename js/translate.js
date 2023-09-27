@@ -1,6 +1,6 @@
 import { prompts_DeleteCommand } from "../js/prompts.js";
 export { translate_API, translate_tmt };
-// export * from …
+// export * 1from …
 
 // deepl翻译 split_text｜是否翻译整段  lang | 翻译语言
 function translate_tmt(text, sourceLanguage, targetLanguage) {

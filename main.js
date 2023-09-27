@@ -435,7 +435,7 @@ function translateToChinese() {
     });
 
     // translate_API(text_en, true, "ZH")
-    //   .then((result) => {
+    //   .then((result) => {/
     //     let result_text = result.translations[0].text;
     //     localStorage.setItem(text_en, result_text); // 存储翻译结果到本地
     //     p_zh.innerText = result_text; // 替换内容
