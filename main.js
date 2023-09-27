@@ -400,7 +400,7 @@ function AddSplitWords() {
     const span1 = document.createElement("span");
     li.setAttribute("uuid", span.getAttribute("uuid"));
     span1.innerText = localStorage.getItem(span.innerText);
-    li.style.backgroundColor = random_bkcolor(0);
+    li.style.backgroundColor = random_bkcolor(1);
     li.appendChild(i);
     li.appendChild(span1);
     word_edit_ul.appendChild(li);
