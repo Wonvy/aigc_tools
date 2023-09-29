@@ -40,12 +40,49 @@ const rightDiv = document.getElementById("word_edit");
 let isLeftScrolling = false;
 let isRightScrolling = false;
 
+// 处理双击事件
+let clicks = 0;
+let timer2;
+
+getElement(".resize").addEventListener("click", function () {
+  clicks++;
+  if (clicks === 1) {
+    timer2 = setTimeout(function () {
+      // 处理单击事件
+      console.log("单击");
+      clicks = 0;
+    }, 300); // 等待第二次点击的时间（毫秒）
+  } else if (clicks === 2) {
+    clearTimeout(timer2);
+    // 处理双击事件
+    resize_reset();
+    console.log("双击");
+    clicks = 0;
+  }
+});
+
+// 点击折叠按钮
+getElement(".resize i").addEventListener("click", function (event) {
+  if (event.target.parentNode.classList.contains("mgleft")) {
+    resize_reset();
+  } else {
+    resize_reset();
+  }
+});
+
+// 调整滑块重置
+function resize_reset() {
+  getElement(".resize").style.left = "";
+  getElement(".en_wrap").style.width = "";
+  getElement(".zh_wrap").style.width = "";
+  getElement(".resize").classList.remove("mgleft");
+  getElement(".resize").classList.remove("mgright");
+}
+
 // 项目拖拽
-const list = getElement("#word_edit ul");
-
 keyword_drags();
-
 function keyword_drags() {
+  const list = getElement("#word_edit ul");
   let currentLi;
   list.addEventListener("dragstart", (e) => {
     e.dataTransfer.effectAllowed = "move";
@@ -102,10 +139,10 @@ rightDiv.addEventListener("scroll", function () {
 // 载入最后一次使用的提示词
 loadRecentPrompt();
 
-//添加拆分词
+// 添加拆分词
 // AddSplitWords();
 
-//格式化提示词
+// 格式化提示词
 // prompts_format();
 
 // 所选字体显示为大字号
@@ -170,7 +207,6 @@ document.querySelectorAll(".tab-container").forEach(function (div) {
 getById("view_bar-add").addEventListener("click", prompt_addSelectedPrompt);
 
 // 载入提示词库
-getElement(".next").addEventListener("click", prompt_loadPromptLibrary);
 getById("bt_add").addEventListener("click", prompt_loadPromptLibrary);
 getElement(".zh_wrap .status_bar").addEventListener(
   "click",

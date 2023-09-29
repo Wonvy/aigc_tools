@@ -5,6 +5,7 @@ class Resize {
     this.name = name;
   }
   main() {
+    let timer;
     let moving = false;
     let start_screenX = 0;
     let start_clientWidth = 0; // 开始宽度
@@ -12,12 +13,23 @@ class Resize {
     let end_clientWidth = 0; // 结束宽度
     let resize = getelement(this.name);
     let parent = resize.parentNode;
-
     let p_en = document.querySelector(".en_wrap");
     let p_zh = document.querySelector(".zh_wrap");
 
-    resize.addEventListener("mousedown", mousedown, false);
-    parent.addEventListener("mouseup", mouseup, false);
+    resize.addEventListener("mousedown", function (event) {
+      timer = setTimeout(mousedown(event), 2000); // 长按时间（毫秒）
+    });
+
+    resize.addEventListener("mouseup", function (event) {
+      clearTimeout(timer);
+    });
+
+    // resize.addEventListener("mousedown", mousedown, false);
+    // parent.addEventListener("mouseup", mouseup, false);
+
+    // parent.addEventListener("mouseout", function (event) {
+    //   parent.removeEventListener("mousemove", mousemove, false);
+    // });
 
     // 获取元素
     function getelement(name) {
@@ -55,9 +67,11 @@ class Resize {
 
     // 鼠标按下
     function mousedown(event) {
-      if (!mousehas(event.clientX, event.clientY)) {
-        return false;
-      }
+      // if (!mousehas(event.clientX, event.clientY)) {
+      //   return false;
+      // }
+      document.addEventListener("mousemove", mousemove, false);
+      document.addEventListener("mouseup", mouseup, false);
       resize.classList.add("mg");
       start_clientWidth = parent.offsetWidth;
       start_screenX = event.clientX;
@@ -66,7 +80,6 @@ class Resize {
       console.log("start_screenX", start_screenX);
       console.log("start_leftX", start_leftX);
       moving = true;
-      document.addEventListener("mousemove", mousemove, false);
     }
 
     // 鼠标移动
@@ -74,15 +87,25 @@ class Resize {
       let offerX = event.clientX - start_leftX;
       console.log(offerX);
 
-      if (offerX <= 30) {
-        offerX = 30;
+      if (offerX <= 80) {
+        offerX = 40;
+        resize.classList.remove("mg");
+        resize.classList.add("mgleft");
+        resize.style.left = "0px";
+        // return;
       } else {
+        resize.classList.remove("mgleft");
         offerX = offerX;
+        resize.style.left = offerX + "px";
       }
 
-      if (offerX >= start_clientWidth - 30) {
-        offerX = start_clientWidth - 30;
+      if (offerX >= start_clientWidth - 80) {
+        offerX = start_clientWidth - 40;
+        resize.style.left = offerX + "px";
+        resize.classList.remove("mg");
+        resize.classList.add("mgright");
       } else {
+        resize.classList.remove("mgright");
         offerX = offerX;
       }
 
@@ -94,7 +117,7 @@ class Resize {
       //   p_en.style.width = event.clientX + "px";
       //   p_zh.style.width = start_clientWidth - event.clientX + "px";
       //   console.log(offerX + "px");
-      resize.style.left = offerX + "px";
+
       p_en.style.width = offerX + "px";
       p_zh.style.width = start_clientWidth - offerX + "px";
 

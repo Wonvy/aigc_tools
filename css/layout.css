@@ -340,22 +340,81 @@ p#p_zh {
   height: 50%;
 }
 
+/* 拖拽条 */
+
 .resize {
   position: absolute;
-  content: "";
-  width: 0.6em;
+  width: 6px;
   left: 50%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0);
   cursor: w-resize;
   z-index: 77;
-  /* transition: all 0.2s; */
+  transition:
+    opacity,
+    border-radius,
+    width 0.3s;
 }
 
 .resize:hover,
 .resize.mg {
   background-color: rgb(69, 69, 69);
   opacity: 1;
+}
+
+.resize.mgleft,
+.resize.mgright {
+  display: flex;
+  color: #666;
+  font-size: 20px;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.resize.mgleft {
+  left: 0;
+  width: 40px;
+  border-radius: 8px 0 0 8px;
+  background: #191919;
+  user-select: none;
+}
+
+.resize i {
+  opacity: 0;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.3s ease-out;
+}
+
+.resize.mgleft i,
+.resize.mgright i {
+  opacity: 1;
+}
+
+.resize.mgright {
+  left: 0;
+  width: 40px;
+  border-radius: 0 8px 8px 0;
+  background: #191919;
+}
+
+.resize.mgleft i:hover {
+  transform: scale(1.3);
+}
+
+.resize.mgright i {
+  transform: scaleX(-1);
+}
+
+.resize.mgright i:hover {
+  transform: scale(-1.3, 1.3);
+}
+
+.resize.mgleft:hover,
+.resize.mgright:hover {
+  color: #ccc;
+  background: #111;
 }
 
 .view ul {
