@@ -39,7 +39,7 @@ let isLeftScrolling = false;
 let isRightScrolling = false;
 
 // 拖拽
-new Resize('.rz1').main();
+new Resize(".rz1").main();
 
 // 监听左侧 div 的滚动事件
 leftDiv.addEventListener("scroll", function () {
@@ -794,19 +794,28 @@ function debounce(func, delay) {
   };
 }
 
-// 显示提示
-getById("bt_clear").onmouseover = function (event) {
-  let anchorElem = event.target.closest("[data-name]");
+document.querySelectorAll("button").forEach(function (div) {
+  div.addEventListener("mouseover", button_mouseover);
+  div.addEventListener("mouseout", button_mouseout);
+});
+
+document.querySelectorAll(".commonds_wrap > div").forEach(function (div) {
+  div.addEventListener("mouseover", button_mouseover);
+  div.addEventListener("mouseout", button_mouseout);
+});
+
+function button_mouseover(event) {
+  let anchorElem = event.target.closest("[data-tooltip]");
   if (!anchorElem) return;
   tooltip = showTooltip(anchorElem, anchorElem.dataset.tooltip);
-};
+}
 
-getById("bt_clear").onmouseout = function () {
+function button_mouseout(event) {
   if (tooltip) {
     tooltip.remove();
     tooltip = false;
   }
-};
+}
 
 function showTooltip(anchorElem, html) {
   let tooltipElem = document.createElement("div");

@@ -175,6 +175,7 @@ body,
   align-items: flex-start;
   justify-content: space-between;
   position: relative;
+  overflow: hidden;
   /* transition: all 0.3s ease; */
 }
 .zh_wrap:hover {
@@ -370,15 +371,15 @@ p#p_zh {
 }
 
 .zh_wrap .status_bar button {
-  transition: all 0.2s ease;
+  transition: all 0.4s ease;
 }
 
-.zh_wrap .status_bar button:nth-child(n + 2):nth-child(-n + 6) {
+.zh_wrap .status_bar button:nth-child(n + 2):nth-child(-n + 7) {
   opacity: 0;
   /* visibility: hidden; */
 }
 
-.zh_wrap:hover .status_bar button:nth-child(n + 2):nth-child(-n + 6) {
+.zh_wrap:hover .status_bar button:nth-child(n + 2):nth-child(-n + 7) {
   /* visibility: visible; */
   opacity: 1;
 }

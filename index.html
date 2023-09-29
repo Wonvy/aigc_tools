@@ -62,7 +62,7 @@
 
         <!-- 英文指令 -->
         <div class="en_wrap main">
-          
+
           <nav class="tab-container">
             <h2>英文咒语</h2>
             <ul>
@@ -122,7 +122,7 @@
           </div>
 
           <div class="status_bar div_edit">
-            <button id="bt_add"  title="添加" data-name="艺术风格" class="fa-solid fa-plus"></button>
+            <button id="bt_add"  data-tooltip="添加提示词" data-name="艺术风格" class="fa-solid fa-plus"></button>
             <button data-name="艺术风格">风格</button>
             <button data-name="场景">场景</button>
             <button data-name="色系">色系</button>
@@ -139,7 +139,7 @@
 
         <!-- 指令 -->
         <div class="commonds_wrap"  id="commonds">
-          <div>
+          <div data-tooltip="横纵比">
             <label for="id_aspect">比例</label>
             <select id="id_aspect" name="aspect" data-param-name="--ar" data-tooltip="设置生成后的比例" >
               <option value="1:1">1:1</option>
@@ -152,7 +152,7 @@
               <option value="1:2">1:2</option>
             </select>
           </div>
-          <div>
+          <div data-tooltip="版本选择，不添加默认为V4">
             <label for="id_version">版本</label>
             <select id="id_version" name="version" data-param-name="--v">
               <option value="5.2">5.2</option>
@@ -165,7 +165,7 @@
               <option value="niji" data-param-name="--niji">niji</option>
             </select>
           </div>
-          <div>
+          <div data-tooltip="质量参数，参数后添加数字，数字越大，渲染时间越长">
             <label for="id_quality">质量</label>
             <select id="id_quality" name="quality" data-param-name="--q">
               <option value=".25">.25</option>
@@ -173,35 +173,35 @@
               <option value="1">1</option>
             </select>
           </div>
-          <div>
+          <div data-tooltip="风格化">
             <label for="id_stylize">风格化</label>
             <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
           </div>
-          <div>
+          <div data-tooltip="参数后跟数值范围（0-100），数字越大，生成的图片越随机，越多样">
             <label for="id_chaos">变化</label>
             <input type="number" name="stylize" min="0" max="1000" data-param-name="--chaos" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
           </div>
-          <div>
-            <label for="id_stop">停止</label>
+          <div data-tooltip="1">
+            <label for="id_stop" >停止</label>
             <input type="number" name="stylize" min="0" max="1000" data-param-name="--stop" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
           </div>
-          <div>
+          <div data-tooltip="1">
             <label for="id_Repeat">重复</label>
             <input type="number" name="stylize" min="0" max="1000" data-param-name="--repeat" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
           </div>
-          <div>
-            <label for="id_Weird">奇怪</label>
+          <div data-tooltip="1">
+            <label for="id_Weird" >奇怪</label>
             <input type="number" name="stylize" min="0" max="1000" data-param-name="--weird" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
           </div>
-          <div>
-            <label for="id_tile">重复</label>
+          <div data-tooltip="1">
+            <label for="id_tile" >重复</label>
             <select id="id_tile" name="tile" data-param-name="--tile" >
               <option value="yes">重复</option>
               <option value="no">不重复</option>
             </select>
           </div>
           <div>
-            <label for="id_seed">种子</label>
+            <label for="id_seed" data-tooltip="固定种子，用于生成图片重现">种子</label>
             <input type="text" name="stylize" min="0" max="1000" data-param-name="--seed" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
           </div>
         </div>

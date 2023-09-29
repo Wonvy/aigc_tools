@@ -72,6 +72,19 @@ class Resize {
     // 鼠标移动
     function mousemove(event) {
       let offerX = event.clientX - start_leftX;
+      console.log(offerX);
+
+      if (offerX <= 30) {
+        offerX = 30;
+      } else {
+        offerX = offerX;
+      }
+
+      if (offerX >= start_clientWidth - 30) {
+        offerX = start_clientWidth - 30;
+      } else {
+        offerX = offerX;
+      }
 
       //   console.log("event.clientX", event.clientX);
       //   console.log("event.offerX", event.clientX - start_leftX);

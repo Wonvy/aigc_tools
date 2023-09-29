@@ -167,7 +167,7 @@ button#bt_copy {
   color: #fff;
   height: 34px;
   line-height: 40px;
-  border-bottom: 1px solid #555;
+  /* border-bottom: 1px solid #555; */
   margin: 20px 0 10px 0;
 }
 
