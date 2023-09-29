@@ -66,6 +66,56 @@ loadRecentPrompt();
 // 所选字体显示为大字号
 getById("imagelist2").addEventListener("mouseover", setFontToLargeSize);
 
+getElement(".commonds_wrap").addEventListener("change", comman_click);
+getElement(".commonds_wrap").addEventListener("input", commond_input);
+// getElement(".commonds_wrap").addEventListener("change", clickcommonds);
+
+// 点击命令
+function commond_input(event) {
+  const tagname = event.target.tagName;
+  if (tagname === "INPUT") {
+    console.log("input", event.target.value);
+  }
+}
+
+// 点击命令
+function comman_click(event) {
+  const tagname = event.target.tagName;
+  const promptcontent = p_en.innerText;
+  let paramName = "";
+  if (tagname === "SELECT") {
+    paramName = event.target.dataset.paramName;
+    console.log(
+      event.target.name,
+      event.target.dataset.paramName,
+      event.target.value,
+    );
+    const commond = paramName + " " + event.target.value;
+    let commond_after = prompts_alterCommand(
+      promptcontent,
+      paramName + "\\s+[^\\s]+",
+      commond,
+    );
+    p_en.innerText = commond_after;
+    // console.log(commond_after);
+  }
+  if (tagname === "INPUT") {
+    console.log(event.target.name, event.target.value);
+    // alert(event.target.value);
+  }
+}
+
+// 修改命令
+function prompts_alterCommand(sourceText, regexPattern, replacementText) {
+  var regex = new RegExp(regexPattern, "g");
+  if (regex.test(sourceText)) {
+    sourceText = sourceText.replace(regex, replacementText);
+  } else {
+    sourceText += " " + replacementText;
+  }
+  return sourceText;
+}
+
 // 提示词多行显示
 document.querySelectorAll(".tab-container").forEach(function (div) {
   div.addEventListener("click", switchToMultiLinePrompt);

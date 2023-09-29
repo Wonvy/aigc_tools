@@ -76,7 +76,7 @@
             <p id="p_words" spellcheck="false">
             </p>
             <div>
-              <button id="bt_paste" title="粘贴" data-name="粘贴" class="fa-regular fa-paste"></button>
+              <button id="bt_paste" title="粘贴" data-name="粘贴" class="fa-regular fa-paste"> 粘贴咒语</button>
               <button id="bt_clear" title="清空" data-name="清空" class="fa-solid fa-eraser"></button>
               <button id="bt_save" title="保存" data-name="保存" class="fa-regular fa-floppy-disk"></button>
               <button id="bt_en" title="翻译" data-name="翻译" class="fa-solid fa-language"></button>
@@ -113,7 +113,7 @@
           </div>
 
           <div class="status_bar div_edit">
-            <button id="bt_add"  title="添加" data-name="添加" class="fa-solid fa-plus"></button>
+            <button id="bt_add"  title="添加" data-name="艺术风格" class="fa-solid fa-plus"></button>
             <button data-name="艺术风格">风格</button>
             <button data-name="场景">场景</button>
             <button data-name="色系">色系</button>
@@ -134,7 +134,7 @@
         <div class="commonds_wrap"  id="commonds">
           <div>
             <label for="id_aspect">比例</label>
-            <select id="id_aspect" name="aspect">
+            <select id="id_aspect" name="aspect" data-param-name="--ar">
               <option value="1:1">1:1</option>
               <option value="5:4">5:4</option>
               <option value="3:2">3:2</option>
@@ -147,7 +147,7 @@
           </div>
           <div>
             <label for="id_version">版本</label>
-            <select id="id_version" name="version">
+            <select id="id_version" name="version" data-param-name="--v">
               <option value="5.2">5.2</option>
               <option value="5.1">5.1</option>
               <option value="5">5</option>
@@ -155,12 +155,12 @@
               <option value="3">3</option>
               <option value="2">2</option>
               <option value="1">1</option>
-              <option value="niji">niji</option>
+              <option value="niji" data-param-name="--niji">niji</option>
             </select>
           </div>
           <div>
             <label for="id_quality">质量</label>
-            <select id="id_quality" name="id_quality">
+            <select id="id_quality" name="quality" data-param-name="--q">
               <option value=".25">.25</option>
               <option value=".5">.5</option>
               <option value="1">1</option>
@@ -171,31 +171,31 @@
             <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
           </div>
           <div>
-            <label for="id_chaos">chaos</label>
-            <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
+            <label for="id_chaos">变化</label>
+            <input type="number" name="stylize" min="0" max="1000" data-param-name="--chaos" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
           </div>
           <div>
             <label for="id_stop">停止</label>
-            <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
+            <input type="number" name="stylize" min="0" max="1000" data-param-name="--stop" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
           </div>
           <div>
             <label for="id_Repeat">重复</label>
-            <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
+            <input type="number" name="stylize" min="0" max="1000" data-param-name="--repeat" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
           </div>
           <div>
             <label for="id_Weird">奇怪</label>
-            <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
+            <input type="number" name="stylize" min="0" max="1000" data-param-name="--weird" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
           </div>
           <div>
             <label for="id_tile">重复</label>
-            <select id="id_tile" name="id_tile">
+            <select id="id_tile" name="tile" data-param-name="--tile" >
               <option value="yes">重复</option>
               <option value="no">不重复</option>
             </select>
           </div>
           <div>
             <label for="id_seed">种子</label>
-            <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
+            <input type="text" name="stylize" min="0" max="1000" data-param-name="--seed" placeholder="0 to 1000" class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
           </div>
         </div>
       </div>
