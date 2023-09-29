@@ -175,7 +175,7 @@ body,
   align-items: flex-start;
   justify-content: space-between;
   position: relative;
-  transition: all 0.3s ease;
+  /* transition: all 0.3s ease; */
 }
 .zh_wrap:hover {
   background-color: rgb(30, 30, 30);
@@ -197,9 +197,10 @@ p#p_zh {
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
-  transition: all 0.3s ease;
+  /* transition: all 0.3s ease; */
   background: #111;
 }
+
 .en_wrap:hover {
   background-color: rgb(30, 30, 30);
 }
@@ -346,12 +347,38 @@ p#p_zh {
   height: 100%;
   background-color: rgba(0, 0, 0, 0);
   cursor: w-resize;
-  z-index: 99;
-  transition: all 0.2s;
+  z-index: 77;
+  /* transition: all 0.2s; */
 }
 
 .resize:hover,
 .resize.mg {
   background-color: rgb(69, 69, 69);
+  opacity: 1;
+}
+
+.view ul {
+  display: flex;
+  column-gap: 10px;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.view ul li {
+  font-size: 18px;
+  color: #ccc;
+}
+
+.zh_wrap .status_bar button {
+  transition: all 0.2s ease;
+}
+
+.zh_wrap .status_bar button:nth-child(n + 2):nth-child(-n + 6) {
+  opacity: 0;
+  /* visibility: hidden; */
+}
+
+.zh_wrap:hover .status_bar button:nth-child(n + 2):nth-child(-n + 6) {
+  /* visibility: visible; */
   opacity: 1;
 }
