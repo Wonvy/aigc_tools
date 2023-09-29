@@ -1,4 +1,5 @@
 import { translate_API, translate_tmt } from "./js/translate.js";
+import { Resize } from "/js/ui.js";
 import {
   getById,
   getElement,
@@ -10,6 +11,7 @@ import {
   prompts_DeleteCommand,
   prompts_GetCommand,
   prompts_splitwords,
+  add_keyword,
 } from "./js/prompts.js";
 
 const p_zh = getById("p_zh"); // 英文指令编辑区
@@ -35,6 +37,9 @@ const rightDiv = document.getElementById("word_edit");
 // 记录左右两个 div 的滚动状态
 let isLeftScrolling = false;
 let isRightScrolling = false;
+
+// 拖拽
+new Resize('.rz1').main();
 
 // 监听左侧 div 的滚动事件
 leftDiv.addEventListener("scroll", function () {
@@ -336,7 +341,7 @@ function prompt_addSelectedPrompt(event) {
   if (p_en.textContent.length === 0) {
     p_en.textContent = words_en;
   } else {
-    p_en.textContent += words_en;
+    p_en.textContent = add_keyword(p_en.textContent, words_en);
   }
 
   let full_screen = document.getElementById("full_screen");
@@ -658,18 +663,25 @@ function onFullScreenClick(event) {
 
   if (event.target.tagName === "H2") {
     li = event.target.parentElement;
-  }
-
-  if (event.target.tagName === "LI") {
+  } else {
     li = event.target;
   }
+
+  // if (event.target.tagName === "LI") {
+  //   li = event.target;
+  // } else {
+  //   li = event.target;
+  // }
 
   if (li.tagName === "LI") {
     li.classList.toggle("selected"); //切换
     if (li.classList.contains("selected")) {
       if (temp_en_edit.innerText.includes("," + li.dataset.en)) {
       } else {
-        temp_en_edit.innerText += "," + li.dataset.en;
+        temp_en_edit.innerText = add_keyword(
+          temp_en_edit.innerText,
+          "," + li.dataset.en,
+        );
       }
     } else {
       if (temp_en_edit.innerText.includes("," + li.dataset.en)) {
@@ -783,18 +795,19 @@ function debounce(func, delay) {
 }
 
 // 显示提示
-p_en.onmouseover = function (event) {
-  let anchorElem = event.target.closest("[data-tooltip]");
+getById("bt_clear").onmouseover = function (event) {
+  let anchorElem = event.target.closest("[data-name]");
   if (!anchorElem) return;
-  // tooltip = showTooltip(anchorElem, anchorElem.dataset.tooltip);
+  tooltip = showTooltip(anchorElem, anchorElem.dataset.tooltip);
 };
 
-p_en.onmouseout = function () {
+getById("bt_clear").onmouseout = function () {
   if (tooltip) {
     tooltip.remove();
     tooltip = false;
   }
 };
+
 function showTooltip(anchorElem, html) {
   let tooltipElem = document.createElement("div");
   tooltipElem.className = "tooltip";

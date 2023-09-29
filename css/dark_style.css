@@ -72,13 +72,13 @@ button#bt_copy {
 .tooltip {
   position: fixed;
   z-index: 100;
-  padding: 10px 20px;
-  border: 1px solid #b3c9ce;
+  padding: 10px 10px;
+  border: 1px solid #0b0b0b;
   border-radius: 4px;
   text-align: center;
-  font: italic 14px/1.3 sans-serif;
-  color: #333;
-  background: #fff;
+  font: 12px/1.3 sans-serif;
+  color: #c9c9c9;
+  background: #292929;
   box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
 }
 
@@ -438,6 +438,7 @@ div.zh p {
   align-content: center;
   align-items: center;
   overflow: hidden;
+  user-select: none;
 }
 
 /* .status_bar::webkit-scrollbar {
