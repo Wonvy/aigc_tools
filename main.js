@@ -19,6 +19,8 @@ const p_en = getById("p_en"); // 中文指令编辑区
 const bt_zh = getById("bt_zh"); // 中文翻译按钮
 const bt_en = getById("bt_en"); // 英文翻译按钮
 const word_edit_ul = getElement("#word_edit ul");
+// 元素拖拽
+
 let lastparent_uuid = "";
 let currenuuid;
 let Translated;
@@ -38,7 +40,45 @@ const rightDiv = document.getElementById("word_edit");
 let isLeftScrolling = false;
 let isRightScrolling = false;
 
-// 拖拽
+// 项目拖拽
+const list = getElement("#word_edit ul");
+
+keyword_drags();
+
+function keyword_drags() {
+  let currentLi;
+  list.addEventListener("dragstart", (e) => {
+    e.dataTransfer.effectAllowed = "move";
+    currentLi = e.target;
+    setTimeout(() => {
+      currentLi.classList.add("moving");
+    });
+  });
+
+  list.addEventListener("dragenter", (e) => {
+    e.preventDefault();
+    if (e.target === currentLi || e.target === list) {
+      return;
+    }
+    let liArray = Array.from(list.childNodes);
+    let currentIndex = liArray.indexOf(currentLi);
+    let targetindex = liArray.indexOf(e.target);
+
+    if (currentIndex < targetindex) {
+      list.insertBefore(currentLi, e.target.nextElementSibling);
+    } else {
+      list.insertBefore(currentLi, e.target);
+    }
+  });
+  list.addEventListener("dragover", (e) => {
+    e.preventDefault();
+  });
+  list.addEventListener("dragend", (e) => {
+    currentLi.classList.remove("moving");
+  });
+}
+
+// 调整元素大小拖拽
 new Resize(".rz1").main();
 
 // 监听左侧 div 的滚动事件
@@ -292,6 +332,7 @@ function convertToMultiLinePrompt_cn() {
     if (line.trim() !== "") {
       const li = document.createElement("li");
       li.style.backgroundColor = random_bkcolor(1);
+      li.setAttribute("draggable", "true");
       li.textContent = line.trim();
       ul.appendChild(li);
     }

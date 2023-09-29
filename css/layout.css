@@ -383,3 +383,10 @@ p#p_zh {
   /* visibility: visible; */
   opacity: 1;
 }
+
+/* 拖拽 */
+#word_edit ul .moving {
+  background: transparent;
+  color: transparent;
+  border: 1px dashed #ccc;
+}
