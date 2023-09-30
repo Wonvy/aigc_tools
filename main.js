@@ -44,6 +44,24 @@ let isRightScrolling = false;
 let clicks = 0;
 let timer2;
 
+const scrollableElement = getElement(".div_after .tab1");
+
+scrollableElement.addEventListener("wheel", tabwheel);
+getById("bt_add").addEventListener("wheel", tabwheel);
+
+// 添加鼠标滚轮事件监听器
+function tabwheel(event) {
+  // 获取滚动的方向
+  let scrollDirection = (event.deltaX || event.deltaY) > 0 ? 1 : -1;
+  // 横向滚动的距离，可以根据需要调整滚动速度
+  let scrollAmount = 50;
+  // 设置横向滚动条的位置
+  scrollableElement.scrollLeft += scrollAmount * scrollDirection;
+  // 阻止事件的默认行为，避免影响其他滚动
+  event.preventDefault();
+}
+
+// 调整滑块单击和双击
 getElement(".resize").addEventListener("click", function () {
   clicks++;
   if (clicks === 1) {

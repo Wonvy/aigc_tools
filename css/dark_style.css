@@ -37,7 +37,7 @@ button {
   padding: 0 10px 0 10px;
   height: 34px;
   line-height: 33px;
-  background-color: #2d2d2d;
+  background-color: #2b2b2b;
   color: #999;
   border-radius: 4px;
   border: 1px solid transparent;
@@ -445,12 +445,16 @@ button.left {
   display: flex;
   width: 100%;
   height: 80px;
-  justify-content: space-between;
+  justify-content: flex-end;
   flex-direction: row;
   align-content: center;
   align-items: center;
   overflow: hidden;
   user-select: none;
+}
+
+.zh_wrap .status_bar {
+  justify-content: flex-start;
 }
 
 /* .status_bar::webkit-scrollbar {
