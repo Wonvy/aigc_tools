@@ -135,6 +135,7 @@ function renderJSON_search(keyword) {
 
           h4.textContent = value4;
           span.textContent = key4;
+          li.dataset.tooltip = key4;
           li.dataset.cn = value4;
           li.dataset.en = key4;
           img.setAttribute("src", "./img/placeholder.png");
@@ -310,8 +311,8 @@ loadRecentPrompt();
 // 所选字体显示为大字号
 getById("imagelist2").addEventListener("mouseover", setFontToLargeSize);
 
-getElement(".commonds_wrap").addEventListener("change", comman_click);
-getElement(".commonds_wrap").addEventListener("input", commond_input);
+// getElement(".commonds_wrap").addEventListener("change", comman_click);
+// getElement(".commonds_wrap").addEventListener("input", commond_input);
 // getElement(".commonds_wrap").addEventListener("change", clickcommonds);
 
 // 点击命令
@@ -403,8 +404,8 @@ getById("full_screen").addEventListener("mouseout", function (event) {
 });
 
 // 键盘弹起
-document.addEventListener("keyup", keyupEvent);
-document.addEventListener("keydown", keydownEvent);
+// document.addEventListener("keyup", keyupEvent);
+// document.addEventListener("keydown", keydownEvent);
 
 // 全屏点击
 getById("full_screen").addEventListener("click", onFullScreenClick);
@@ -1034,6 +1035,11 @@ function debounce(func, delay) {
 }
 
 document.querySelectorAll("button").forEach(function (div) {
+  div.addEventListener("mouseover", button_mouseover);
+  div.addEventListener("mouseout", button_mouseout);
+});
+
+document.querySelectorAll(".div_after img").forEach(function (div) {
   div.addEventListener("mouseover", button_mouseover);
   div.addEventListener("mouseout", button_mouseout);
 });

@@ -29,7 +29,8 @@
   }
 
   .zh_wrap {
-    min-height: 44%;
+    /* min-height: 44%; */
+    height: 100%;
   }
 
   .wrap {
@@ -63,5 +64,9 @@
   .full_screen-wrap .right {
     height: 84%;
     /* overflow-y: auto; */
+  }
+
+  .div_after {
+    width: 100%;
   }
 }
