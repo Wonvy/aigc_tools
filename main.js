@@ -27,6 +27,20 @@ let Translated;
 let tooltip;
 let ctrlPressed = false;
 
+// 初始化JSON数据
+let g_JSONdata;
+get_JSON_once(); // 初始化JSON数据
+function get_JSON_once() {
+  fetch("data.json")
+    .then((response) => response.json())
+    .then((data) => {
+      g_JSONdata = data;
+    })
+    .catch((error) => {
+      console.log("json error", error);
+    });
+}
+
 function clearPlaceholder() {
   if (inputText.value === "请输入文字") {
     inputText.value = "";
@@ -44,24 +58,33 @@ let isRightScrolling = false;
 let clicks = 0;
 let timer2;
 
-const scrollableElement = getElement(".div_after .tab_composition ul");
-
 // 鼠标滚轮
-scrollableElement.addEventListener("wheel", tabwheel);
+document.querySelectorAll(".div_after > div").forEach(function (div) {
+  div.addEventListener("wheel", tabwheel);
+});
+
 getElement(".zh_wrap .status_bar").addEventListener("wheel", tabwheel);
 // 添加鼠标滚轮事件监听器
 function tabwheel(event) {
-  // 获取滚动的方向
-  let scrollDirection = (event.deltaX || event.deltaY) > 0 ? 1 : -1;
-  // 横向滚动的距离，可以根据需要调整滚动速度
+  // console.log(event.target);
+  let ul;
+  let scrollDirection = (event.deltaX || event.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
   let scrollAmount = 150;
-  // 设置横向滚动条的位置
-  // console.log(scrollableElement);
-  scrollableElement.scrollTop += scrollAmount * scrollDirection;
-  // 阻止事件的默认行为，避免影响其他滚动
-  event.preventDefault();
+  // console.log(event.target.tagName);
+  if (event.target.tagName === "BUTTON") {
+    // console.log(event.target.dataset.name);
+    ul = document.querySelector(
+      `.div_after div[data-name="${event.target.dataset.name}"] > ul`,
+    );
+  } else {
+    ul = event.target.closest("ul");
+  }
+
+  ul.scrollTop += scrollAmount * scrollDirection;
+  event.preventDefault(); // 阻止事件的默认行为，避免影响其他滚动
 }
 
+// tab切换
 getElement(".zh_wrap .status_bar").addEventListener("mouseover", function () {
   const button = event.target.closest("button");
 
@@ -74,12 +97,62 @@ getElement(".zh_wrap .status_bar").addEventListener("mouseover", function () {
       content.classList.remove("active");
     });
 
-    let li = document.querySelector(`.div_after div[data-name="${name}"]`);
-    if (li) {
-      li.classList.add("active");
+    let div = document.querySelector(`.div_after div[data-name="${name}"]`);
+    if (div) {
+      // console.log("div", div);
+      div.classList.add("active");
+      let ul = div.querySelector("ul");
+      // 如果ul子元素为空，加载JSON数据
+      if (ul) {
+        if (prompt_unselectPrompt.childElementCount === 0) {
+          renderJSON_search(button.dataset.tab);
+        }
+      } else {
+        renderJSON_search(button.dataset.tab);
+      }
     }
   }
 });
+// 通过关键词找 替换元素 数据库 查询关键词
+function renderJSON_search(keyword) {
+  let result;
+  if (!g_JSONdata) {
+    return;
+  }
+  let data = g_JSONdata;
+  for (let key in data["关键词"]) {
+    for (let key2 in data["关键词"][key]) {
+      if (key2 === keyword) {
+        result = data["关键词"][key][keyword];
+        // console.log(result);
+        let div = document.createElement("div");
+        let ul = document.createElement("ul");
+        for (const [key4, value4] of Object.entries(result)) {
+          let li = document.createElement("li");
+          let h4 = document.createElement("h4");
+          let span = document.createElement("span");
+          let img = document.createElement("img");
+
+          h4.textContent = value4;
+          span.textContent = key4;
+          li.dataset.cn = value4;
+          li.dataset.en = key4;
+          img.setAttribute("src", "./img/placeholder.png");
+          h4.appendChild(span);
+          li.appendChild(h4);
+          li.appendChild(img);
+          ul.appendChild(li);
+        }
+        const tab = document.querySelector(
+          `.div_after div[data-name="${keyword}"]`,
+        );
+        div.appendChild(ul);
+        tab.innerHTML = div.innerHTML;
+        break;
+      }
+    }
+  }
+}
 
 //点击构图
 getElement(".div_after").addEventListener("click", composition_click);
@@ -90,16 +163,17 @@ function composition_click(event) {
   } else {
     li = event.target.closest("li");
   }
-
-  li.classList.toggle("selected"); //切换
-  if (li.classList.contains("selected")) {
-    if (p_en.innerText.includes("," + li.dataset.en)) {
+  if (li) {
+    li.classList.toggle("selected"); //切换
+    if (li.classList.contains("selected")) {
+      if (p_en.innerText.includes("," + li.dataset.en)) {
+      } else {
+        p_en.innerText = add_keyword(p_en.innerText, "," + li.dataset.en);
+      }
     } else {
-      p_en.innerText = add_keyword(p_en.innerText, "," + li.dataset.en);
-    }
-  } else {
-    if (p_en.innerText.includes("," + li.dataset.en)) {
-      p_en.innerText = p_en.innerText.replace("," + li.dataset.en, "");
+      if (p_en.innerText.includes("," + li.dataset.en)) {
+        p_en.innerText = p_en.innerText.replace("," + li.dataset.en, "");
+      }
     }
   }
 }
@@ -137,14 +211,14 @@ getElement(".resize").addEventListener("click", function () {
   if (clicks === 1) {
     timer2 = setTimeout(function () {
       // 处理单击事件
-      console.log("单击");
+      // console.log("单击");
       clicks = 0;
     }, 300); // 等待第二次点击的时间（毫秒）
   } else if (clicks === 2) {
     clearTimeout(timer2);
     // 处理双击事件
     resize_reset();
-    console.log("双击");
+    // console.log("双击");
     clicks = 0;
   }
 });

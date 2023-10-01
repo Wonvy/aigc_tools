@@ -234,6 +234,11 @@ p#p_zh {
   position: relative;
   width: 100%;
   height: 100%;
+  text-align: left;
+}
+
+#en_tabs {
+  direction: rtl;
 }
 
 .tab1,
@@ -271,6 +276,10 @@ p#p_zh {
 #en_tabs div.ontop {
   z-index: 29;
 }
+#en_tabs div.ontop ul {
+  text-align: right;
+  z-index: 29;
+}
 
 #word_edit {
   width: 100%;
@@ -292,6 +301,7 @@ p#p_zh {
 }
 
 #en_tabs .tab2 ul {
+  display: block;
   align-items: flex-end;
 }
 
@@ -486,6 +496,7 @@ p#p_zh {
 .div_after .view1,
 .div_after .tab3 {
   width: 100%;
+  height: 100%;
   display: flex;
   background-color: #111;
   z-index: 77;
@@ -573,9 +584,8 @@ p#p_zh {
 
 .div_after > div {
   opacity: 0;
-  transition:
-    z-index,
-    opacity 0.5s ease;
+  transition: z-index;
+  /* opacity 0.2s ease; */
 }
 .div_after > div.active {
   opacity: 1;
@@ -588,6 +598,7 @@ p#p_zh {
 
 .div_after .view1 ul li.selected img {
   filter: brightness(100%);
+  border: 2px solid #fff;
 }
 
 .div_after .view1 ul li.selected svg {
@@ -612,7 +623,7 @@ p#p_zh {
 
 .div_after .tab_default {
   opacity: 1;
-  /* z-index: 81; */
+  z-index: 82;
 }
 
 .div_after svg rect {
