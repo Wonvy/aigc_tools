@@ -44,21 +44,91 @@ let isRightScrolling = false;
 let clicks = 0;
 let timer2;
 
-const scrollableElement = getElement(".div_after .tab1");
+const scrollableElement = getElement(".div_after .tab_composition ul");
 
+// 鼠标滚轮
 scrollableElement.addEventListener("wheel", tabwheel);
-getById("bt_add").addEventListener("wheel", tabwheel);
-
+getElement(".zh_wrap .status_bar").addEventListener("wheel", tabwheel);
 // 添加鼠标滚轮事件监听器
 function tabwheel(event) {
   // 获取滚动的方向
   let scrollDirection = (event.deltaX || event.deltaY) > 0 ? 1 : -1;
   // 横向滚动的距离，可以根据需要调整滚动速度
-  let scrollAmount = 50;
+  let scrollAmount = 150;
   // 设置横向滚动条的位置
-  scrollableElement.scrollLeft += scrollAmount * scrollDirection;
+  // console.log(scrollableElement);
+  scrollableElement.scrollTop += scrollAmount * scrollDirection;
   // 阻止事件的默认行为，避免影响其他滚动
   event.preventDefault();
+}
+
+getElement(".zh_wrap .status_bar").addEventListener("mouseover", function () {
+  const button = event.target.closest("button");
+
+  if (button) {
+    const name = button.dataset.name;
+    const tabs = document.querySelectorAll(".div_after > div");
+
+    // 重置
+    tabs.forEach((content) => {
+      content.classList.remove("active");
+    });
+
+    let li = document.querySelector(`.div_after div[data-name="${name}"]`);
+    if (li) {
+      li.classList.add("active");
+    }
+  }
+});
+
+//点击构图
+getElement(".div_after").addEventListener("click", composition_click);
+function composition_click(event) {
+  let li;
+  if (event.target.tagName === "LI") {
+    li = event.target;
+  } else {
+    li = event.target.closest("li");
+  }
+
+  li.classList.toggle("selected"); //切换
+  if (li.classList.contains("selected")) {
+    if (p_en.innerText.includes("," + li.dataset.en)) {
+    } else {
+      p_en.innerText = add_keyword(p_en.innerText, "," + li.dataset.en);
+    }
+  } else {
+    if (p_en.innerText.includes("," + li.dataset.en)) {
+      p_en.innerText = p_en.innerText.replace("," + li.dataset.en, "");
+    }
+  }
+}
+
+// weiji("keyword");
+
+function weiji(keyword) {
+  // 维基百科API的请求地址，指定语言为中文
+  const apiUrl = `https://zh.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&titles=${encodeURIComponent(
+    keyword,
+  )}`;
+
+  // 发送GET请求
+  fetch(apiUrl)
+    .then((response) => response.json())
+    .then((data) => {
+      // 获取页面的内容
+      const pages = data.query.pages;
+      const pageId = Object.keys(pages)[0];
+      const extract = pages[pageId].extract;
+      console.log(extract);
+
+      // 将内容显示在页面上
+      // const resultDiv = document.getElementById("result");
+      // resultDiv.textContent = extract;
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
 }
 
 // 调整滑块单击和双击
@@ -944,6 +1014,6 @@ function delayedImageLoading(event) {
       img.parentElement.classList.remove("load");
     };
     // 将图片的src设置为data-src以开始加载
-    // img.src = img.getAttribute("data-src");
+    img.src = img.getAttribute("data-src");
   });
 }

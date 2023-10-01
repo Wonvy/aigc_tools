@@ -7,6 +7,10 @@
   --font-size: 16px;
 }
 
+img {
+  border: none;
+}
+
 html,
 body {
   width: 100%;
@@ -166,7 +170,7 @@ body,
 .zh_wrap {
   position: relative;
   width: 50%;
-  height: 100%;
+  /* height: 100%; */
   display: flex;
   min-height: 120px;
   /* padding: 20px; */
@@ -461,8 +465,9 @@ p#p_zh {
   padding: 20px;
   box-sizing: border-box;
   background-color: #111;
-  width: 100%;
-  height: 150px;
+  width: 85%;
+  max-width: 1200px;
+  height: 170px;
   justify-content: flex-start;
   align-items: flex-start;
   flex-direction: column;
@@ -478,64 +483,136 @@ p#p_zh {
   top: 0;
 }
 
-.div_after .tab1 {
+.div_after .view1,
+.div_after .tab3 {
+  width: 100%;
   display: flex;
   background-color: #111;
   z-index: 77;
   overflow-x: auto;
 }
-.div_after .tab1::-webkit-scrollbar {
-  height: 1px;
+
+.div_after .tab3 {
+  /* width: 100%; */
+  z-index: 81;
+}
+
+.div_after .tab3 ul {
+  overflow: auto;
+}
+
+.div_after .tab3 ul li img {
+  width: 100%;
+  border-radius: 20px;
+  filter: brightness(50%);
+}
+
+.div_after .tab3 ul li:hover img {
+  filter: brightness(100%);
+}
+
+.div_after .view1 ul::-webkit-scrollbar {
+  width: 1px;
 }
 
 /* 滚动条的轨道（背景）颜色 */
-.div_after .tab1::-webkit-scrollbar-track {
+.div_after .view1 ul::-webkit-scrollbar-track {
   background: transparent;
 }
 
-/* 滚动条的滑块（thumb）颜色 */
-.div_after .tab1::-webkit-scrollbar-thumb {
+.div_after .view1 ul::-webkit-scrollbar-thumb {
   background: #666;
 }
 
-/* 当鼠标悬停在滚动条上时，滑块的颜色 */
-.div_after .tab1::-webkit-scrollbar-thumb:hover {
+.div_after .view1 ul::-webkit-scrollbar-thumb:hover {
   background: #888;
 }
 
-.div_after .tab1 ul {
+.div_after .view1 ul {
   box-sizing: border-box;
   width: 100%;
-  padding: 20px;
-  display: flex;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 150px);
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
-  column-gap: 20px;
-  justify-content: flex-start;
+  /* column-gap: 20px; */
+  justify-content: space-between;
   font-size: 14px;
   color: #999;
   font-family: "Open Sans";
+  overflow: auto;
+  scroll-behavior: smooth;
+  justify-items: center;
 }
 
-.div_after .tab1 ul li {
-  height: 100%;
-  width: 140px;
-  padding: 10px;
+.div_after .tab3 ul {
+  grid-template-columns: repeat(auto-fill, 140px);
+}
+
+.div_after .tab3 ul li {
+  display: flex;
+  height: 100px;
+  width: 100px !important;
+  justify-content: flex-end !important;
+}
+
+.div_after .view1 ul li {
+  height: 135px;
+  width: 120px;
+  padding: 5px;
   display: flex;
   flex-direction: column-reverse;
   align-items: center;
   transition: all 0.2s ease;
   user-select: none;
+  border-radius: 10px;
+  justify-content: center;
 }
 
-.div_after .tab1 ul li:hover {
-  background: #333;
+.div_after > div {
+  opacity: 0;
+  transition:
+    z-index,
+    opacity 0.5s ease;
+}
+.div_after > div.active {
+  opacity: 1;
+  z-index: 87;
+}
+
+.div_after .view1 ul li.selected {
+  color: #fff;
+}
+
+.div_after .view1 ul li.selected img {
+  filter: brightness(100%);
+}
+
+.div_after .view1 ul li.selected svg {
+  background: #2e454f !important;
+}
+
+.div_after .view1 ul li:hover svg {
+  /* background: #333; */
+}
+.div_after .view1 ul li:hover {
+  color: #fff;
+}
+
+.div_after .view_img li {
+  display: flex;
 }
 
 .div_after svg {
   width: 120px;
-  height: 95px;
+  height: 77px;
+}
+
+.div_after .tab_default {
+  opacity: 1;
+  /* z-index: 81; */
 }
 
 .div_after svg rect {
@@ -543,12 +620,32 @@ p#p_zh {
   stroke-width: 1px; /* 设置边框线宽为3个单位 */
 }
 
+.div_after .tab_composition ul li:hover svg rect {
+  stroke: #fff;
+}
+
 .div_after svg path {
   stroke: #999; /* 设置边框颜色为蓝色 */
   stroke-width: 1.5px; /* 设置边框线宽为3个单位 */
 }
 
-.div_after .tab2 {
+.div_after .tab_composition ul li:hover svg path {
+  stroke: #fff;
+}
+
+.div_after .tab_default {
+  height: 100%;
   display: flex;
   background-color: #111;
+}
+
+/* 图片列表 */
+.div_after .view_img li {
+  display: flex;
+}
+
+.div_after .view_img li img {
+  width: 100px;
+  height: 100px;
+  background-color: #333;
 }
