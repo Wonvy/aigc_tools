@@ -602,7 +602,8 @@ function convertToMultiLinePrompt_cn() {
 // 提示词转换为多行
 function convertToMultiLinePrompt_en() {
   const text = getById("p_en").innerText;
-  const punctuations = [",", "，", ".", "。", "、", ";", "；"];
+  // const punctuations = [",", "，", ".", "。", "、", ";", "；"];
+  const punctuations = [",", "，", "。", "、", ";", "；"];
   const lines = text.split(new RegExp(`[${punctuations.join("")}]`));
   const ul = document.createElement("ul");
   const ul_local = document.querySelector("#en_tabs .tab2 ul");
