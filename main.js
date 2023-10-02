@@ -18,6 +18,9 @@ const p_zh = getById("p_zh"); // 英文指令编辑区
 const p_en = getById("p_en"); // 中文指令编辑区
 const bt_zh = getById("bt_zh"); // 中文翻译按钮
 const bt_en = getById("bt_en"); // 英文翻译按钮
+const ul_en = getById("ul_en"); // 英文翻译按钮
+const ul_zh = getById("ul_zh"); // 英文翻译按钮
+
 const word_edit_ul = getElement("#word_edit ul");
 // 元素拖拽
 
@@ -58,7 +61,7 @@ let isRightScrolling = false;
 let clicks = 0;
 let timer2;
 
-// 鼠标滚轮
+// wheel 鼠标滚轮
 document.querySelectorAll(".div_after > div").forEach(function (div) {
   div.addEventListener("wheel", tabwheel);
 });
@@ -90,7 +93,7 @@ let status_bar = getElement(".zh_wrap .status_bar");
 status_bar.addEventListener("mouseover", (event) => {
   timeoutId = setTimeout(() => {
     switchtab(event);
-  }, 400);
+  }, 200);
 });
 status_bar.addEventListener("mouseout", () => {
   clearTimeout(timeoutId);
@@ -168,7 +171,7 @@ function renderJSON_search(keyword) {
   }
 }
 
-//点击构图
+//click 点击构图
 getElement(".div_after").addEventListener("click", composition_click);
 function composition_click(event) {
   let li;
@@ -177,18 +180,64 @@ function composition_click(event) {
   } else {
     li = event.target.closest("li");
   }
-  if (li) {
-    li.classList.toggle("selected"); //切换
-    if (li.classList.contains("selected")) {
-      if (p_en.innerText.includes("," + li.dataset.en)) {
-      } else {
-        p_en.innerText = add_keyword(p_en.innerText, "," + li.dataset.en);
+
+  if (!li) {
+    return;
+  }
+
+  li.classList.toggle("selected");
+  let isSelected = li.classList.contains("selected");
+  if (isSelected) {
+    checkElementType(p_en, li.dataset.en, "add");
+    checkElementType(p_zh, li.dataset.cn, "add");
+    checkElementType(ul_en, li.dataset.en, "add");
+    checkElementType(ul_zh, li.dataset.cn, "add");
+  } else {
+    checkElementType(p_en, li.dataset.en, "del");
+    checkElementType(p_zh, li.dataset.cn, "del");
+    checkElementType(ul_en, li.dataset.en, "del");
+    checkElementType(ul_zh, li.dataset.cn, "del");
+  }
+}
+
+function checkElementType(node, word, operation) {
+  let searchText;
+  if (node.nodeType !== 1) {
+    return;
+  }
+  console.log(node.textContent, word, operation);
+  switch (node.tagName) {
+    case "P":
+      const Text = node.textContent;
+      searchText = "," + word;
+      const hastext = Text.includes(searchText); // 是否包含文本
+
+      if (operation === "add" && hastext === false) {
+        node.textContent = add_keyword(Text, searchText);
+      } else if (operation === "del" && hastext) {
+        node.textContent = Text.replace(searchText, "");
       }
-    } else {
-      if (p_en.innerText.includes("," + li.dataset.en)) {
-        p_en.innerText = p_en.innerText.replace("," + li.dataset.en, "");
+      break;
+
+    case "UL":
+      searchText = word;
+      const liElements = node.querySelectorAll("li");
+
+      if (operation === "add") {
+        const li = document.createElement("li");
+        li.setAttribute("draggable", "true");
+        li.style.backgroundColor = random_bkcolor(1);
+        li.innerText = word;
+        node.appendChild(li);
+      } else if (operation === "del") {
+        liElements.forEach((li) => {
+          const liText = li.textContent || li.innerText;
+          if (liText.includes(searchText)) {
+            node.removeChild(li);
+          }
+        });
       }
-    }
+      break;
   }
 }
 
@@ -378,7 +427,7 @@ document.querySelectorAll(".tab-container").forEach(function (div) {
   div.addEventListener("click", switchToMultiLinePrompt);
 });
 
-// 添加所选提示词
+// 添加所选提示词-确定
 getById("view_bar-add").addEventListener("click", prompt_addSelectedPrompt);
 
 // 载入提示词库
@@ -388,17 +437,10 @@ getElement(".zh_wrap .status_bar").addEventListener(
   prompt_loadPromptLibrary,
 );
 
-// 取消所选提示词
-getById("view_bar-unselect").addEventListener("click", prompt_unselectPrompt);
-
-// 延迟加载图片
-window.addEventListener("load", delayedImageLoading);
-
-// 翻译为中文
-bt_en.addEventListener("click", translateToChinese);
-
-// 翻译为英文
-bt_zh.addEventListener("click", translateToEnglish);
+getById("view_bar-unselect").addEventListener("click", prompt_unselectPrompt); // 取消所选提示词
+window.addEventListener("load", delayedImageLoading); // 延迟加载图片
+bt_en.addEventListener("click", translateToChinese); // 翻译为中文
+bt_zh.addEventListener("click", translateToEnglish); // 翻译为英文
 
 // 高亮/取消鼠标经过的提示词
 p_en.addEventListener("mouseover", hoverHighlight);
@@ -415,9 +457,8 @@ getById("full_screen").addEventListener("mouseout", function (event) {
   }
 });
 
-// 键盘弹起
-document.addEventListener("keyup", keyupEvent);
-document.addEventListener("keydown", keydownEvent);
+document.addEventListener("keyup", keyupEvent); // 键盘弹起
+document.addEventListener("keydown", keydownEvent); // 键盘按下
 
 // 全屏点击
 getById("full_screen").addEventListener("click", onFullScreenClick);
@@ -428,10 +469,10 @@ getElement("#full_screen button.close").addEventListener(
   full_screenclose,
 );
 
-getById("bt_save").addEventListener("click", savePrompts);
-getById("bt_copy").addEventListener("click", copyPrompt);
-getById("bt_paste").addEventListener("click", pastePrompt);
-getById("bt_clear").addEventListener("click", clearPrompts);
+getById("bt_save").addEventListener("click", savePrompts); // 保存
+getById("bt_copy").addEventListener("click", copyPrompt); // 复制
+getById("bt_paste").addEventListener("click", pastePrompt); // 粘贴
+getById("bt_clear").addEventListener("click", clearPrompts); // 清空
 
 // 载入最后一次使用的提示词
 function loadRecentPrompt() {
@@ -570,34 +611,13 @@ function convertToMultiLinePrompt_en() {
 // 添加所选提示词
 function prompt_addSelectedPrompt(event) {
   const lis = document.querySelectorAll("#full_screen li.selected");
-  let text_en = p_en.textContent; // 当前文本
-  let words_zh = "";
-  let words_en = "";
-
   lis.forEach((li) => {
-    if (text_en.includes("," + li.dataset.en)) {
-    } else {
-      words_zh = "," + li.dataset.zh + words_zh;
-      words_en = "," + li.dataset.en + words_en;
-    }
+    checkElementType(p_en, li.dataset.en, "add");
+    checkElementType(p_zh, li.dataset.zh, "add");
+    checkElementType(ul_en, li.dataset.en, "add");
+    checkElementType(ul_zh, li.dataset.zh, "add");
   });
-
-  words_zh === "," ? "" : words_zh;
-  words_en === "," ? "" : words_en;
-  if (p_zh.textContent.length === 0) {
-    p_zh.textContent = words_zh;
-  } else {
-    p_zh.textContent += words_zh;
-  }
-
-  if (p_en.textContent.length === 0) {
-    p_en.textContent = words_en;
-  } else {
-    p_en.textContent = add_keyword(p_en.textContent, words_en);
-  }
-
-  let full_screen = document.getElementById("full_screen");
-  full_screen.style.zIndex = "-99";
+  getById("full_screen").style.zIndex = "-99";
 }
 
 // 载入提示词库
@@ -1061,12 +1081,14 @@ document.querySelectorAll(".commonds_wrap > div").forEach(function (div) {
   div.addEventListener("mouseout", button_mouseout);
 });
 
+// 按钮停留
 function button_mouseover(event) {
   let anchorElem = event.target.closest("[data-tooltip]");
   if (!anchorElem) return;
   tooltip = showTooltip(anchorElem, anchorElem.dataset.tooltip);
 }
 
+// 按钮离开
 function button_mouseout(event) {
   if (tooltip) {
     tooltip.remove();
@@ -1074,6 +1096,7 @@ function button_mouseout(event) {
   }
 }
 
+// 显示提示
 function showTooltip(anchorElem, html) {
   let tooltipElem = document.createElement("div");
   tooltipElem.className = "tooltip";

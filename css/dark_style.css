@@ -153,10 +153,10 @@ button#bt_copy {
 
 .imagelist ul {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  /* grid-template-rows: repeat(5, 1fr); */
-  grid-column-gap: 8px;
-  grid-row-gap: 8px;
+  grid-template-columns: repeat(auto-fill, 110px);
+  grid-column-gap: 15px;
+  grid-row-gap: 15px;
+  justify-content: center;
 }
 
 .imagelist h3 {
@@ -173,8 +173,9 @@ button#bt_copy {
 
 .imagelist ul li {
   box-sizing: border-box;
+  height: 110px;
   /* border-radius: 17px; */
-  border-radius: 4px;
+  border-radius: 12px;
   user-select: none; /* 禁止选择文本 */
   color: #999;
   display: flex;
@@ -258,7 +259,7 @@ button#bt_copy {
 }
 
 .imagelist ul li p.load::before {
-  content: "" "";
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
