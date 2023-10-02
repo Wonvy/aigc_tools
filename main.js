@@ -1,5 +1,5 @@
 import { translate_API, translate_tmt } from "./js/translate.js";
-import { Resize } from "/js/ui.js";
+import { Resize } from "./js/ui.js";
 import {
   getById,
   getElement,
@@ -85,7 +85,19 @@ function tabwheel(event) {
 }
 
 // tab切换
-getElement(".zh_wrap .status_bar").addEventListener("mouseover", function () {
+let timeoutId;
+let status_bar = getElement(".zh_wrap .status_bar");
+status_bar.addEventListener("mouseover", (event) => {
+  timeoutId = setTimeout(() => {
+    switchtab(event);
+  }, 400);
+});
+status_bar.addEventListener("mouseout", () => {
+  clearTimeout(timeoutId);
+});
+
+// tab切换
+function switchtab(event) {
   const button = event.target.closest("button");
 
   if (button) {
@@ -112,7 +124,8 @@ getElement(".zh_wrap .status_bar").addEventListener("mouseover", function () {
       }
     }
   }
-});
+}
+
 // 通过关键词找 替换元素 数据库 查询关键词
 function renderJSON_search(keyword) {
   let result;
@@ -311,9 +324,8 @@ loadRecentPrompt();
 // 所选字体显示为大字号
 getById("imagelist2").addEventListener("mouseover", setFontToLargeSize);
 
-// getElement(".commonds_wrap").addEventListener("change", comman_click);
-// getElement(".commonds_wrap").addEventListener("input", commond_input);
-// getElement(".commonds_wrap").addEventListener("change", clickcommonds);
+getElement(".commonds_wrap").addEventListener("change", comman_click);
+getElement(".commonds_wrap").addEventListener("input", commond_input);
 
 // 点击命令
 function commond_input(event) {
@@ -404,8 +416,8 @@ getById("full_screen").addEventListener("mouseout", function (event) {
 });
 
 // 键盘弹起
-// document.addEventListener("keyup", keyupEvent);
-// document.addEventListener("keydown", keydownEvent);
+document.addEventListener("keyup", keyupEvent);
+document.addEventListener("keydown", keydownEvent);
 
 // 全屏点击
 getById("full_screen").addEventListener("click", onFullScreenClick);

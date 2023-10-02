@@ -238,7 +238,7 @@ p#p_zh {
 }
 
 #en_tabs {
-  direction: rtl;
+  /* direction: rtl; */
 }
 
 .tab1,
