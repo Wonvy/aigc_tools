@@ -29,17 +29,23 @@ function translate_tmt(text, sourceLanguage, targetLanguage) {
 }
 
 // deepl翻译 split_text｜是否翻译整段  lang | 翻译语言
-function translate_API(text, split_text = false, lang = "ZH") {
+function translate_API(
+  text,
+  sourceLanguage = "EN",
+  targetLanguage = "ZH",
+  split_text = false,
+) {
   text = prompts_DeleteCommand(text);
   return new Promise(async (resolve, reject) => {
     try {
       if (split_text === true) {
         text = removeNewlines(text);
       }
+
       const data = {
         auth_key: "b2141899-62d5-120e-a7c9-47d17e08539f:fx",
         text: text,
-        target_lang: lang,
+        target_lang: targetLanguage,
       };
 
       // 在这里执行异步操作

@@ -462,12 +462,12 @@ getById("en_tabs").addEventListener("click", function (event) {
 });
 
 // 实时翻译
-// getById("p_zh").addEventListener("input", debounce(liveTranslate, 500));
+getById("p_zh").addEventListener("input", debounce(liveTranslate, 500));
 
 // 实时翻译
 function liveTranslate(event) {
   const text = p_zh.innerText;
-  translate_API(text, true, "en").then((result) => {
+  translate_API(text, "zh", "en", true).then((result) => {
     p_en.innerText = result.translations[0].text;
   });
 }
@@ -761,7 +761,7 @@ function translateToChinese() {
     prompts_format(); // 拆分段落
     AddSplitWords();
   } else {
-    translate_tmt(text_en, "en", "zh").then((result) => {
+    translate_API(text_en, "en", "zh").then((result) => {
       let result_text = result.translation;
       localStorage.setItem(text_en, result_text); // 存储翻译结果到本地
       p_zh.innerText = result_text; // 替换内容
@@ -803,7 +803,7 @@ function translateToEnglish(event) {
     prompts_format(); // 拆分段落
     AddSplitWords();
   } else {
-    translate_API(p_zh, true, "EN")
+    translate_API(p_zh, "ZH", "EN", true)
       .then((result) => {
         let result_text = result.translations[0].text;
         localStorage.setItem(p_zh, result_text);
