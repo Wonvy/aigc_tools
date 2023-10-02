@@ -188,10 +188,11 @@ function composition_click(event) {
   li.classList.toggle("selected");
   let isSelected = li.classList.contains("selected");
   if (isSelected) {
-    checkElementType(p_en, li.dataset.en, "add");
-    checkElementType(p_zh, li.dataset.cn, "add");
-    checkElementType(ul_en, li.dataset.en, "add");
-    checkElementType(ul_zh, li.dataset.cn, "add");
+    const bkcolor = random_bkcolor(1);
+    checkElementType(p_en, li.dataset.en, "add", li.dataset.en);
+    checkElementType(p_zh, li.dataset.cn, "add", li.dataset.en);
+    checkElementType(ul_en, li.dataset.en, "add", li.dataset.en, bkcolor);
+    checkElementType(ul_zh, li.dataset.cn, "add", li.dataset.en, bkcolor);
   } else {
     checkElementType(p_en, li.dataset.en, "del");
     checkElementType(p_zh, li.dataset.cn, "del");
@@ -200,12 +201,18 @@ function composition_click(event) {
   }
 }
 
-function checkElementType(node, word, operation) {
+function checkElementType(
+  node,
+  word,
+  operation,
+  langEN = "",
+  bkcolor = "#ff0000",
+) {
   let searchText;
   if (node.nodeType !== 1) {
     return;
   }
-  console.log(node.textContent, word, operation);
+  // console.log(node.textContent, word, operation);
   switch (node.tagName) {
     case "P":
       const Text = node.textContent;
@@ -226,7 +233,8 @@ function checkElementType(node, word, operation) {
       if (operation === "add") {
         const li = document.createElement("li");
         li.setAttribute("draggable", "true");
-        li.style.backgroundColor = random_bkcolor(1);
+        li.dataset.en = langEN;
+        li.style.backgroundColor = bkcolor;
         li.innerText = word;
         node.appendChild(li);
       } else if (operation === "del") {
@@ -612,10 +620,11 @@ function convertToMultiLinePrompt_en() {
 function prompt_addSelectedPrompt(event) {
   const lis = document.querySelectorAll("#full_screen li.selected");
   lis.forEach((li) => {
-    checkElementType(p_en, li.dataset.en, "add");
-    checkElementType(p_zh, li.dataset.zh, "add");
-    checkElementType(ul_en, li.dataset.en, "add");
-    checkElementType(ul_zh, li.dataset.zh, "add");
+    const bkcolor = random_bkcolor(1);
+    checkElementType(p_en, li.dataset.en, "add", li.dataset.en, bkcolor);
+    checkElementType(p_zh, li.dataset.zh, "add", li.dataset.en, bkcolor);
+    checkElementType(ul_en, li.dataset.en, "add", li.dataset.en);
+    checkElementType(ul_zh, li.dataset.zh, "add", li.dataset.en);
   });
   getById("full_screen").style.zIndex = "-99";
 }
@@ -1012,8 +1021,20 @@ function full_screenclose(event) {
 // 清空提示词
 function clearPrompts(event) {
   p_en.innerHTML = "";
-  p_en.innerHTML = "";
+  p_zh.innerHTML = "";
   localStorage.setItem("last_text", "");
+  while (ul_en.firstChild) {
+    ul_en.removeChild(ul_en.firstChild);
+  }
+
+  while (ul_zh.firstChild) {
+    ul_zh.removeChild(ul_zh.firstChild);
+  }
+
+  const lis = document.querySelectorAll("li.selected");
+  lis.forEach((li) => {
+    li.classList.remove("selected");
+  });
 }
 
 // 保存提示词
