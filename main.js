@@ -546,35 +546,41 @@ function switchToMultiLinePrompt(event) {
     const tabtext = li.dataset.tab;
     // console.log("#zh_tabs ." + tabtext);
 
+    // console.log(li.closest("nav").parentElement);
+    const div = li.closest("nav").parentElement;
+
     convertToMultiLinePrompt_cn();
     convertToMultiLinePrompt_en();
-
     const nav_zh = document.querySelector(".en_wrap .active");
     if (nav_zh) {
       nav_zh.classList.remove("active");
     }
+
     const nav_en = document.querySelector(".zh_wrap .active");
     if (nav_en) {
       nav_en.classList.remove("active");
     }
 
-    document
-      .querySelector('.zh_wrap [data-tab="' + tabtext + '"]')
-      .classList.add("active");
-    document
-      .querySelector('.en_wrap [data-tab="' + tabtext + '"]')
-      .classList.add("active");
+    if (div.classList.contains("en_wrap")) {
+      document
+        .querySelector('.en_wrap [data-tab="' + tabtext + '"]')
+        .classList.add("active");
+      const ontopElement_en = document.querySelector("#en_tabs .ontop");
+      if (ontopElement_en) {
+        ontopElement_en.classList.remove("ontop");
+      }
+      document.querySelector("#en_tabs ." + tabtext).classList.add("ontop");
+    } else {
+      document
+        .querySelector('.zh_wrap [data-tab="' + tabtext + '"]')
+        .classList.add("active");
 
-    const ontopElement_zh = document.querySelector("#zh_tabs .ontop");
-    if (ontopElement_zh) {
-      ontopElement_zh.classList.remove("ontop");
+      const ontopElement_zh = document.querySelector("#zh_tabs .ontop");
+      if (ontopElement_zh) {
+        ontopElement_zh.classList.remove("ontop");
+      }
+      document.querySelector("#zh_tabs ." + tabtext).classList.add("ontop");
     }
-    const ontopElement_en = document.querySelector("#en_tabs .ontop");
-    if (ontopElement_en) {
-      ontopElement_en.classList.remove("ontop");
-    }
-    document.querySelector("#zh_tabs ." + tabtext).classList.add("ontop");
-    document.querySelector("#en_tabs ." + tabtext).classList.add("ontop");
   }
 }
 
@@ -633,23 +639,18 @@ function prompt_addSelectedPrompt(event) {
 // 载入提示词库
 function prompt_loadPromptLibrary(event) {
   const bt_title = event.target.dataset.name;
-  let full_screen = document.getElementById("full_screen");
-  full_screen.style.zIndex = "99";
-  let imagelist2 = document.getElementById("imagelist2");
+  let full_screen = getById("full_screen");
+  let imagelist2 = getById("imagelist2");
+
+  renderJSON(imagelist2, g_JSONdata);
+
   getById("temp_en_edit").innerHTML = getById("p_en").innerHTML;
-  fetch("data.json")
-    .then((response) => response.json())
-    .then((data) => {
-      renderJSON(imagelist2, data); //载入json
-      document.querySelector("h3[data-title=" + bt_title + "]").scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "nearest",
-      });
-    })
-    .catch((error) => {
-      console.error("加载 JSON 文件时出错：", error);
-    });
+  document.querySelector("h3[data-title=" + bt_title + "]").scrollIntoView({
+    behavior: "smooth",
+    block: "center",
+    inline: "nearest",
+  });
+  full_screen.style.zIndex = "99";
 }
 
 // 渲染 JSON 数据的函数
