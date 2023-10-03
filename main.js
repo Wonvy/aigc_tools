@@ -543,10 +543,10 @@ function switchToMultiLinePrompt(event) {
     if (tagName === "I") {
       li = event.target.parentElement;
     }
-    const tabtext = li.dataset.tab;
-    // console.log("#zh_tabs ." + tabtext);
 
-    // console.log(li.closest("nav").parentElement);
+    console.log(li);
+    const tabtext = li.dataset.tab;
+
     const div = li.closest("nav").parentElement;
 
     convertToMultiLinePrompt_cn();
@@ -561,10 +561,14 @@ function switchToMultiLinePrompt(event) {
       nav_en.classList.remove("active");
     }
 
+    
+
     if (div.classList.contains("en_wrap")) {
       document
         .querySelector('.en_wrap [data-tab="' + tabtext + '"]')
         .classList.add("active");
+
+       
       const ontopElement_en = document.querySelector("#en_tabs .ontop");
       if (ontopElement_en) {
         ontopElement_en.classList.remove("ontop");
