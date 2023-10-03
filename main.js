@@ -149,11 +149,12 @@ function renderJSON_search(keyword) {
           let span = document.createElement("span");
           let img = document.createElement("img");
 
-          h4.textContent = value4;
+          h4.textContent = value4.content;
           span.textContent = key4;
           li.dataset.tooltip = key4;
-          li.dataset.cn = value4;
+          li.dataset.cn = value4.content;
           li.dataset.en = key4;
+          img.dataset.src = value4.img;
           img.setAttribute("src", "./img/placeholder.png");
           h4.appendChild(span);
           li.appendChild(h4);
@@ -446,7 +447,6 @@ getElement(".zh_wrap .status_bar").addEventListener(
 );
 
 getById("view_bar-unselect").addEventListener("click", prompt_unselectPrompt); // 取消所选提示词
-window.addEventListener("load", delayedImageLoading); // 延迟加载图片
 bt_en.addEventListener("click", translateToChinese); // 翻译为中文
 bt_zh.addEventListener("click", translateToEnglish); // 翻译为英文
 
@@ -673,11 +673,11 @@ function renderJSON(container, data) {
         const h2 = document.createElement("h2");
         const li = document.createElement("li");
         const span = document.createElement("span");
-        h2.textContent = data["关键词"][key][key2][key3];
+        h2.textContent = data["关键词"][key][key2][key3].content;
         span.textContent = key3;
         // h2.appendChild(span);
         li.dataset.en = key3;
-        li.dataset.zh = data["关键词"][key][key2][key3];
+        li.dataset.zh = data["关键词"][key][key2][key3].content;
         li.appendChild(h2);
         ul.appendChild(li);
       }
@@ -1144,6 +1144,7 @@ function showTooltip(anchorElem, html) {
   return tooltipElem;
 }
 
+window.addEventListener("load", delayedImageLoading); // 延迟加载图片
 // 延迟加载图片
 function delayedImageLoading(event) {
   const images = document.querySelectorAll("img[data-src]");
@@ -1152,6 +1153,10 @@ function delayedImageLoading(event) {
       img.parentElement.classList.remove("load");
     };
     // 将图片的src设置为data-src以开始加载
-    img.src = img.getAttribute("data-src");
+    let dataSrc = img.dataset.src;
+    if (dataSrc) {
+      console.log(dataSrc);
+      img.src = dataSrc;
+    }
   });
 }
