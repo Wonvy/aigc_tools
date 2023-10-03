@@ -1,4 +1,5 @@
 "use strict";
+console.log(this === undefined); // 输出 true 表示严格模式启用
 
 import { translate_API, translate_tmt } from "./js/translate.js";
 import { Resize } from "./js/ui.js";

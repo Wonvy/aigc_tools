@@ -3,6 +3,7 @@
     height: 100%;
     justify-content: flex-start;
   }
+
   .main-wrap {
     height: 100%;
     flex-direction: column;
@@ -36,10 +37,12 @@
   .wrap {
     row-gap: 20px;
   }
+
   #commonds {
     width: 100%;
     height: 12%;
   }
+
   #commonds div {
     width: calc(50% - 12px);
   }
