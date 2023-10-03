@@ -1,3 +1,5 @@
+"use strict";
+
 import { translate_API, translate_tmt } from "./js/translate.js";
 import { Resize } from "./js/ui.js";
 import {
@@ -561,14 +563,11 @@ function switchToMultiLinePrompt(event) {
       nav_en.classList.remove("active");
     }
 
-    
-
     if (div.classList.contains("en_wrap")) {
       document
         .querySelector('.en_wrap [data-tab="' + tabtext + '"]')
         .classList.add("active");
 
-       
       const ontopElement_en = document.querySelector("#en_tabs .ontop");
       if (ontopElement_en) {
         ontopElement_en.classList.remove("ontop");
