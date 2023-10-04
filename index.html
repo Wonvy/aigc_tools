@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="./css/reset.css" />
   <link rel="stylesheet" href="./css/layout.css" />
-  <link rel="stylesheet" href="./css/layout_media.css" />
   <script src="https://kit.fontawesome.com/fe364aecc5.js" crossorigin="anonymous">
   </script>
   <title>提示词生成工具0927.2</title>
@@ -33,7 +32,7 @@
             <li data-tab="tab2"><i class="fa-solid fa-align-left"></i></li>
           </ul>
         </div>
-        <div class="imagelist" id="imagelist2">
+        <div class="view_img3" id="imagelist2">
           <!-- <ul>
                 <li>
                   <h2>兔子风格</h2>
@@ -60,7 +59,7 @@
     <div class="main-wrap">
 
       <!-- 英文指令 -->
-      <div class="en_wrap main">
+      <div class="en_wrap">
 
         <nav class="tab-container">
           <h2>英文咒语</h2>
@@ -103,7 +102,6 @@
 
       <!-- 中文指令 -->
       <div class="zh_wrap">
-
         <nav class="tab-container">
           <h2>中文咒语</h2>
           <ul>
@@ -132,7 +130,7 @@
         </div>
 
         <div class="status_bar div_edit">
-          <button title="1" id="bt_add" data-name="艺术风格" data-tooltip="添加提示词" data-name=""
+          <button title="1" id="bt_add" data-name="艺术风格" data-tooltip="添加提示词" data-tab="尾缀"
             class="fa-solid fa-plus"></button>
           <button title="1" data-name="艺术风格" data-tab="艺术风格">风格</button>
           <button title="1" data-name="场景" data-tab="场景">场景</button>
@@ -141,10 +139,11 @@
           <button title="1" data-name="构图" data-tab="">构图</button>
           <button title="1" data-name="光照" data-tab="光照">光照</button>
           <button title="1" data-name="精度" data-tab="精度">精度</button>
-          <button title="1" id="bt_zh" style="visibility: hidden;">翻译</button>
+          <button title="1" id="bt_zh">翻译</button>
         </div>
 
       </div>
+
     </div>
 
     <div class="div_after">
@@ -226,7 +225,7 @@
         </div>
       </div>
 
-      <div class="tab_composition view1" data-name="构图">
+      <div class="view_svg" data-name="构图">
         <ul>
           <li data-cn="三分法则" data-en="Rule of Thirds">
             <h4>三分法则</h3>
@@ -411,19 +410,19 @@
 
       </div>
 
-      <div class="tab3 view1 view_img" data-name="艺术风格">
+      <div class="view_img" data-name="艺术风格">
       </div>
 
-      <div class="tab3 view1 view_img" data-name="场景">
+      <div class="view_img" data-name="场景">
       </div>
 
-      <div class="tab3 view1 view_img" data-name="色系">
+      <div class="view_img" data-name="色系">
       </div>
 
-      <div class="tab3 view1 view_img" data-name="视角">
+      <div class="view_img" data-name="视角">
       </div>
 
-      <div class="tab3 view1 view_img" data-name="构图">
+      <div class="view_img" data-name="构图">
         <ul>
           <li data-cn="东方山水画" data-en="Tradition Chinese Ink Painting">
             <h4>东方山水画<span>Tradition Chinese Ink Painting</span></h4>
@@ -432,10 +431,10 @@
         </ul>
       </div>
 
-      <div class="tab3 view1 view_img" data-name="光照">
+      <div class="view_img" data-name="光照">
       </div>
 
-      <div class="tab3 view1 view_img" data-name="精度">
+      <div class="view_img" data-name="精度">
       </div>
 
     </div>

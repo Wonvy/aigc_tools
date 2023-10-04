@@ -1,0 +1,10 @@
+// 滚动条样式 @include scrollbar-style(1px,#666,#888)
+@mixin scrollbar-style($width,$thumbCcolor,$thumbHoverCcolor)
+  &::-webkit-scrollbar
+    width: $width
+  &::-webkit-scrollbar-track
+    background: transparent
+  &::-webkit-scrollbar-thumb
+    background: $thumbCcolor
+  &::-webkit-scrollbar-thumb:hover
+    background: $thumbHoverCcolor

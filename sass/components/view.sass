@@ -1,0 +1,321 @@
+
+.view_svg
+  width: 100%
+  height: 100%
+  display: flex
+  background-color: #111
+  z-index: 81
+  overflow-x: auto
+  ul
+    box-sizing: border-box
+    width: 100%
+    display: grid
+    grid-template-columns: repeat(auto-fill, 150px)
+    align-items: center
+    justify-content: space-between
+    font-size: 14px
+    color: rgb(153, 153, 153)
+    font-family: "Open Sans"
+    scroll-behavior: smooth
+    justify-items: center
+    padding: 8px
+    overflow: auto
+    @include scrollbar-style(1px,#666,#888)
+    li
+      position: relative
+      height: 150px
+      width: 120px
+      display: flex
+      flex-direction: column-reverse
+      align-items: center
+      justify-content: center
+      transition: all 0.2s ease 0s
+      border-radius: 10px
+      &:hover
+        color: rgb(255, 255, 255)
+        width: 130%
+        svg
+          rect
+            stroke-width: 2px
+            stroke: #fff
+          path
+            stroke: #fff
+            stroke-width: 2px
+      &.selected
+        color: #fff
+        svg
+          background: #2e454f !important
+      svg
+        width: 120px
+        height: 77px
+        rect
+          stroke: #999
+          stroke-width: 1px
+        path
+          stroke: #999
+          stroke-width: 1.5px
+
+.view_img
+  width: 100%
+  height: 100%
+  display: flex
+  background-color: rgb(17, 17, 17)
+  overflow-x: auto
+  ul
+    box-sizing: border-box
+    width: 100%
+    display: grid
+    grid-template-columns: repeat(auto-fill, 120px)
+    align-items: center
+    justify-content: space-between
+    font-size: 14px
+    color: rgb(153, 153, 153)
+    font-family: "Open Sans"
+    scroll-behavior: smooth
+    justify-items: center
+    padding: 8px
+    overflow: auto
+    @include scrollbar-style(1px,#666,#888)
+    li
+      position: relative
+      height: 150px
+      width: 100px
+      display: flex
+      flex-direction: column-reverse
+      align-items: center
+      justify-content: center
+      transition: all 0.2s ease 0s
+      border-radius: 10px
+      box-sizing: border-box
+      user-select: none
+      -web-kit-user-select: none
+      &.selected
+        color: #fff
+        img
+          filter: brightness(100%)
+          background-color: transparent
+          border: 2px solid #53a76d
+      &:hover
+        color: #fff
+        img
+          width: 110%
+          filter: brightness(80%)
+      img
+        position: absolute
+        width: 100%
+        transform: translate(0px, -50%)
+        top: 50%
+        z-index: 1
+        filter: brightness(28%)
+        border-radius: 15px
+        height: auto
+        object-fit: cover
+        background-color: rgb(109, 109, 109)
+        transition: brightness,background-color,width 0.2s ease
+
+      h4
+        font-size: 14px
+        height: 100%
+        width: 100%
+        display: flex
+        z-index: 8
+        flex-direction: column
+        align-items: center
+        justify-content: center
+        text-align: center
+        white-space-collapse: collapse
+        text-wrap: nowrap
+        color: rgb(186, 186, 186)
+        overflow: hidden
+        span
+          width: 100%
+          display: inline-block
+          font-size: 6px
+          font-family: serif
+          color: #737373
+          overflow: hidden
+          white-space: nowrap
+          /* 让文本不换行 */
+          text-overflow: ellipsis
+          /* 超过部分显示省略号 */
+
+.view_img2
+  width: 100%
+  height: 100%
+  display: flex
+  background-color: rgb(17, 17, 17)
+  overflow-x: auto
+  flex-direction: column
+  h3
+    color: #fff
+    padding: 8px
+    font-size: 18px
+  ul
+    box-sizing: border-box
+    width: 100%
+    display: grid
+    grid-row-gap: 15px
+    grid-template-columns: repeat(auto-fill, 110px)
+    align-items: center
+    justify-content: space-between
+    font-size: 14px
+    color: rgb(153, 153, 153)
+    font-family: "Open Sans"
+    scroll-behavior: smooth
+    justify-items: center
+    padding: 8px
+    // overflow: auto
+    @include scrollbar-style(1px,#666,#888)
+    li
+      position: relative
+      box-sizing: border-box
+      height: 120px
+      width: 120px
+      display: flex
+      flex-direction: column-reverse
+      align-items: center
+      transition: all 0.2s ease
+      user-select: none
+      -web-kit-user-select: none
+      border-radius: 10px
+      justify-content: center
+      &.selected
+        color: #fff
+        img
+          filter: brightness(100%)
+          background-color: transparent
+          border: 2px solid #53a76d
+      &:hover
+        color: #fff
+        img
+          width: 110%
+          filter: brightness(80%)
+      img
+        position: absolute
+        width: 100%
+        transform: translate(0px, -50%)
+        top: 50%
+        z-index: 1
+        filter: brightness(28%)
+        border-radius: 15px
+        height: auto
+        object-fit: cover
+        background-color: rgb(109, 109, 109)
+        transition: brightness,background-color,width 0.2s ease
+      h4
+        font-size: 14px
+        height: 100%
+        width: 100%
+        display: flex
+        z-index: 8
+        flex-direction: column
+        align-items: center
+        justify-content: center
+        text-align: center
+        white-space-collapse: collapse
+        text-wrap: nowrap
+        color: rgb(186, 186, 186)
+        overflow: hidden
+        span
+          width: 100%
+          display: inline-block
+          font-size: 6px
+          font-family: serif
+          color: #737373
+          overflow: hidden
+          white-space: nowrap
+          /* 让文本不换行 */
+          text-overflow: ellipsis
+          /* 超过部分显示省略号 */
+
+.view_img3
+  width: 100%
+  height: 100%
+  display: flex
+  background-color: rgb(17, 17, 17)
+  overflow-x: auto
+  flex-direction: column
+  h3
+    color: #fff
+    padding: 8px
+    font-size: 18px
+  ul
+    box-sizing: border-box
+    width: 100%
+    display: grid
+    grid-row-gap: 15px
+    grid-template-columns: repeat(auto-fill, 150px)
+    align-items: center
+    justify-content: space-between
+    font-size: 14px
+    color: rgb(153, 153, 153)
+    font-family: "Open Sans"
+    scroll-behavior: smooth
+    justify-items: center
+    padding: 8px
+    // overflow: auto
+    @include scrollbar-style(1px,#666,#888)
+    li
+      position: relative
+      box-sizing: border-box
+      height: 60px
+      width: 150px
+      display: flex
+      flex-direction: column-reverse
+      align-items: center
+      transition: all 0.2s ease
+      user-select: none
+      -web-kit-user-select: none
+      border-radius: 10px
+      justify-content: center
+      overflow: auto
+      &.selected
+        color: #fff
+        border: 2px solid #53a76d
+        img
+          filter: brightness(100%)
+          background-color: transparent
+      &::-webkit-scrollbar
+        width: 0
+      &:hover
+        color: #fff
+        img
+          width: 110%
+          filter: brightness(80%)
+      img
+        position: absolute
+        width: 100%
+        transform: translate(0px, -50%)
+        top: 50%
+        z-index: 1
+        filter: brightness(28%)
+        border-radius: 15px
+        height: auto
+        object-fit: cover
+        background-color: rgb(109, 109, 109)
+        transition: brightness,background-color,width 0.2s ease
+      h4
+        font-size: 14px
+        height: 100%
+        width: 100%
+        display: flex
+        z-index: 8
+        flex-direction: column
+        align-items: center
+        justify-content: center
+        text-align: center
+        white-space-collapse: collapse
+        text-wrap: nowrap
+        color: rgb(186, 186, 186)
+        overflow: hidden
+        span
+          width: 100%
+          display: inline-block
+          font-size: 6px
+          font-family: serif
+          color: #737373
+          overflow: hidden
+          white-space: nowrap
+          /* 让文本不换行 */
+          text-overflow: ellipsis
+          /* 超过部分显示省略号 */

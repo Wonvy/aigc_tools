@@ -32,27 +32,6 @@ let currenuuid;
 let Translated;
 let tooltip;
 let ctrlPressed = false;
-
-// 初始化JSON数据
-let g_JSONdata;
-get_JSON_once(); // 初始化JSON数据
-function get_JSON_once() {
-  fetch("data.json")
-    .then((response) => response.json())
-    .then((data) => {
-      g_JSONdata = data;
-    })
-    .catch((error) => {
-      console.log("json error", error);
-    });
-}
-
-function clearPlaceholder() {
-  if (inputText.value === "请输入文字") {
-    inputText.value = "";
-  }
-}
-
 const leftDiv = document.getElementById("word_edit_en");
 const rightDiv = document.getElementById("word_edit");
 
@@ -64,10 +43,39 @@ let isRightScrolling = false;
 let clicks = 0;
 let timer2;
 
+let timeoutId;
+let status_bar = getElement(".zh_wrap .status_bar");
+
+// 初始化JSON数据
+let g_JSONdata;
+get_JSON_once()
+
+
 // wheel 鼠标滚轮
 document.querySelectorAll(".div_after > div").forEach(function (div) {
   div.addEventListener("wheel", tabwheel);
 });
+
+function get_JSON_once() {
+  return new Promise((resolve, reject) => {
+    fetch("data.json")
+      .then((response) => response.json())
+      .then((data) => {
+        g_JSONdata = data; // 将数据存储在全局变量 g_JSONdata 中
+        resolve(data); // 数据获取成功，将数据传递给 resolve 函数
+      })
+      .catch((error) => {
+        console.log("json error", error);
+        reject(error); // 数据获取失败，将错误信息传递给 reject 函数
+      });
+  });
+}
+
+function clearPlaceholder() {
+  if (inputText.value === "请输入文字") {
+    inputText.value = "";
+  }
+}
 
 getElement(".zh_wrap .status_bar").addEventListener("wheel", tabwheel);
 // 添加鼠标滚轮事件监听器
@@ -91,8 +99,7 @@ function tabwheel(event) {
 }
 
 // tab切换
-let timeoutId;
-let status_bar = getElement(".zh_wrap .status_bar");
+
 status_bar.addEventListener("mouseover", (event) => {
   timeoutId = setTimeout(() => {
     switchtab(event);
@@ -107,7 +114,7 @@ function switchtab(event) {
   const button = event.target.closest("button");
 
   if (button) {
-    const name = button.dataset.name;
+    const name = button.dataset.tab;
     const tabs = document.querySelectorAll(".div_after > div");
 
     // 重置
@@ -173,10 +180,22 @@ function renderJSON_search(keyword) {
       }
     }
   }
+
+  let images = document.querySelectorAll(`.div_after div[data-name="${keyword}"] img[data-src]`);
+  images.forEach(function (img) {
+    // console.log(img);
+    let dataSrc = img.dataset.src;
+    if (dataSrc) {
+      // console.log(dataSrc);
+      img.src = dataSrc;
+    }
+  });
+
 }
 
 //click 点击构图
 getElement(".div_after").addEventListener("click", composition_click);
+getElement(".right").addEventListener("click", composition_click);
 function composition_click(event) {
   let li;
   if (event.target.tagName === "LI") {
@@ -269,7 +288,7 @@ function weiji(keyword) {
       const pages = data.query.pages;
       const pageId = Object.keys(pages)[0];
       const extract = pages[pageId].extract;
-      console.log(extract);
+      // console.log(extract);
 
       // 将内容显示在页面上
       // const resultDiv = document.getElementById("result");
@@ -403,11 +422,11 @@ function comman_click(event) {
   let paramName = "";
   if (tagname === "SELECT") {
     paramName = event.target.dataset.paramName;
-    console.log(
-      event.target.name,
-      event.target.dataset.paramName,
-      event.target.value,
-    );
+    // console.log(
+    //   event.target.name,
+    //   event.target.dataset.paramName,
+    //   event.target.value,
+    // );
     const commond = paramName + " " + event.target.value;
     let commond_after = prompts_alterCommand(
       promptcontent,
@@ -418,7 +437,7 @@ function comman_click(event) {
     // console.log(commond_after);
   }
   if (tagname === "INPUT") {
-    console.log(event.target.name, event.target.value);
+    // console.log(event.target.name, event.target.value);
     // alert(event.target.value);
   }
 }
@@ -526,13 +545,25 @@ function liveTranslate(event) {
 
 // 所选字体显示为大字号
 function setFontToLargeSize(event) {
+  let li;
   if (event.target.tagName === "LI") {
-    getById("zh_preview").innerText = event.target.dataset.zh;
-    getById("en_preview").innerText = event.target.dataset.en;
-    let image = document.querySelector("#fixed-header img");
-    let randomParam = Math.random(); // 生成一个随机数作为参数
-    image.src = "https://picsum.photos/200?" + randomParam;
+    li = event.target;
+  } else {
+    li = event.target.closest("li");
   }
+
+  if (!li) {
+    return;
+  }
+
+  getById("zh_preview").innerText = li.dataset.zh;
+  getById("en_preview").innerText = li.dataset.en;
+  let image = document.querySelector("#fixed-header img");
+  let src = li.querySelector("img");
+  image.src = src.dataset.src;
+  // let randomParam = Math.random(); // 生成一个随机数作为参数
+  // image.src = "https://picsum.photos/200?" + randomParam;
+
 }
 
 // 提示词多行显示
@@ -547,7 +578,7 @@ function switchToMultiLinePrompt(event) {
       li = event.target.parentElement;
     }
 
-    console.log(li);
+    // console.log(li);
     const tabtext = li.dataset.tab;
 
     const div = li.closest("nav").parentElement;
@@ -674,25 +705,41 @@ function renderJSON(container, data) {
       div.appendChild(ul);
       // console.log("key2", key2);
       for (let key3 in data["关键词"][key][key2]) {
-        const h2 = document.createElement("h2");
         const li = document.createElement("li");
+        const h4 = document.createElement("h4");
         const span = document.createElement("span");
-        h2.textContent = data["关键词"][key][key2][key3].content;
+        const img = document.createElement("img");
+
+        h4.textContent = data["关键词"][key][key2][key3].content;
         span.textContent = key3;
         // h2.appendChild(span);
         li.dataset.en = key3;
         li.dataset.zh = data["关键词"][key][key2][key3].content;
-        li.appendChild(h2);
+        img.dataset.src = data["关键词"][key][key2][key3].img;
+        img.setAttribute("src", "./img/placeholder.png");
+        h4.appendChild(span);
+        li.appendChild(h4);
+        li.appendChild(img);
         ul.appendChild(li);
       }
     }
   }
+
   let childNodes = div.childNodes;
   let div2 = document.createElement("div");
   for (var i = 0; i < childNodes.length; i++) {
     div2.appendChild(childNodes[i].cloneNode(true));
   }
   container.innerHTML = div2.innerHTML;
+
+  let images = container.querySelectorAll(`img[data-src]`);
+  images.forEach(function (img) {
+    let dataSrc = img.dataset.src;
+    if (dataSrc) {
+      img.src = dataSrc;
+    }
+  });
+
 }
 
 // 取消所选提示词
@@ -939,9 +986,6 @@ function onFullScreenClick(event) {
   const temp_en_edit = getById("temp_en_edit");
   let li;
 
-  // console.log(event);
-  let full_screen = getById("full_screen");
-
   if (event.target.tagName === "DIV") {
     let full_screen = getById("full_screen");
     full_screen.style.zIndex = "-99";
@@ -1151,15 +1195,16 @@ function showTooltip(anchorElem, html) {
 window.addEventListener("load", delayedImageLoading); // 延迟加载图片
 // 延迟加载图片
 function delayedImageLoading(event) {
-  const images = document.querySelectorAll("img[data-src]");
+  let images = document.querySelectorAll("img[data-src]");
   images.forEach(function (img) {
-    img.onload = function () {
-      img.parentElement.classList.remove("load");
-    };
-    // 将图片的src设置为data-src以开始加载
+    // img.onload = function () {
+    //   img.parentElement.classList.remove("load");
+    // };
+    // 将图片的src设置为data - src以开始加载
     let dataSrc = img.dataset.src;
+    // console.log("dataSrc", dataSrc);
     if (dataSrc) {
-      console.log(dataSrc);
+      // console.log(dataSrc);
       img.src = dataSrc;
     }
   });
