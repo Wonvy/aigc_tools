@@ -63,15 +63,15 @@
 
         <nav class="tab-container">
           <h2>英文咒语</h2>
-          <ul>
-            <li data-tab="tab1" class="active"><i class="fa-solid fa-align-justify"></i></li>
-            <li data-tab="tab2"><i class="fa-solid fa-align-left"></i></li>
-            <li data-tab="tab3"><i class="fa-solid fa-align-left"></i></li>
+          <ul data-class="en">
+            <li data-tab="tab1" data-class="tab1" class="active"><i class="fa-solid fa-align-justify"></i></li>
+            <li data-tab="tab2" data-class="tab2"><i class="fa-solid fa-align-left"></i></li>
+            <li data-tab="tab2" data-class="view3"><i class="fa-solid fa-align-left"></i></li>
           </ul>
         </nav>
 
         <div id="en_tabs">
-          <div class="div_edit tab1">
+          <div class="tab1 div_edit">
             <p id="p_en" contenteditable="true" spellcheck="false">full body, walking pose, with hood, Raistlin the
               sorcerer with head inside his red hood, golden skin, draped in his signature red robe , emanates an
               enigmatic aura. In Raistlin's hand, his glowing wand casts a mesmerizing light, Tall, Slim, Mohawk, A lush
@@ -86,9 +86,10 @@
           <div class="tab2" id="word_edit_en">
             <ul id="ul_en"></ul>
           </div>
+          <div class="tab3">
+          </div>
         </div>
         <div class="status_bar div_edit">
-
           <button id="bt_paste" title="粘贴" data-name="粘贴" data-tooltip="粘贴咒语" class="fa-regular fa-paste"> 粘贴咒语</button>
           <button id="bt_clear" title="清空" data-name="清空" data-tooltip="清空当前咒语" class="fa-solid fa-eraser"></button>
           <button id="bt_save" title="保存" data-name="保存" data-tooltip="保存" class="fa-regular fa-floppy-disk"></button>
@@ -104,29 +105,31 @@
       <div class="zh_wrap">
         <nav class="tab-container">
           <h2>中文咒语</h2>
-          <ul>
+          <ul data-class="zh">
             <li><i class="fa-solid fa-chevron-right"></i></li>
-            <li data-tab="tab1" class="active"><i class="fa-solid fa-align-justify"></i></li>
-            <li data-tab="tab2"><i class="fa-solid fa-align-left"></i></li>
-            <li data-tab="tab3"><i class="fa-solid fa-align-left"></i></li>
+            <li data-tab="tab1" data-class="tab1" class="active"><i class="fa-solid fa-align-justify"></i></li>
+            <li data-tab="tab2" data-class="tab2"><i class="fa-solid fa-align-left"></i></li>
+            <li data-tab="tab2" data-class="view3"><i class="fa-solid fa-align-left"></i></li>
           </ul>
         </nav>
 
         <div id="zh_tabs">
 
-          <div class="div_edit tab1" data-tab="tab1">
+          <div class="tab1 div_edit" data-tab="tab1">
             <!-- <input type="text" id="p_zh" placeholder="请输入文字"> -->
             <p id="p_words" spellcheck="false"></p>
             <p id="p_zh" contenteditable="true" spellcheck="false">
             </p>
           </div>
 
-          <div id="word_edit" class="ci tab2" data-tab="tab2" spellcheck="false">
+          <div class="tab2 ci" id="word_edit" data-tab="tab2" spellcheck="false">
             <ul id="ul_zh">
               <li draggable="true" value="1">1</li>
             </ul>
           </div>
 
+          <div class="tab3">
+          </div>
         </div>
 
         <div class="status_bar div_edit">

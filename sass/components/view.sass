@@ -268,10 +268,13 @@
       -web-kit-user-select: none
       border-radius: 10px
       justify-content: center
-      overflow: auto
+      overflow: hidden
       &.selected
-        color: #fff
+        background: rgb(39 156 117 / 21%)
         border: 2px solid #53a76d
+        h4
+          font-size: 16px
+          color: rgb(66 210 162)
         img
           filter: brightness(100%)
           background-color: transparent
@@ -310,7 +313,8 @@
         overflow: hidden
         span
           width: 100%
-          display: inline-block
+          // display: inline-block
+          display: none
           font-size: 6px
           font-family: serif
           color: #737373

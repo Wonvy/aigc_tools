@@ -441,11 +441,15 @@ button#bt_zh {
   -web-kit-user-select: none;
   border-radius: 10px;
   justify-content: center;
-  overflow: auto;
+  overflow: hidden;
 }
 .view_img3 ul li.selected {
-  color: #fff;
+  background: rgba(39, 156, 117, 0.21);
   border: 2px solid #53a76d;
+}
+.view_img3 ul li.selected h4 {
+  font-size: 16px;
+  color: rgb(66, 210, 162);
 }
 .view_img3 ul li.selected img {
   filter: brightness(100%);
@@ -491,7 +495,7 @@ button#bt_zh {
 }
 .view_img3 ul li h4 span {
   width: 100%;
-  display: inline-block;
+  display: none;
   font-size: 6px;
   font-family: serif;
   color: #737373;
@@ -786,7 +790,10 @@ body,
 }
 .main-wrap .en_wrap #en_tabs .tab2 {
   background: #171717;
-  z-index: 22;
+  z-index: 25;
+}
+.main-wrap .en_wrap #en_tabs .ontop {
+  z-index: 26;
 }
 .main-wrap .en_wrap #en_tabs ul {
   display: flex;
@@ -1039,11 +1046,15 @@ body,
   padding: 3px 6px 4px 8px;
   border-radius: 5px;
   flex-direction: column;
-  transition: all 0.3s ease;
+  transition: all 0.12s ease;
   /* 添加过渡效果 */
   /* background: linear-gradient(to bottom, rgb(81 81 81) 50%, #272727 50%); */
   /* background: #3e3e3e; */
   cursor: pointer;
+}
+#word_edit ul li.clicked {
+  background: #fff !important;
+  color: #000 !important;
 }
 #word_edit ul li:hover, #word_edit ul li.on {
   top: -2px;

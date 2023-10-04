@@ -109,6 +109,16 @@ status_bar.addEventListener("mouseout", () => {
   clearTimeout(timeoutId);
 });
 
+document.querySelector("#ul_zh").addEventListener("click", function (event) {
+  const li = event.target.closest("li");
+  if (!li) { return };
+  li.classList.toggle("clicked")
+
+
+})
+
+
+
 // tab切换
 function switchtab(event) {
   const button = event.target.closest("button");
@@ -546,15 +556,14 @@ function liveTranslate(event) {
 // 所选字体显示为大字号
 function setFontToLargeSize(event) {
   let li;
+
   if (event.target.tagName === "LI") {
     li = event.target;
   } else {
     li = event.target.closest("li");
   }
 
-  if (!li) {
-    return;
-  }
+  if (!li) { return };
 
   getById("zh_preview").innerText = li.dataset.zh;
   getById("en_preview").innerText = li.dataset.en;
@@ -569,58 +578,30 @@ function setFontToLargeSize(event) {
 // 提示词多行显示
 function switchToMultiLinePrompt(event) {
   const tagName = event.target.tagName;
-  let li;
-  if (event.target.closest("li")) {
-    if (tagName === "LI") {
-      li = event.target;
-    }
-    if (tagName === "I") {
-      li = event.target.parentElement;
-    }
+  let li = event.target.closest("li");
 
-    // console.log(li);
-    const tabtext = li.dataset.tab;
+  if (!li) { return }
+  if (tagName === "LI") { li = event.target; }
+  if (tagName === "I") { li = event.target.parentElement; }
 
-    const div = li.closest("nav").parentElement;
+  // 获取所在的ul
+  const enzh = li.closest("ul").dataset.class;
+  const tabtext = li.dataset.tab;
+  const tabclass = li.dataset.class;
 
-    convertToMultiLinePrompt_cn();
-    convertToMultiLinePrompt_en();
-    const nav_zh = document.querySelector(".en_wrap .active");
-    if (nav_zh) {
-      nav_zh.classList.remove("active");
-    }
+  if (enzh === "zh") { convertToMultiLinePrompt_cn() };// 转成多行
+  if (enzh === "en") { convertToMultiLinePrompt_en() };// 转成多行
 
-    const nav_en = document.querySelector(".zh_wrap .active");
-    if (nav_en) {
-      nav_en.classList.remove("active");
-    }
+  const nav = document.querySelector(`.${enzh}_wrap .active`);
+  nav && nav.classList.remove("active");
 
-    if (div.classList.contains("en_wrap")) {
-      document
-        .querySelector('.en_wrap [data-tab="' + tabtext + '"]')
-        .classList.add("active");
-
-      const ontopElement_en = document.querySelector("#en_tabs .ontop");
-      if (ontopElement_en) {
-        ontopElement_en.classList.remove("ontop");
-      }
-      document.querySelector("#en_tabs ." + tabtext).classList.add("ontop");
-    } else {
-      document
-        .querySelector('.zh_wrap [data-tab="' + tabtext + '"]')
-        .classList.add("active");
-
-      const ontopElement_zh = document.querySelector("#zh_tabs .ontop");
-      if (ontopElement_zh) {
-        ontopElement_zh.classList.remove("ontop");
-      }
-      document.querySelector("#zh_tabs ." + tabtext).classList.add("ontop");
-    }
-  }
+  const current_tab = document.querySelector(`.${enzh}_wrap [data-tab=${tabtext}]`);
+  current_tab && current_tab.classList.add("active");
+  const tab = document.querySelector(`#${enzh}_tabs .ontop`);
+  tab && tab.classList.remove("ontop");
+  document.querySelector(`#${enzh}_tabs .${tabtext}`).classList.add("ontop");
 }
 
-// convertToMultiLinePrompt_cn();
-// convertToMultiLinePrompt_en();
 
 // 提示词转换为多行
 function convertToMultiLinePrompt_cn() {
@@ -640,6 +621,7 @@ function convertToMultiLinePrompt_cn() {
   });
   ul_local.innerHTML = ul.innerHTML;
 }
+
 // 提示词转换为多行
 function convertToMultiLinePrompt_en() {
   const text = getById("p_en").innerText;
@@ -651,6 +633,7 @@ function convertToMultiLinePrompt_en() {
   lines.forEach((line) => {
     if (line.trim() !== "") {
       const li = document.createElement("li");
+      li.style.backgroundColor = random_bkcolor(1);
       li.textContent = line.trim();
       ul.appendChild(li);
     }
