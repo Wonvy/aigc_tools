@@ -253,6 +253,8 @@ const Prompt = {
         const li = document.createElement("li");
         li.style.backgroundColor = random_bkcolor(1);
         li.setAttribute("draggable", "true");
+        li.dataset.en = "111";
+        li.dataset.zh = "222";
         li.textContent = line.trim();
         ul.appendChild(li);
       }
@@ -272,6 +274,9 @@ const Prompt = {
       if (line.trim() !== "") {
         const li = document.createElement("li");
         li.style.backgroundColor = random_bkcolor(1);
+        li.setAttribute("draggable", "true");
+        li.dataset.en = "111";
+        li.dataset.zh = "222";
         li.textContent = line.trim();
         ul.appendChild(li);
       }
@@ -663,22 +668,42 @@ status_bar.addEventListener("mouseout", () => {
   clearTimeout(timeoutId);
 });
 
-
+//#ul_zh click
 document.querySelector("#ul_zh").addEventListener("click", function (event) {
   const li = event.target.closest("li");
   if (!li) { return };
+  const lis = document.querySelectorAll("#ul_zh li.clicked");
+  lis.forEach((li1) => {
+    li1.classList.remove("clicked");
+  });
   li.classList.toggle("clicked")
 })
 
+//#ul_en click
 document.querySelector("#ul_en").addEventListener("click", function (event) {
   const li = event.target.closest("li");
   if (!li) { return };
   let q = li.innerText;
+  const lis = document.querySelectorAll("#ul_en li.clicked");
+  lis.forEach((li1) => {
+    if (li !== li1) {
+      li1.classList.remove("clicked");
+    }
+  });
   li.classList.toggle("clicked")
   let iframe = document.querySelector("iframe");
   let url1 = `https://lexica.art/?q=${q}`
   let url2 = `https://prompthero.com/search?model=Midjourney&q=${q}`
   iframe.src = url1;
+  let left = iframe.closest(".left")
+
+  const hasclicked = document.querySelector("#ul_en li.clicked");
+  if (hasclicked) {
+    left.classList.add("on")
+  } else {
+    left.classList.contains("on") && left.classList.remove("on")
+  }
+
 })
 
 
@@ -748,7 +773,7 @@ function checkElementType(
   word,
   operation,
   langEN = "",
-  bkcolor = "#ff0000",
+  bkcolor = "#333",
 ) {
   let searchText;
   if (node.nodeType !== 1) {
@@ -1262,3 +1287,37 @@ function placeholder_clear() {
     inputText.value = "";
   }
 }
+
+
+
+// 检查网站是否可以访问
+function checkWebsiteAvailability(url) {
+  return fetch(url)
+    .then(function (response) {
+      if (response.ok) {
+        return Promise.resolve();
+      } else {
+        return Promise.reject();
+      }
+    }).catch((error) => {
+      console.error("web_Error:", error);
+    });;
+}
+
+// 检查网站可访问性并显示/隐藏iframe
+checkWebsiteAvailability("https://www.baidu.com/")
+  .then(function () {
+    const iframe = document.querySelector("iframe");
+    iframe.style.display = "block";
+  })
+  .catch((error) => {
+    const iframe = document.querySelector("iframe");
+    iframe.style.display = "none";
+    console.error("web_Error11111111111111:", error);
+  });
+
+// .left mouseover
+document.querySelector("#main .left").addEventListener("mouseover", function (event) {
+  let left = document.querySelector("#main .left");
+  left.classList.contains("on") && left.classList.remove("on")
+})

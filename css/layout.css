@@ -682,6 +682,13 @@ body {
 #main > div.left {
   display: flex;
   flex-direction: column;
+  transition: border 0.3s ease;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 2px solid transparent;
+}
+#main > div.left.on {
+  border: 2px solid #fff;
 }
 #main > div.left iframe {
   width: 100%;
@@ -848,10 +855,10 @@ body {
   height: 100%;
   text-align: left;
 }
-.main-wrap .en_wrap #en_tabs .ontop {
+.main-wrap .en_wrap #en_tabs #word_edit_en.ontop {
   z-index: 26;
 }
-.main-wrap .en_wrap #en_tabs ul {
+.main-wrap .en_wrap #en_tabs #word_edit_en ul {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -860,7 +867,7 @@ body {
   column-gap: 10px;
   row-gap: 10px;
 }
-.main-wrap .en_wrap #en_tabs ul li {
+.main-wrap .en_wrap #en_tabs #word_edit_en ul li {
   position: relative;
   font-size: 14px;
   top: 0;
@@ -875,10 +882,10 @@ body {
   transition: all 0.3s ease;
   cursor: pointer;
 }
-.main-wrap .en_wrap #en_tabs ul div.ontop {
+.main-wrap .en_wrap #en_tabs #word_edit_en ul div.ontop {
   z-index: 29;
 }
-.main-wrap .en_wrap #en_tabs ul div.ontop ul {
+.main-wrap .en_wrap #en_tabs #word_edit_en ul div.ontop ul {
   text-align: right;
   z-index: 29;
 }
@@ -1085,6 +1092,19 @@ body {
   overflow-y: auto;
 }
 
+#word_edit_en ul li:hover, #word_edit_en ul li.on {
+  top: -2px;
+  background-color: transparent;
+  border: 1px solid #999;
+}
+#word_edit_en ul li:hover span, #word_edit_en ul li.on span {
+  color: #fff;
+}
+#word_edit_en ul li.clicked {
+  background: #fff !important;
+  color: #000 !important;
+}
+
 #word_edit {
   width: 100%;
   height: 100%;
@@ -1116,19 +1136,19 @@ body {
   transition: all 0.12s ease;
   cursor: pointer;
 }
-#word_edit ul li.clicked {
-  background: #fff !important;
-  color: #000 !important;
-}
 #word_edit ul li:hover, #word_edit ul li.on {
   top: -2px;
   /* background: #fff !important; */
-  background-color: transparent !important;
+  background-color: transparent;
   border: 1px solid #999;
 }
 #word_edit ul li:hover span, #word_edit ul li.on span {
   color: #fff;
   /* font-weight: bold; */
+}
+#word_edit ul li.clicked {
+  background: #fff !important;
+  color: #000 !important;
 }
 #word_edit ul li i {
   font-family: "Open Sans";
