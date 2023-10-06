@@ -12,6 +12,22 @@
 </head>
 
 <body>
+
+  <div id="full_version">
+    <div class="wrap">
+      <ul>
+      </ul>
+    </div>
+    <div class="open">
+      <input type="file" title="选择文件" id="file-input">
+      <div id="output"></div>
+
+    </div>
+    <div class="folding">
+      <i class="fa-solid fa-clock-rotate-left"></i>
+    </div>
+  </div>
+
   <div id="full_screen">
     <div class="full_screen-wrap">
       <div id="fixed-header">
@@ -88,9 +104,10 @@
         <nav class="tab-container">
           <h2>英文咒语</h2>
           <ul data-class="en">
-            <li data-tab="tab1" data-class="tab1" class="active"><i class="fa-solid fa-align-justify"></i></li>
-            <li data-tab="tab2" data-class="tab2"><i class="fa-solid fa-align-left"></i></li>
-            <li data-tab="tab2" data-class="view3"><i class="fa-solid fa-align-left"></i></li>
+            <li data-tab="tab1" data-tooltip="段落" data-class="tab1" class="active"><i
+                class="fa-regular fa-pen-to-square"></i></li>
+            <li data-tab="tab2" data-tooltip="多行显示1" data-class="tab2"><i class="fa-solid fa-align-left"></i></li>
+            <li data-tab="tab2" data-tooltip="多行显示2" data-class="view3"><i class="fa-solid fa-align-justify"></i></li>
           </ul>
         </nav>
 
@@ -131,9 +148,11 @@
           <h2>中文咒语</h2>
           <ul data-class="zh">
             <!-- <li><i class="fa-solid fa-chevron-right"></i></li> -->
-            <li data-tab="tab1" data-class="tab1" class="active"><i class="fa-solid fa-align-justify"></i></li>
-            <li data-tab="tab2" data-class="tab2"><i class="fa-solid fa-align-left"></i></li>
-            <li data-tab="tab2" data-class="view3"><i class="fa-solid fa-align-left"></i></li>
+            <li data-tab="tab1" data-tooltip="段落" data-class="tab1" class="active"><i
+                class="fa-regular fa-pen-to-square"></i></li>
+            <li data-tab="tab2" data-tooltip="分行显示1" data-class="tab2"><i class="fa-solid fa-align-left"></i></li>
+            <li data-tab="tab2" data-tooltip="分行显示2" data-class="view3"><i class="fa-solid fa-align-justify"></i>"></i>
+            </li>
           </ul>
         </nav>
 

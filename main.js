@@ -9,6 +9,7 @@ import {
   uuid,
   random_bkcolor,
   startCountdown,
+  getCurrentDateTime
 } from "./js/func.js";
 import {
   prompts_DeleteCommand,
@@ -48,6 +49,121 @@ let status_bar = getElement(".zh_wrap .status_bar");
 
 // 初始化JSON数据
 let g_JSONdata;
+let storedData;
+
+
+
+
+document.getElementById('file-input').addEventListener('change', function (event) {
+  var file = event.target.files[0]; // 获取选择的文件
+  var reader = new FileReader();
+
+  reader.onload = function () {
+    var content = reader.result; // 获取文件内容
+    var lines = content.split('\n'); // 将内容按行拆分
+
+    console.log(lines);
+
+    var jsonArray = [];
+
+    // 逐行处理数据
+    // lines.forEach(function (line) {
+    // 去除每行的前导和尾随空格
+    // line = line.trim();
+
+    //   // 将每行数据转为 JSON 对象
+    //   try {
+    //     var jsonLine = JSON.parse(line);
+    //     jsonArray.push(jsonLine);
+    //   } catch (error) {
+    //     console.error('Error parsing JSON:', error);
+    //     console.log('Invalid JSON:', line); // 打印出无法解析的行
+    //   }
+    // });
+
+    // // 将结果显示在页面上
+    // document.getElementById('output').textContent = JSON.stringify(jsonArray, null, 2);
+  };
+
+  reader.readAsText(file); // 以文本形式读取文件内容
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 提示词收藏夹
+const Prompt_favorites = {
+  // 加载
+  load: function () {
+    storedData = JSON.parse(localStorage.getItem('storedData')) || [];
+    let ul = document.querySelector('#full_version .wrap ul');
+    storedData.forEach(function (item) {
+      let li = document.createElement('li');
+      let h2 = document.createElement('h2');
+      let p = document.createElement('p');
+      h2.textContent = item.time;
+      p.textContent = item.en;
+      p.dataset.zh = item.zh;
+      li.appendChild(h2);
+      li.appendChild(p);
+      ul.appendChild(li);
+    });
+  },
+
+  // 添加
+  add: function (item) {
+    storedData.push(item);
+    let ul = document.querySelector('#full_version .wrap ul');
+    let li = document.createElement('li');
+    let h2 = document.createElement('h2');
+    let p = document.createElement('p');
+    h2.textContent = item.time;
+    p.textContent = item.en;
+    p.dataset.zh = item.zh;
+    li.appendChild(h2);
+    li.appendChild(p);
+    ul.appendChild(li);
+    localStorage.setItem('storedData', JSON.stringify(storedData));
+    li.scrollIntoView();
+  },
+
+  // 删除
+  del: function (index) {
+    storedData.splice(index, 1);
+    localStorage.setItem('storedData', JSON.stringify(storedData));
+  },
+
+  open: function (event) {
+
+  },
+
+  // 备份
+  back: function () {
+    var data = JSON.stringify(storedData);
+    var blob = new Blob([data], { type: 'text/plain' });
+    var url = URL.createObjectURL(blob);
+
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'backup.txt';
+    a.click();
+
+    // 释放URL对象
+    URL.revokeObjectURL(url);
+  }
+
+}
+
+
 
 // 提示词相关
 const Prompt = {
@@ -186,8 +302,16 @@ const Prompt = {
 
   // 保存提示词
   save: function (event) {
-    localStorage.setItem("last_text", p_en.innerText);
+    var item = {
+      "time": getCurrentDateTime(),
+      "en": p_en.innerText,
+      "zh": p_zh.innerText
+    };
+    Prompt_favorites.add(item);
+    // localStorage.setItem("last_text", p_en.innerText);
     startCountdown(document.getElementById("bt_save"));
+    // Prompt_favorites.back();
+
   },
 
   // 复制提示词
@@ -577,7 +701,7 @@ const Translates = {
           Prompt.en_MultiLine(); //多行布局
           Prompt.zh_MultiLine(); //多行布局
           // Prompt.format_Word(); // 拆分段落
-          prompt_split_add();
+          // prompt_split_add();
         })
         .catch((error) => {
           console.error("translate_API翻译出错:", error);
@@ -602,16 +726,16 @@ const Translates = {
 
     if (Translated) {
       p_en.innerText = Translated;
-      Prompt.format_Word(); // 拆分段落
-      prompt_split_add();
+      // Prompt.format_Word(); // 拆分段落
+      // prompt_split_add();
     } else {
       translate_API(p_zh, "ZH", "EN", true)
         .then((result) => {
           let result_text = result.translations[0].text;
           localStorage.setItem(p_zh, result_text);
           p_en.innerText = result_text;
-          Prompt.format_Word();
-          prompt_split_add();
+          // Prompt.format_Word();
+          // prompt_split_add();
         })
         .catch((error) => {
           console.error("translate_API翻译出错:", error);
@@ -629,6 +753,9 @@ const Translates = {
 }
 
 JSONS.init()
+Prompt_favorites.load();
+console.log("Prompt_favorites", storedData)
+// x
 
 // wheel 鼠标滚轮
 document.querySelectorAll(".div_after > div").forEach(function (div) {
@@ -1224,6 +1351,16 @@ document.querySelectorAll(".commonds_wrap > div").forEach(function (div) {
   div.addEventListener("mouseout", button_mouseout);
 });
 
+document.querySelectorAll(".tab-container ul li").forEach(function (div) {
+  div.addEventListener("mouseover", button_mouseover);
+  div.addEventListener("mouseout", button_mouseout);
+});
+
+
+
+
+
+
 // 按钮停留
 function button_mouseover(event) {
   let anchorElem = event.target.closest("[data-tooltip]");
@@ -1320,4 +1457,10 @@ checkWebsiteAvailability("https://www.baidu.com/")
 document.querySelector("#main .left").addEventListener("mouseover", function (event) {
   let left = document.querySelector("#main .left");
   left.classList.contains("on") && left.classList.remove("on")
+})
+
+
+document.querySelector("#full_version .folding").addEventListener("click", function (event) {
+  let full_version = document.querySelector("#full_version")
+  full_version.classList.toggle("on")
 })

@@ -35,6 +35,95 @@ body
   justify-content: flex-start
   background: var(--body-bk-color)
 
+#full_version
+  user-select: none
+  position: absolute
+  left: 0
+  top: 0
+  display: flex
+  min-width: 12%
+  max-width: 300px
+  height: 100%
+  // background: #222
+  flex-direction: column
+  // overflow: hidden
+  box-shadow: 0px 10px 38px -3px rgba(0, 0, 0, 0.1),0px 10px 15px -3px rgba(0, 0, 0, 0.1)
+  z-index: 199
+  transition: all 0.3s ease
+  &.on
+    min-width: 0%
+    width: 0px
+    .wrap
+      opacity: 0
+    .folding
+      // border-radius: 0 8px 8px 0
+      // right: -36px
+  .wrap
+    opacity: 100
+    width: 100%
+    height: 90%
+    transition: all 0.1s ease
+    ul
+      width: 100%
+      height: 100%
+      padding: 12px
+      box-sizing: border-box
+      display: flex
+      flex-direction: column
+      overflow-x: hidden
+      overflow-y: auto
+      row-gap: 8px
+      li
+        border-bottom: 1px solid #333
+        padding: 10px 40px 10px 20px
+        cursor: pointer
+        height: 100%
+        display: flex
+        // overflow: hidden
+        transition: background 0.1s ease
+        flex-direction: column
+        border-radius: 8px
+        background: #171717
+        &:hover
+          background: #555
+          h2
+            color: #ccc
+          p
+            color: #fff
+        h2
+          text-align: left
+          width: 100%
+          height: 20px
+          line-height: 20px
+          font-size: 14px
+          padding: 0
+          color: #777
+        p
+          text-overflow: ellipsis
+          width: 100%
+          font-size: 14px
+          color: #ccc
+  .open
+    height: 10%
+  .folding
+    width: 36px
+    height: 50px
+    font-size: 14px
+    position: absolute
+    display: flex
+    background: #222
+    right: -36px
+    cursor: pointer
+    color: #ccc
+    top: calc(50% - 25px)
+    justify-content: center
+    align-items: center
+    border-radius: 0 8px 8px 0
+    user-select: none
+    transition: all 0.3s ease
+    &:hover
+      background: #444
+
 #main_wrap
   background: var(--body-bk-color)
 
@@ -279,6 +368,7 @@ body
     align-items: flex-start
     justify-content: space-between
     /* transition: all 0.3s ease; */
+    overflow: hidden
     background: #232323
     &:hover
       background-color: rgb(30, 30, 30)

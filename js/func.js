@@ -1,4 +1,11 @@
-export { getById, getElement, random_bkcolor, startCountdown, uuid };
+export {
+  getById,
+  getElement,
+  random_bkcolor,
+  startCountdown,
+  uuid,
+  getCurrentDateTime
+};
 
 // 根据id后去元素
 function getById(id) {
@@ -53,3 +60,23 @@ function uuid() {
   var uuid = s.join("");
   return uuid;
 }
+
+// 获取当前时间
+function getCurrentDateTime() {
+  var now = new Date();
+  var year = now.getFullYear();
+  var month = now.getMonth() + 1; // 月份从0开始，所以要加1
+  var day = now.getDate();
+  var hours = now.getHours();
+  var minutes = now.getMinutes();
+
+  // 在月、日、时、分小于10时，前面添加0
+  month = month < 10 ? '0' + month : month;
+  day = day < 10 ? '0' + day : day;
+  hours = hours < 10 ? '0' + hours : hours;
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+
+  // 返回格式化后的日期时间字符串
+  return year + '/' + month + '/' + day + ' ' + hours + ':' + minutes;
+}
+
