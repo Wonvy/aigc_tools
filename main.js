@@ -52,7 +52,16 @@ let g_JSONdata;
 let storedData;
 
 
+// 点击历史记录
+document.querySelector('#full_version .wrap').addEventListener('click', function (event) {
+  const li = event.target.closest("li");
+  if (!li) { return };
+  const text_en = li.querySelector("p").textContent;
+  const text_zh = li.querySelector("p").dataset.zh;
+  if (text_en) { p_en.textContent = text_en };
+  if (text_zh) { p_zh.textContent = text_zh };
 
+})
 
 document.getElementById('file-input').addEventListener('change', function (event) {
   var file = event.target.files[0]; // 获取选择的文件
@@ -108,13 +117,15 @@ const Prompt_favorites = {
     let ul = document.querySelector('#full_version .wrap ul');
     storedData.forEach(function (item) {
       let li = document.createElement('li');
+      let div = document.createElement('div');
       let h2 = document.createElement('h2');
       let p = document.createElement('p');
       h2.textContent = item.time;
       p.textContent = item.en;
       p.dataset.zh = item.zh;
-      li.appendChild(h2);
-      li.appendChild(p);
+      div.appendChild(h2);
+      div.appendChild(p);
+      li.appendChild(div);
       ul.appendChild(li);
     });
   },
@@ -129,6 +140,7 @@ const Prompt_favorites = {
     h2.textContent = item.time;
     p.textContent = item.en;
     p.dataset.zh = item.zh;
+    li.dataset.uuid = uuid();
     li.appendChild(h2);
     li.appendChild(p);
     ul.appendChild(li);
@@ -1297,9 +1309,19 @@ function keyupEvent(event) {
 
 // 键盘按下
 function keydownEvent(event) {
+
+  // 检查是否按下了Ctrl键（或Cmd键）
+  let isCtrl = event.ctrlKey || event.metaKey;
+
   // 检查是否按下 Ctrl 键 (键码为 17)
   if (event.keyCode === 17) {
     ctrlPressed = true;
+  }
+
+  // 检查是否同时按下了S键
+  if (isCtrl && event.key === 's') {
+    event.preventDefault();
+    Prompt.save();
   }
 
   // 检查是否按下 ESC 键 (键码为 27)

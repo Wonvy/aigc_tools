@@ -19,9 +19,14 @@
       </ul>
     </div>
     <div class="open">
-      <input type="file" title="选择文件" id="file-input">
-      <div id="output"></div>
-
+      <label for="file-input" style="cursor: pointer;">
+        导入
+        <input type="file" id="file-input" accept=".txt,.xcel" style="display: none;">
+      </label>
+      <label for="file-out" style="cursor: pointer;">
+        导出
+        <input type="file" title="111" id="file-out" accept=".txt" style="display: none;">
+      </label>
     </div>
     <div class="folding">
       <i class="fa-solid fa-clock-rotate-left"></i>

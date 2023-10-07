@@ -4,7 +4,8 @@ export {
   random_bkcolor,
   startCountdown,
   uuid,
-  getCurrentDateTime
+  getCurrentDateTime,
+  sha256
 };
 
 // 根据id后去元素
@@ -60,6 +61,23 @@ function uuid() {
   var uuid = s.join("");
   return uuid;
 }
+
+// 哈希值
+// sha256(text1).then(hash1 => {
+//   console.log("Hash 1:", hash1);
+// });
+async function sha256(text) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+
+  // 将二进制哈希值转换为十六进制字符串
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+
+  return hashHex;
+}
+
 
 // 获取当前时间
 function getCurrentDateTime() {

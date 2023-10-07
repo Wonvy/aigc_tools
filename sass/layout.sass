@@ -55,6 +55,9 @@ body
     width: 0px
     .wrap
       opacity: 0
+    .open
+      opacity: 0
+      padding: 0
     .folding
       // border-radius: 0 8px 8px 0
       // right: -36px
@@ -104,7 +107,33 @@ body
           font-size: 14px
           color: #ccc
   .open
+    box-sizing: border-box
+    padding: 15px
+    width: 100%
     height: 10%
+    display: flex
+    flex-direction: row
+    column-gap: 15px
+    overflow: hidden
+    opacity: 1
+    transition: opacity 0.1s ease
+    transition: padding 0.3s ease
+    label
+      display: flex
+      width: 50%
+      height: 40px
+      background: #111
+      font-size: 15px
+      color: #fff
+      justify-content: center
+      align-items: center
+      border-radius: 5px
+      border: 1px solid transparent
+      transition: border,background 0.2s ease
+      &:hover
+        background: transparent
+        border: 1px solid #fff
+
   .folding
     width: 36px
     height: 50px

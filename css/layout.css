@@ -569,6 +569,10 @@ body {
 #full_version.on .wrap {
   opacity: 0;
 }
+#full_version.on .open {
+  opacity: 0;
+  padding: 0;
+}
 #full_version .wrap {
   opacity: 100;
   width: 100%;
@@ -622,7 +626,34 @@ body {
   color: #ccc;
 }
 #full_version .open {
+  box-sizing: border-box;
+  padding: 15px;
+  width: 100%;
   height: 10%;
+  display: flex;
+  flex-direction: row;
+  column-gap: 15px;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 0.1s ease;
+  transition: padding 0.3s ease;
+}
+#full_version .open label {
+  display: flex;
+  width: 50%;
+  height: 40px;
+  background: #111;
+  font-size: 15px;
+  color: #fff;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  transition: border, background 0.2s ease;
+}
+#full_version .open label:hover {
+  background: transparent;
+  border: 1px solid #fff;
 }
 #full_version .folding {
   width: 36px;
