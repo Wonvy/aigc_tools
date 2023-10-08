@@ -6,8 +6,13 @@
   --body-bk-color: #333
   --bk-color1: #111
   --bk-color3: #222
+  --bt-color1: #2d2d2d
+  --bt-color1-hover: #fff
+  --bt-color1-hover-bk: transparent
   --secondary-color: #ff5722
   --font-size: 16px
+  --color-tab-bk: #222
+  --color-tab-bk-hover: #111
 
 .tooltip
   position: fixed
@@ -57,12 +62,14 @@ body
     .container
       opacity: 0
   .container
+    display: flex
     padding: 15px 0 15px 0
     height: 100%
     width: 100%
     overflow: hidden
     opacity: 1
     transition: opacity 0.1s ease-in
+    flex-direction: column
     .nav
       box-sizing: border-box
       display: flex
@@ -110,12 +117,14 @@ body
           border-bottom: 1px solid #333
           padding: 10px 15px 10px 15px
           cursor: pointer
+          max-height: 20%
           height: 100%
           display: flex
-          // overflow: hidden
           transition: background 0.1s ease
           flex-direction: column
           border-radius: 8px
+          row-gap: 10px
+          overflow: hidden
           background: #171717
           &:hover
             background: #555
@@ -232,7 +241,7 @@ body
     justify-content: center
     background-color: #1d1d1d
     border-radius: 10px
-    box-shadow: 0px 10px 38px -3px rgba(0, 0, 0, 0.1),0px 10px 15px -3px rgba(0, 0, 0, 0.1)
+    // box-shadow: 0px 10px 38px -3px rgba(0, 0, 0, 0.1),0px 10px 15px -3px rgba(0, 0, 0, 0.1)
     #fixed-header
       width: 30%
       height: 100%
@@ -373,7 +382,7 @@ body
 
     &:hover
       border-color: #4d4d4d
-      box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.3)
+      // box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.3)
       button
         &:nth-child(n + 1):nth-child(-n + 3)
           opacity: 1
@@ -385,6 +394,7 @@ body
   flex-direction: row
   flex-wrap: wrap
   width: 100%
+  overflow: hidden
   // max-width: 1200px
   position: relative
   z-index: 2
@@ -477,7 +487,10 @@ body
           padding: 0 10px 0 10px
           left: 20px
           margin: 0
-        &:nth-child(n + 2):nth-child(-n + 5)
+        &:nth-child(2)
+          position: absolute
+          left: 130px
+        &:nth-child(n + 3):nth-child(-n + 5)
           background-color: transparent
           min-width: 35px
           margin: 0
@@ -553,10 +566,10 @@ body
   .status_bar
     justify-content: flex-start
     button
-      background: #171717
-      &:hover
-        background: #fff
-        color: #333
+      background: var(--bt-color1)
+      &:hover,&.on
+        background: var(--bt-color1-hover-bk)
+        color: var(--bt-color1-hover)
 
   .resize // 拖拽条
     position: absolute
@@ -623,7 +636,7 @@ body
   flex-direction: column
   align-content: center
   flex-wrap: nowrap
-  border-radius: 0 0 8px 8px
+  border-radius: 8px
   overflow: hidden
   transition: top 0.3s ease
   z-index: 1
@@ -641,7 +654,10 @@ body
       z-index: 82
       height: 100%
       display: flex
-      background-color: rgb(20 20 20)
+      background-color: var(--color-tab-bk)
+      transition: background-color 0.15s ease
+      &:hover
+        background-color: var(--color-tab-bk-hover)
       #commonds
         display: flex
         color: #999
@@ -654,7 +670,7 @@ body
         column-gap: 12px
         row-gap: 12px
         align-content: center
-        background: rgb(20 20 20)
+        background: var(--color-tab-bk)
         >div
           display: flex
           flex-direction: row

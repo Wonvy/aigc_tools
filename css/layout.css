@@ -103,13 +103,22 @@ button#bt_copy:hover {
   background-color: #fff;
 }
 
+:root {
+  --color-tab-bk: #222;
+  --color-tab-bk-hover: #111;
+}
+
 .view_svg {
   width: 100%;
   height: 100%;
   display: flex;
-  background-color: #111;
+  background-color: var(--color-tab-bk);
   z-index: 81;
   overflow-x: auto;
+  transition: background-color 0.15s ease;
+}
+.view_svg:hover {
+  background-color: var(--color-tab-bk-hover);
 }
 .view_svg ul {
   box-sizing: border-box;
@@ -184,8 +193,12 @@ button#bt_copy:hover {
   width: 100%;
   height: 100%;
   display: flex;
-  background-color: rgb(20, 20, 20);
+  background-color: var(--color-tab-bk);
   overflow-x: auto;
+  transition: background-color 0.15s ease;
+}
+.view_img:hover {
+  background-color: var(--color-tab-bk-hover);
 }
 .view_img ul {
   box-sizing: border-box;
@@ -516,8 +529,13 @@ button#bt_copy:hover {
   --body-bk-color: #333;
   --bk-color1: #111;
   --bk-color3: #222;
+  --bt-color1: #2d2d2d;
+  --bt-color1-hover: #fff;
+  --bt-color1-hover-bk: transparent;
   --secondary-color: #ff5722;
   --font-size: 16px;
+  --color-tab-bk: #222;
+  --color-tab-bk-hover: #111;
 }
 
 .tooltip {
@@ -571,12 +589,14 @@ body {
   opacity: 0;
 }
 #full_version .container {
+  display: flex;
   padding: 15px 0 15px 0;
   height: 100%;
   width: 100%;
   overflow: hidden;
   opacity: 1;
   transition: opacity 0.1s ease-in;
+  flex-direction: column;
 }
 #full_version .container .nav {
   box-sizing: border-box;
@@ -633,11 +653,14 @@ body {
   border-bottom: 1px solid #333;
   padding: 10px 15px 10px 15px;
   cursor: pointer;
+  max-height: 20%;
   height: 100%;
   display: flex;
   transition: background 0.1s ease;
   flex-direction: column;
   border-radius: 8px;
+  row-gap: 10px;
+  overflow: hidden;
   background: #171717;
 }
 #full_version .container .wrap ul li:hover {
@@ -770,7 +793,6 @@ body {
   justify-content: center;
   background-color: #1d1d1d;
   border-radius: 10px;
-  box-shadow: 0px 10px 38px -3px rgba(0, 0, 0, 0.1), 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 #full_screen .full_screen-wrap #fixed-header {
   width: 30%;
@@ -933,7 +955,6 @@ body {
 }
 #main > div:hover {
   border-color: #4d4d4d;
-  box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.3);
 }
 #main > div:hover button:nth-child(n+1):nth-child(-n+3) {
   opacity: 1;
@@ -946,6 +967,7 @@ body {
   flex-direction: row;
   flex-wrap: wrap;
   width: 100%;
+  overflow: hidden;
   position: relative;
   z-index: 2;
 }
@@ -1052,13 +1074,17 @@ body {
   left: 20px;
   margin: 0;
 }
-.main-wrap .en_wrap .status_bar button:nth-child(n+2):nth-child(-n+5) {
+.main-wrap .en_wrap .status_bar button:nth-child(2) {
+  position: absolute;
+  left: 130px;
+}
+.main-wrap .en_wrap .status_bar button:nth-child(n+3):nth-child(-n+5) {
   background-color: transparent;
   min-width: 35px;
   margin: 0;
   padding: 0;
 }
-.main-wrap .en_wrap .status_bar button:nth-child(n+2):nth-child(-n+5):hover {
+.main-wrap .en_wrap .status_bar button:nth-child(n+3):nth-child(-n+5):hover {
   color: #fff;
 }
 .main-wrap .en_wrap #en_tabs {
@@ -1134,11 +1160,11 @@ body {
   justify-content: flex-start;
 }
 .main-wrap .status_bar button {
-  background: #171717;
+  background: var(--bt-color1);
 }
-.main-wrap .status_bar button:hover {
-  background: #fff;
-  color: #333;
+.main-wrap .status_bar button:hover, .main-wrap .status_bar button.on {
+  background: var(--bt-color1-hover-bk);
+  color: var(--bt-color1-hover);
 }
 .main-wrap .resize {
   position: absolute;
@@ -1212,7 +1238,7 @@ body {
   flex-direction: column;
   align-content: center;
   flex-wrap: nowrap;
-  border-radius: 0 0 8px 8px;
+  border-radius: 8px;
   overflow: hidden;
   transition: top 0.3s ease;
   z-index: 1;
@@ -1233,7 +1259,11 @@ body {
   z-index: 82;
   height: 100%;
   display: flex;
-  background-color: rgb(20, 20, 20);
+  background-color: var(--color-tab-bk);
+  transition: background-color 0.15s ease;
+}
+.div_after > div.tab_default:hover {
+  background-color: var(--color-tab-bk-hover);
 }
 .div_after > div.tab_default #commonds {
   display: flex;
@@ -1247,7 +1277,7 @@ body {
   column-gap: 12px;
   row-gap: 12px;
   align-content: center;
-  background: rgb(20, 20, 20);
+  background: var(--color-tab-bk);
 }
 .div_after > div.tab_default #commonds > div {
   display: flex;

@@ -264,10 +264,9 @@ const Prompt = {
     }
   },
 
-  // 清空提示词
-  clear: function (event) {
 
-
+  // 新建提示词
+  new: function (event) {
     p_en.innerHTML = "";
     p_zh.innerHTML = "";
     localStorage.setItem("last_text", "");
@@ -286,6 +285,27 @@ const Prompt = {
     lis.forEach((li) => {
       li.classList.remove("selected");
     });
+    p_zh.focus();
+  },
+
+  // 清空提示词
+  clear: function (event) {
+    p_en.innerHTML = "";
+    p_zh.innerHTML = "";
+    localStorage.setItem("last_text", "");
+    while (ul_en.firstChild) {
+      ul_en.removeChild(ul_en.firstChild);
+    }
+
+    while (ul_zh.firstChild) {
+      ul_zh.removeChild(ul_zh.firstChild);
+    }
+
+    const lis = document.querySelectorAll("li.selected");
+    lis.forEach((li) => {
+      li.classList.remove("selected");
+    });
+    p_zh.focus();
   },
 
   // 格式化提示词
@@ -385,7 +405,6 @@ const Prompt = {
         .join(" ");
     });
   },
-
 
 
   // 保存提示词
@@ -1283,6 +1302,7 @@ getElement("#full_screen button.close").addEventListener(
   full_screenclose,
 );
 
+getById("bt_new").addEventListener("click", Prompt.new); // 新建
 getById("bt_save").addEventListener("click", Prompt.save); // 保存
 getById("bt_copy").addEventListener("click", Prompt.copy); // 复制
 getById("bt_paste").addEventListener("click", Prompt.paste); // 粘贴
