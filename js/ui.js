@@ -73,7 +73,10 @@ class Resize {
       document.addEventListener("mousemove", mousemove, false);
       document.addEventListener("mouseup", mouseup, false);
       resize.classList.add("mg");
-      start_clientWidth = parent.offsetWidth;
+      start_clientWidth = parent.getBoundingClientRect().width;
+      // start_clientWidth = parent.offsetWidth;
+
+      console.log("offsetWidth", start_clientWidth)
       start_screenX = event.clientX;
       start_leftX = parent.offsetLeft;
       console.log("start_clientWidth", start_clientWidth);
@@ -85,7 +88,7 @@ class Resize {
     // 鼠标移动
     function mousemove(event) {
       let offerX = event.clientX - start_leftX;
-      console.log(offerX);
+      // console.log(offerX);
 
       if (offerX <= 80) {
         offerX = 40;

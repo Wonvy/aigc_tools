@@ -145,7 +145,6 @@ const Prompt_favorites = {
 
   // 删除
   del: function (uuid) {
-
     storedData = removeRecordByUUID(storedData, uuid);
     localStorage.setItem('storedData', JSON.stringify(storedData));
 
@@ -174,12 +173,22 @@ const Prompt_favorites = {
 
   // 导出
   export: function () {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-based
+    const day = currentDate.getDate().toString().padStart(2, '0');
+    const hours = currentDate.getHours().toString().padStart(2, '0');
+    const minutes = currentDate.getMinutes().toString().padStart(2, '0');
+    const seconds = currentDate.getSeconds().toString().padStart(2, '0');
+
+    const fileName = `PromptData_${year}-${month}-${day}(${hours}-${minutes}-${seconds}).json`;
+
     let data = JSON.stringify(storedData);
     let blob = new Blob([data], { type: 'text/plain' });
     let url = URL.createObjectURL(blob);
     let a = document.createElement('a');
     a.href = url;
-    a.download = 'backup.json';
+    a.download = fileName;
     a.click();
     // 释放URL对象
     URL.revokeObjectURL(url);
@@ -225,9 +234,12 @@ const Prompt_favorites = {
 
   // 清空所有
   clearAll: function () {
-    storedData = [];
-    localStorage.setItem('storedData', JSON.stringify(storedData));
-    Prompt_favorites.load();
+    const isConfirmed = confirm("确定要清空所有的提示词吗？");
+    if (isConfirmed) {
+      storedData = [];
+      localStorage.setItem('storedData', JSON.stringify(storedData));
+      Prompt_favorites.load();
+    }
   }
 
 }

@@ -685,7 +685,7 @@ body {
   height: 70px;
   display: flex;
   flex-direction: row;
-  column-gap: 15px;
+  column-gap: 10px;
   overflow: hidden;
   opacity: 1;
   transition: opacity 0.1s ease;
@@ -695,7 +695,7 @@ body {
 }
 #full_version .container .open label {
   display: flex;
-  width: 50%;
+  padding: 0 15px 0 15px;
   height: 34px;
   background: #111;
   font-size: 15px;
@@ -852,7 +852,7 @@ body {
   grid-template-columns: 1fr 4fr;
   grid-template-rows: 3fr 1fr;
   grid-column-gap: 20px;
-  grid-row-gap: 0px;
+  grid-row-gap: 18px;
   padding: 5%;
   background-color: var(--body-bk-color);
 }
