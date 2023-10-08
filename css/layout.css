@@ -558,6 +558,7 @@ body {
   max-width: 300px;
   height: 100%;
   flex-direction: column;
+  background: #232222;
   box-shadow: 0px 10px 38px -3px rgba(0, 0, 0, 0.1), 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
   z-index: 199;
   transition: all 0.3s ease;
@@ -566,20 +567,58 @@ body {
   min-width: 0%;
   width: 0px;
 }
-#full_version.on .wrap {
+#full_version.on .container {
   opacity: 0;
 }
-#full_version.on .open {
-  opacity: 0;
-  padding: 0;
+#full_version .container {
+  padding: 15px 0 15px 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 0.1s ease-in;
 }
-#full_version .wrap {
+#full_version .container .nav {
+  box-sizing: border-box;
+  display: flex;
+  height: 40px;
+  width: 100%;
+  padding: 0 15px 0 15px;
+  align-content: center;
+}
+#full_version .container .nav h2 {
+  font-size: 16px;
+  width: 100%;
+  padding-left: 10px;
+}
+#full_version .container .nav p {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: row;
+  column-gap: 20px;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+}
+#full_version .container .nav p i {
+  font-size: 14px;
+  color: #666;
+}
+#full_version .container .nav p i:hover {
+  color: #ccc;
+}
+#full_version .container .nav p i.on {
+  color: #eee;
+}
+#full_version .container .wrap {
   opacity: 100;
   width: 100%;
-  height: 90%;
+  height: calc(100% - 90px);
   transition: all 0.1s ease;
+  overflow: hidden;
 }
-#full_version .wrap ul {
+#full_version .container .wrap ul {
   width: 100%;
   height: 100%;
   padding: 12px;
@@ -590,9 +629,9 @@ body {
   overflow-y: auto;
   row-gap: 8px;
 }
-#full_version .wrap ul li {
+#full_version .container .wrap ul li {
   border-bottom: 1px solid #333;
-  padding: 10px 40px 10px 20px;
+  padding: 10px 15px 10px 15px;
   cursor: pointer;
   height: 100%;
   display: flex;
@@ -601,16 +640,20 @@ body {
   border-radius: 8px;
   background: #171717;
 }
-#full_version .wrap ul li:hover {
+#full_version .container .wrap ul li:hover {
   background: #555;
 }
-#full_version .wrap ul li:hover h2 {
+#full_version .container .wrap ul li:hover h2 {
   color: #ccc;
 }
-#full_version .wrap ul li:hover p {
+#full_version .container .wrap ul li:hover h2 p {
+  visibility: visible;
+}
+#full_version .container .wrap ul li:hover p {
   color: #fff;
 }
-#full_version .wrap ul li h2 {
+#full_version .container .wrap ul li h2 {
+  display: flex;
   text-align: left;
   width: 100%;
   height: 20px;
@@ -618,30 +661,42 @@ body {
   font-size: 14px;
   padding: 0;
   color: #777;
+  justify-content: space-between;
 }
-#full_version .wrap ul li p {
+#full_version .container .wrap ul li h2 span {
+  width: 100%;
+}
+#full_version .container .wrap ul li h2 p {
+  display: flex;
+  visibility: hidden;
+  column-gap: 12px;
+  justify-content: flex-end;
+}
+#full_version .container .wrap ul li p {
   text-overflow: ellipsis;
   width: 100%;
   font-size: 14px;
   color: #ccc;
 }
-#full_version .open {
+#full_version .container .open {
   box-sizing: border-box;
-  padding: 15px;
+  padding: 0 15px 0 15px;
   width: 100%;
-  height: 10%;
+  height: 70px;
   display: flex;
   flex-direction: row;
   column-gap: 15px;
   overflow: hidden;
   opacity: 1;
   transition: opacity 0.1s ease;
-  transition: padding 0.3s ease;
+  cursor: pointer;
+  align-items: center;
+  justify-content: flex-end;
 }
-#full_version .open label {
+#full_version .container .open label {
   display: flex;
   width: 50%;
-  height: 40px;
+  height: 34px;
   background: #111;
   font-size: 15px;
   color: #fff;
@@ -651,9 +706,12 @@ body {
   border: 1px solid transparent;
   transition: border, background 0.2s ease;
 }
-#full_version .open label:hover {
+#full_version .container .open label:hover {
   background: transparent;
   border: 1px solid #fff;
+}
+#full_version .container .open label input {
+  display: none;
 }
 #full_version .folding {
   width: 36px;
@@ -818,12 +876,6 @@ body {
 #main > div.left.on {
   border: 2px solid #fff;
 }
-#main > div.left iframe {
-  width: 100%;
-  height: calc(100% - 40px);
-  border-radius: 0 0 8px 8px;
-  overflow: hidden;
-}
 #main > div.left footer {
   height: 40px;
   overflow: hidden;
@@ -847,6 +899,37 @@ body {
 }
 #main > div.left footer ul li img {
   height: 20px;
+}
+#main > div.left .wrap {
+  width: 100%;
+  height: calc(100% - 40px);
+  position: relative;
+}
+#main > div.left .wrap iframe {
+  width: 100%;
+  height: 100%;
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+}
+#main > div.left .wrap .info {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  justify-content: center;
+  align-items: center;
+}
+#main > div.left .wrap .info p {
+  color: #fff;
+  font-size: 18px;
+}
+#main > div.left .wrap .info.on {
+  z-index: 99;
 }
 #main > div:hover {
   border-color: #4d4d4d;

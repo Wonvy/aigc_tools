@@ -13,21 +13,33 @@
 
 <body>
 
-  <div id="full_version">
-    <div class="wrap">
-      <ul>
-      </ul>
+  <div id="full_version" class="on">
+
+    <div class="container">
+      <div class="nav">
+        <h2>收藏夹</h2>
+        <p>
+          <i class="lang_zh on">中</i>
+          <i class="lang_en">EN</i>
+        </p>
+
+      </div>
+      <div class="wrap">
+        <ul>
+        </ul>
+      </div>
+      <div class="open">
+        <button class="clearAll">清空</button>
+        <label for="file-input" title="导入">
+          导入
+          <input type="file" id="file-input" title="导入" accept=".json" style="display: none;">
+        </label>
+        <button class="export">导出</button>
+
+      </div>
     </div>
-    <div class="open">
-      <label for="file-input" style="cursor: pointer;">
-        导入
-        <input type="file" id="file-input" accept=".txt,.xcel" style="display: none;">
-      </label>
-      <label for="file-out" style="cursor: pointer;">
-        导出
-        <input type="file" title="111" id="file-out" accept=".txt" style="display: none;">
-      </label>
-    </div>
+
+
     <div class="folding">
       <i class="fa-solid fa-clock-rotate-left"></i>
     </div>
@@ -97,7 +109,14 @@
           </li> -->
         </ul>
       </footer>
-      <iframe src="https://lexica.art/" frameborder="0" title="lexica"></iframe>
+      <div class="wrap">
+        <iframe src="https://lexica.art/" frameborder="0" title="lexica"></iframe>
+        <div class="info on">
+          <p>正在加载</p>
+        </div>
+      </div>
+
+
 
     </div>
 
@@ -156,7 +175,7 @@
             <li data-tab="tab1" data-tooltip="段落" data-class="tab1" class="active"><i
                 class="fa-regular fa-pen-to-square"></i></li>
             <li data-tab="tab2" data-tooltip="分行显示1" data-class="tab2"><i class="fa-solid fa-align-left"></i></li>
-            <li data-tab="tab2" data-tooltip="分行显示2" data-class="view3"><i class="fa-solid fa-align-justify"></i>"></i>
+            <li data-tab="tab2" data-tooltip="分行显示2" data-class="view3"><i class="fa-solid fa-align-justify"></i>
             </li>
           </ul>
         </nav>

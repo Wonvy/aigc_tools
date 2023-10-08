@@ -1,5 +1,5 @@
 "use strict";
-console.log(this === undefined); // 输出 true 表示严格模式启用
+console.log("严格模式:", this === undefined); // 输出 true 表示严格模式启用
 
 import { translate_API, translate_tmt } from "./js/translate.js";
 import { Resize } from "./js/ui.js";
@@ -7,6 +7,7 @@ import {
   getById,
   getElement,
   uuid,
+  sha256,
   random_bkcolor,
   startCountdown,
   getCurrentDateTime
@@ -27,6 +28,8 @@ const ul_zh = getById("ul_zh"); // 英文翻译按钮
 
 const line_en = getElement("#word_edit_en ul");
 const line_zh = getElement("#word_edit ul");
+
+let show_en = false;
 // 元素拖拽
 
 let lastparent_uuid = "";
@@ -52,125 +55,179 @@ let g_JSONdata;
 let storedData;
 
 
-// 点击历史记录
-document.querySelector('#full_version .wrap').addEventListener('click', function (event) {
-  const li = event.target.closest("li");
-  if (!li) { return };
-  const text_en = li.querySelector("p").textContent;
-  const text_zh = li.querySelector("p").dataset.zh;
-  if (text_en) { p_en.textContent = text_en };
-  if (text_zh) { p_zh.textContent = text_zh };
-
-})
-
-document.getElementById('file-input').addEventListener('change', function (event) {
-  var file = event.target.files[0]; // 获取选择的文件
-  var reader = new FileReader();
-
-  reader.onload = function () {
-    var content = reader.result; // 获取文件内容
-    var lines = content.split('\n'); // 将内容按行拆分
-
-    console.log(lines);
-
-    var jsonArray = [];
-
-    // 逐行处理数据
-    // lines.forEach(function (line) {
-    // 去除每行的前导和尾随空格
-    // line = line.trim();
-
-    //   // 将每行数据转为 JSON 对象
-    //   try {
-    //     var jsonLine = JSON.parse(line);
-    //     jsonArray.push(jsonLine);
-    //   } catch (error) {
-    //     console.error('Error parsing JSON:', error);
-    //     console.log('Invalid JSON:', line); // 打印出无法解析的行
-    //   }
-    // });
-
-    // // 将结果显示在页面上
-    // document.getElementById('output').textContent = JSON.stringify(jsonArray, null, 2);
-  };
-
-  reader.readAsText(file); // 以文本形式读取文件内容
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
 // 提示词收藏夹
 const Prompt_favorites = {
+
+  // 渲染
+  render: function (ul, item) {
+    let li = document.createElement('li');
+    let h2 = document.createElement('h2');
+    let p = document.createElement('p');
+    let h2_p = document.createElement('p');
+    let span = document.createElement('span');
+    h2_p.innerHTML = `<i class="li_edit fa-solid fa-pen"></i><i class="del fa-solid fa-trash-can"></i>`
+    span.textContent = item.time;
+    h2.appendChild(span);
+    h2.appendChild(h2_p);
+    if (show_en) {
+      p.textContent = item.en;
+    } else {
+      p.textContent = item.zh;
+    }
+    p.dataset.zh = item.zh;
+    p.dataset.en = item.en;
+    li.appendChild(h2);
+    li.appendChild(p);
+    li.dataset.uuid = item.uuid;
+    ul.appendChild(li);
+    return li;
+  },
+
+
   // 加载
   load: function () {
     storedData = JSON.parse(localStorage.getItem('storedData')) || [];
     let ul = document.querySelector('#full_version .wrap ul');
+    while (ul.firstChild) { ul.removeChild(ul.firstChild); }
     storedData.forEach(function (item) {
-      let li = document.createElement('li');
-      let div = document.createElement('div');
-      let h2 = document.createElement('h2');
-      let p = document.createElement('p');
-      h2.textContent = item.time;
-      p.textContent = item.en;
-      p.dataset.zh = item.zh;
-      div.appendChild(h2);
-      div.appendChild(p);
-      li.appendChild(div);
-      ul.appendChild(li);
-    });
+      this.render(ul, item);
+    }.bind(this));
   },
+
+
+  // 导入
+  import: function (event) {
+    var fileInput = document.getElementById('file-input');
+    var file = fileInput.files[0];
+    var self = this; // 保存Prompt_favorites对象的引用
+    if (file) {
+      var reader = new FileReader();
+      reader.onload = function (event) {
+        try {
+          let jsonData = JSON.parse(event.target.result); // 解析JSON数据       
+          storedData = jsonData; // 替换全局的data变量
+          console.log('替换后的data:', storedData); // 打印替换后的data
+          localStorage.setItem('storedData', JSON.stringify(storedData));
+          Prompt_favorites.load();
+        } catch (error) {
+          console.error('无法解析JSON文件:', error);
+        }
+      };
+      reader.readAsText(file);
+    } else {
+      console.error('未选择文件');
+    }
+  },
+
+  // 是否包含指定的uuid
+  has_uuid: function (uuidstr) {
+    console.log("uuidstr", uuidstr);
+    if (!uuidstr) {
+      return false
+    };
+    const isUuidExist = storedData.some(item => item.uuid === uuidstr);
+    if (isUuidExist) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
 
   // 添加
   add: function (item) {
     storedData.push(item);
     let ul = document.querySelector('#full_version .wrap ul');
-    let li = document.createElement('li');
-    let h2 = document.createElement('h2');
-    let p = document.createElement('p');
-    h2.textContent = item.time;
-    p.textContent = item.en;
-    p.dataset.zh = item.zh;
-    li.dataset.uuid = uuid();
-    li.appendChild(h2);
-    li.appendChild(p);
-    ul.appendChild(li);
-    localStorage.setItem('storedData', JSON.stringify(storedData));
+    let li = this.render(ul, item);
     li.scrollIntoView();
+    localStorage.setItem('storedData', JSON.stringify(storedData));
   },
 
   // 删除
-  del: function (index) {
-    storedData.splice(index, 1);
+  del: function (uuid) {
+
+    storedData = removeRecordByUUID(storedData, uuid);
     localStorage.setItem('storedData', JSON.stringify(storedData));
+
+    function removeRecordByUUID(jsonArray, uuid) {
+      return jsonArray.filter(item => item.uuid !== uuid);
+    }
+
+    // function replaceRecordByUUID(jsonArray, newRecord, uuid) {
+    //   return jsonArray.map(item => {
+    //     if (item.uuid === uuid) {
+    //       // 如果uuid匹配，替换记录的字段
+    //       return {
+    //         time: newRecord.time || item.time,
+    //         en: newRecord.en || item.en,
+    //         zh: newRecord.zh || item.zh,
+    //         hash: newRecord.hash || item.hash,
+    //         uuid: item.uuid // 保持原有的uuid
+    //       };
+    //     }
+    //     return item; // 如果uuid不匹配，保持原有的记录
+    //   });
+    // }
+
+
   },
 
-  open: function (event) {
-
-  },
-
-  // 备份
-  back: function () {
-    var data = JSON.stringify(storedData);
-    var blob = new Blob([data], { type: 'text/plain' });
-    var url = URL.createObjectURL(blob);
-
-    var a = document.createElement('a');
+  // 导出
+  export: function () {
+    let data = JSON.stringify(storedData);
+    let blob = new Blob([data], { type: 'text/plain' });
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement('a');
     a.href = url;
-    a.download = 'backup.txt';
+    a.download = 'backup.json';
     a.click();
-
     // 释放URL对象
     URL.revokeObjectURL(url);
+  },
+
+  // 编辑
+  edit: function (uuid, new_item) {
+    let newdata2 = replaceRecordByUUID(storedData, new_item, uuid);
+
+    localStorage.setItem('storedData', JSON.stringify(newdata2));
+
+    // 修改已加载的li
+    let li = document.querySelector(`#full_version li[data-uuid="${uuid}"]`);
+    if (!li) { return }
+    li.innerHTML = `
+    <h2>
+      <span>${new_item.time}</span>
+      <p>
+        <i class="li_edit fa-solid fa-pen"></i>
+        <i class="del fa-solid fa-trash-can"></i>
+      </p>
+    </h2>
+    <p data-zh="${new_item.zh}" data-en="${new_item.en}">
+      ${show_en ? new_item.en : new_item.zh}
+    </p>`
+
+    function replaceRecordByUUID(jsonArray, newRecord, uuid) {
+      return jsonArray.map(item => {
+        if (item.uuid === uuid) {
+          // 如果uuid匹配，替换记录的字段
+          return {
+            time: newRecord.time || item.time,
+            en: newRecord.en || item.en,
+            zh: newRecord.zh || item.zh,
+            hash: newRecord.hash || item.hash,
+            uuid: item.uuid // 保持原有的uuid
+          };
+        }
+        return item; // 如果uuid不匹配，保持原有的记录
+      });
+    }
+  },
+
+  // 清空所有
+  clearAll: function () {
+    storedData = [];
+    localStorage.setItem('storedData', JSON.stringify(storedData));
+    Prompt_favorites.load();
   }
 
 }
@@ -197,6 +254,8 @@ const Prompt = {
 
   // 清空提示词
   clear: function (event) {
+
+
     p_en.innerHTML = "";
     p_zh.innerHTML = "";
     localStorage.setItem("last_text", "");
@@ -207,6 +266,9 @@ const Prompt = {
     while (ul_zh.firstChild) {
       ul_zh.removeChild(ul_zh.firstChild);
     }
+    const uuidstr = uuid();
+    p_en.dataset.uuid = uuidstr;
+    p_zh.dataset.uuid = uuidstr;
 
     const lis = document.querySelectorAll("li.selected");
     lis.forEach((li) => {
@@ -312,17 +374,42 @@ const Prompt = {
     });
   },
 
+
+
   // 保存提示词
   save: function (event) {
-    var item = {
-      "time": getCurrentDateTime(),
-      "en": p_en.innerText,
-      "zh": p_zh.innerText
-    };
-    Prompt_favorites.add(item);
-    // localStorage.setItem("last_text", p_en.innerText);
-    startCountdown(document.getElementById("bt_save"));
-    // Prompt_favorites.back();
+    let uuidtext = p_en.dataset.uuid;
+    if (!uuidtext) {
+      p_en.dataset.uuid = uuid();
+      uuidtext = p_en.dataset.uuid;
+    }
+
+    console.log("uuid: ", uuidtext)
+    sha256(p_en.innerText).then(hash => {
+
+      // 判断uuid是否存在
+      console.log("has", Prompt_favorites.has_uuid(uuidtext))
+      if (Prompt_favorites.has_uuid(uuidtext)) {
+        let item = {
+          "time": getCurrentDateTime(),
+          "en": p_en.innerText,
+          "zh": p_zh.innerText,
+          "hash": hash,
+          "uuid": uuidtext
+        };
+        Prompt_favorites.edit(uuidtext, item);
+      } else {
+        let item = {
+          "time": getCurrentDateTime(),
+          "en": p_en.innerText,
+          "zh": p_zh.innerText,
+          "hash": hash,
+          "uuid": uuidtext
+        };
+        Prompt_favorites.add(item);
+        startCountdown(document.getElementById("bt_save"));
+      }
+    });
 
   },
 
@@ -353,10 +440,11 @@ const Prompt = {
         while (line_zh.firstChild) {
           line_zh.removeChild(line_zh.firstChild)
         };
-
+        const uuidstr = uuid();
+        p_en.dataset.uuid = uuidstr;
+        p_zh.dataset.uuid = uuidstr;
         document.getElementById("p_en").innerText = clipboardText;
         startCountdown(document.getElementById("bt_paste"), "成功");
-
         Translates.toZH(); // 翻译成中文
         localStorage.setItem("last_text", clipboardText); //  保存到最后一次
       })
@@ -766,16 +854,16 @@ const Translates = {
 
 JSONS.init()
 Prompt_favorites.load();
-console.log("Prompt_favorites", storedData)
-// x
+// console.log("Prompt_favorites", storedData)
+
 
 // wheel 鼠标滚轮
 document.querySelectorAll(".div_after > div").forEach(function (div) {
-  div.addEventListener("wheel", tab_wheel);
+  div.addEventListener("wheel", tab_wheel, { passive: true });
 });
 
 
-getElement(".zh_wrap .status_bar").addEventListener("wheel", tab_wheel);
+getElement(".zh_wrap .status_bar").addEventListener("wheel", tab_wheel, { passive: true });
 // 添加鼠标滚轮事件监听器
 function tab_wheel(event) {
   // console.log(event.target);
@@ -835,15 +923,35 @@ document.querySelector("#ul_en").addEventListener("click", function (event) {
   let url2 = `https://prompthero.com/search?model=Midjourney&q=${q}`
   iframe.src = url1;
   let left = iframe.closest(".left")
+  const info = left.querySelector(".info")
+
 
   const hasclicked = document.querySelector("#ul_en li.clicked");
   if (hasclicked) {
+    info.classList.add("on")
     left.classList.add("on")
+
   } else {
+    info.classList.contains("on") && info.classList.remove("on")
     left.classList.contains("on") && left.classList.remove("on")
   }
 
 })
+
+
+// .left mouseover
+document.querySelector("#main .left").addEventListener("mouseover", function (event) {
+  let left = document.querySelector("#main .left");
+  left.classList.contains("on") && left.classList.remove("on")
+})
+
+
+// 监听 iframe 的 load 事件
+document.querySelector("iframe").addEventListener('load', function () {
+  let info = document.querySelector("#main .left .info");
+  info.classList.contains("on") && info.classList.remove("on")
+  console.log('外链网页加载完成！');
+});
 
 
 // tab切换
@@ -1463,26 +1571,104 @@ function checkWebsiteAvailability(url) {
     });;
 }
 
+
 // 检查网站可访问性并显示/隐藏iframe
-checkWebsiteAvailability("https://www.baidu.com/")
-  .then(function () {
-    const iframe = document.querySelector("iframe");
-    iframe.style.display = "block";
-  })
-  .catch((error) => {
-    const iframe = document.querySelector("iframe");
-    iframe.style.display = "none";
-    console.error("web_Error11111111111111:", error);
-  });
+// checkWebsiteAvailability("https://www.baidu.com/")
+//   .then(function () {
+//     const iframe = document.querySelector("iframe");
+//     iframe.style.display = "block";
+//   })
+//   .catch((error) => {
+//     const iframe = document.querySelector("iframe");
+//     iframe.style.display = "none";
+//     console.error("web_Error11111111111111:", error);
+//   });
 
-// .left mouseover
-document.querySelector("#main .left").addEventListener("mouseover", function (event) {
-  let left = document.querySelector("#main .left");
-  left.classList.contains("on") && left.classList.remove("on")
+
+
+// 历史记录 - 预览
+document.querySelector('#full_version').addEventListener('click', function (event) {
+  const classLists = event.target.classList;
+  const full_version = document.querySelector("#full_version")
+  const lang_en = document.querySelector("#full_version .lang_en");
+  const lang_zh = document.querySelector("#full_version .lang_zh");
+
+  // 折叠
+  if (classLists.contains('folding') || event.target.parentNode.classList.contains('folding')) {
+    full_version.classList.toggle("on")
+    return;
+  }
+
+  // 导出
+  if (classLists.contains('export')) {
+    Prompt_favorites.export();
+    return;
+  }
+
+  //  清空数据
+  if (classLists.contains('clearAll')) {
+    Prompt_favorites.clearAll();
+    return;
+  }
+
+  // 显示中文
+  if (classLists.contains('lang_zh')) {
+    show_en = false;
+    lang_en.classList.contains("on") && lang_en.classList.remove("on");
+    lang_zh.classList.add("on");
+    const li_ps = document.querySelectorAll('#full_version .wrap li > p');
+    li_ps.forEach(function (p) {
+      p.innerText = p.dataset.zh;
+    });
+    return;
+  }
+
+  // 显示英文
+  if (classLists.contains('lang_en')) {
+    show_en = true;
+    lang_zh.classList.contains("on") && lang_zh.classList.remove("on");
+    lang_en.classList.add("on");
+    const li_ps = document.querySelectorAll('#full_version .wrap li > p');
+    li_ps.forEach(function (p) {
+      p.innerText = p.dataset.en;
+    });
+    return;
+  }
+
+  console.log(111);
+  const li = event.target.closest("li");
+  if (!li) { return };
+  const uuid = li.dataset.uuid;
+  if (!uuid) { return };
+
+  // 编辑记录
+  if (classLists.contains('li_edit')) {
+    alert("编辑");
+    return;
+  }
+
+  // 删除
+  if (event.target.classList.contains('del')) {
+    Prompt_favorites.del(uuid);
+    li.remove();
+    return;
+  }
+
+  // 加载
+  const text_en = li.querySelector("[data-en]").dataset.en;
+  const text_zh = li.querySelector("[data-zh]").dataset.zh;
+  if (text_en) {
+    p_en.textContent = text_en;
+    p_en.dataset.uuid = uuid;
+  };
+  if (text_zh) {
+    p_zh.textContent = text_zh
+    p_zh.dataset.uuid = uuid;
+  };
+
 })
 
+document.getElementById('file-input').addEventListener('change', Prompt_favorites.import);
 
-document.querySelector("#full_version .folding").addEventListener("click", function (event) {
-  let full_version = document.querySelector("#full_version")
-  full_version.classList.toggle("on")
-})
+
+

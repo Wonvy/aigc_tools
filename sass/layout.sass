@@ -46,6 +46,7 @@ body
   height: 100%
   // background: #222
   flex-direction: column
+  background: #232222
   // overflow: hidden
   box-shadow: 0px 10px 38px -3px rgba(0, 0, 0, 0.1),0px 10px 15px -3px rgba(0, 0, 0, 0.1)
   z-index: 199
@@ -53,86 +54,130 @@ body
   &.on
     min-width: 0%
     width: 0px
-    .wrap
+    .container
       opacity: 0
-    .open
-      opacity: 0
-      padding: 0
-    .folding
-      // border-radius: 0 8px 8px 0
-      // right: -36px
-  .wrap
-    opacity: 100
+  .container
+    padding: 15px 0 15px 0
+    height: 100%
     width: 100%
-    height: 90%
-    transition: all 0.1s ease
-    ul
-      width: 100%
-      height: 100%
-      padding: 12px
-      box-sizing: border-box
-      display: flex
-      flex-direction: column
-      overflow-x: hidden
-      overflow-y: auto
-      row-gap: 8px
-      li
-        border-bottom: 1px solid #333
-        padding: 10px 40px 10px 20px
-        cursor: pointer
-        height: 100%
-        display: flex
-        // overflow: hidden
-        transition: background 0.1s ease
-        flex-direction: column
-        border-radius: 8px
-        background: #171717
-        &:hover
-          background: #555
-          h2
-            color: #ccc
-          p
-            color: #fff
-        h2
-          text-align: left
-          width: 100%
-          height: 20px
-          line-height: 20px
-          font-size: 14px
-          padding: 0
-          color: #777
-        p
-          text-overflow: ellipsis
-          width: 100%
-          font-size: 14px
-          color: #ccc
-  .open
-    box-sizing: border-box
-    padding: 15px
-    width: 100%
-    height: 10%
-    display: flex
-    flex-direction: row
-    column-gap: 15px
     overflow: hidden
     opacity: 1
-    transition: opacity 0.1s ease
-    transition: padding 0.3s ease
-    label
+    transition: opacity 0.1s ease-in
+    .nav
+      box-sizing: border-box
       display: flex
-      width: 50%
       height: 40px
-      background: #111
-      font-size: 15px
-      color: #fff
-      justify-content: center
+      width: 100%
+      padding: 0 15px 0 15px
+      align-content: center
+      h2
+        font-size: 16px
+        width: 100%
+        padding-left: 10px
+      p
+        display: flex
+        width: 100%
+        height: 100%
+        flex-direction: row
+        column-gap: 20px
+        flex-wrap: nowrap
+        align-items: center
+        justify-content: flex-end
+        i
+          font-size: 14px
+          color: #666
+          &:hover
+            color: #ccc
+          &.on
+            color: #eee
+    .wrap
+      opacity: 100
+      width: 100%
+      height: calc(100% - 90px)
+      transition: all 0.1s ease
+      overflow: hidden
+      ul
+        width: 100%
+        height: 100%
+        padding: 12px
+        box-sizing: border-box
+        display: flex
+        flex-direction: column
+        overflow-x: hidden
+        overflow-y: auto
+        row-gap: 8px
+        li
+          border-bottom: 1px solid #333
+          padding: 10px 15px 10px 15px
+          cursor: pointer
+          height: 100%
+          display: flex
+          // overflow: hidden
+          transition: background 0.1s ease
+          flex-direction: column
+          border-radius: 8px
+          background: #171717
+          &:hover
+            background: #555
+            h2
+              color: #ccc
+              p
+                visibility: visible
+            p
+              color: #fff
+          h2
+            display: flex
+            text-align: left
+            width: 100%
+            height: 20px
+            line-height: 20px
+            font-size: 14px
+            padding: 0
+            color: #777
+            justify-content: space-between
+            span
+              width: 100%
+            p
+              display: flex
+              visibility: hidden
+              column-gap: 12px
+              justify-content: flex-end
+          p
+            text-overflow: ellipsis
+            width: 100%
+            font-size: 14px
+            color: #ccc
+    .open
+      box-sizing: border-box
+      padding: 0 15px 0 15px
+      width: 100%
+      height: 70px
+      display: flex
+      flex-direction: row
+      column-gap: 15px
+      overflow: hidden
+      opacity: 1
+      transition: opacity 0.1s ease
+      cursor: pointer
       align-items: center
-      border-radius: 5px
-      border: 1px solid transparent
-      transition: border,background 0.2s ease
-      &:hover
-        background: transparent
-        border: 1px solid #fff
+      justify-content: flex-end
+      label
+        display: flex
+        width: 50%
+        height: 34px
+        background: #111
+        font-size: 15px
+        color: #fff
+        justify-content: center
+        align-items: center
+        border-radius: 5px
+        border: 1px solid transparent
+        transition: border,background 0.2s ease
+        &:hover
+          background: transparent
+          border: 1px solid #fff
+        input
+          display: none
 
   .folding
     width: 36px
@@ -277,11 +322,6 @@ body
       border: 2px solid transparent
       &.on
         border: 2px solid #fff
-      iframe
-        width: 100%
-        height: calc(100% - 40px)
-        border-radius: 0 0 8px 8px
-        overflow: hidden
       footer
         height: 40px
         overflow: hidden
@@ -304,6 +344,33 @@ body
               height: 20px
             a
               // visibility: hidden
+      .wrap
+        width: 100%
+        height: calc(100% - 40px)
+        position: relative
+        iframe
+          width: 100%
+          height: 100%
+          border-radius: 0 0 8px 8px
+          overflow: hidden
+        .info
+          display: flex
+          width: 100%
+          height: 100%
+          background: rgba(0, 0, 0, 0.5)
+          backdrop-filter: blur(5px)
+          position: absolute
+          top: 0
+          left: 0
+          z-index: -1
+          justify-content: center
+          align-items: center
+          p
+            color: #fff
+            font-size: 18px
+          &.on
+            z-index: 99
+
     &:hover
       border-color: #4d4d4d
       box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.3)
