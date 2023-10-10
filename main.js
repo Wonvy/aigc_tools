@@ -704,19 +704,20 @@ const JSONS = {
 
   // 渲染 JSON 数据的函数
   render: function (container, data) {
-    const div = document.createElement("div");
     // console.log("typeof data: ", typeof data);
     let json = JSON.stringify(data);
     // console.log("typeof json: ", typeof json);
     for (let key in data["关键词"]) {
       // console.log(data["关键词"][key]);
       for (let key2 in data["关键词"][key]) {
+        const div = document.createElement("div");
         const h3 = document.createElement("h3");
         const ul = document.createElement("ul");
         h3.textContent = key2;
         h3.dataset.title = key2;
         div.appendChild(h3);
         div.appendChild(ul);
+        div.classList.add("word_wrap");
         // console.log("key2", key2);
         for (let key3 in data["关键词"][key][key2]) {
           const li = document.createElement("li");
@@ -736,15 +737,16 @@ const JSONS = {
           li.appendChild(img);
           ul.appendChild(li);
         }
+        container.appendChild(div);
       }
     }
 
-    let childNodes = div.childNodes;
-    let div2 = document.createElement("div");
-    for (var i = 0; i < childNodes.length; i++) {
-      div2.appendChild(childNodes[i].cloneNode(true));
-    }
-    container.innerHTML = div2.innerHTML;
+    // let childNodes = div.childNodes;
+    // let div2 = document.createElement("div");
+    // for (var i = 0; i < childNodes.length; i++) {
+    //   div2.appendChild(childNodes[i].cloneNode(true));
+    // }
+    // container.innerHTML = div2.innerHTML;
 
     let images = container.querySelectorAll(`img[data-src]`);
     images.forEach(function (img) {
@@ -1761,3 +1763,17 @@ document.getElementById('file-excel').addEventListener('change', function (event
   reader.readAsBinaryString(file);
 });
 
+document.querySelector(".view_img4").addEventListener("click", function (event) {
+  const tagname = event.target.tagName;
+  const view_img4 = document.querySelector(".view_img4");
+  console.log(tagname);
+  if (tagname === "SPAN") {
+    // view_img4.classList.toggle("en");
+    return;
+  }
+  if (tagname === "H4") {
+    // view_img4.classList.toggle("en");
+    return;
+  }
+
+})

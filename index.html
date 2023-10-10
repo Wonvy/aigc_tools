@@ -11,6 +11,9 @@
 
 <body>
 
+  <div id="full_tips" class="on">
+  </div>
+
   <div id="full_version" class="on">
     <div class="container">
       <div class="nav">
@@ -67,15 +70,7 @@
             <li data-tab="tab2"><i class="fa-solid fa-align-left"></i></li>
           </ul>
         </div>
-        <div class="view_img3" id="imagelist2">
-          <!-- <ul>
-                <li>
-                  <h2>兔子风格</h2>
-                  <p class="load">
-                    <img data-src="./img/Midjourney-102.png" alt="">
-                  </p>
-                </li>
-              </ul> -->
+        <div class="view_img4" id="imagelist2">
         </div>
 
         <div class="view_bar">
@@ -90,6 +85,7 @@
   </div>
 
   <div id="main">
+
     <div class="left">
       <footer class="link">
         <ul>
@@ -194,6 +190,8 @@
         <div class="status_bar div_edit">
           <button title="1" id="bt_add" data-name="艺术风格" data-tooltip="添加提示词" data-tab="尾缀"
             class="fa-solid fa-plus"></button>
+          <!-- <button title="1" data-name="艺术风格" data-tab="艺术风格">比例 16:9</button>
+          <button title="1" data-name="艺术风格" data-tab="艺术风格">版本 v5.2</button> -->
           <button title="1" data-name="艺术风格" data-tab="艺术风格">风格</button>
           <button title="1" data-name="场景" data-tab="场景">场景</button>
           <button title="1" data-name="色系" data-tab="色系">色系</button>
@@ -202,6 +200,7 @@
           <button title="1" data-name="光照" data-tab="光照">光照</button>
           <button title="1" data-name="精度" data-tab="精度">精度</button>
           <button title="1" id="bt_zh">翻译</button>
+
         </div>
 
       </div>
@@ -213,86 +212,84 @@
       <div class="tab_default" data-name="尾缀">
         <!-- 指令 -->
         <div class="commonds_wrap" id="commonds">
+          <div class="left">
+            <div data-tooltip="横纵比" class="aspect_wrap">
+              <label for="id_aspect">aspect 比例</label>
 
-          <div data-tooltip="横纵比">
-            <label for="id_aspect">比例</label>
-            <select id="id_aspect" name="aspect" data-param-name="--ar" data-tooltip="设置生成后的比例">
-              <option value="">---</option>
-              <option value="1:1">1:1</option>
-              <option value="5:4">5:4</option>
-              <option value="3:2">3:2</option>
-              <option value="7:4">7:4</option>
-              <option value="16:9">16:9</option>
-              <option value="2:1">2:1</option>
-              <option value="9:16">9:16</option>
-              <option value="1:2">1:2</option>
-            </select>
+              <section id="id_aspect" name="aspect" data-param-name="--ar" data-tooltip="设置生成后的比例">
+                <p>16 : 9</p>
+              </section>
+
+            </div>
+            <div data-tooltip="版本选择，不添加默认为V4">
+              <label for="id_version">version 版本</label>
+              <select id="id_version" name="version" data-param-name="--v">
+                <option value="">---</option>
+                <option value="5.2">5.2</option>
+                <option value="5.1">5.1</option>
+                <option value="5">5</option>
+                <option value="4">4</option>
+                <option value="3">3</option>
+                <option value="2">2</option>
+                <option value="1">1</option>
+                <option value="niji" data-param-name="--niji">niji</option>
+              </select>
+            </div>
+
           </div>
-          <div data-tooltip="版本选择，不添加默认为V4">
-            <label for="id_version">版本</label>
-            <select id="id_version" name="version" data-param-name="--v">
-              <option value="">---</option>
-              <option value="5.2">5.2</option>
-              <option value="5.1">5.1</option>
-              <option value="5">5</option>
-              <option value="4">4</option>
-              <option value="3">3</option>
-              <option value="2">2</option>
-              <option value="1">1</option>
-              <option value="niji" data-param-name="--niji">niji</option>
-            </select>
-          </div>
-          <div data-tooltip="质量参数，参数后添加数字，数字越大，渲染时间越长">
-            <label for="id_quality">质量</label>
-            <select id="id_quality" name="quality" data-param-name="--q">
-              <option value="">---</option>
-              <option value=".25">.25</option>
-              <option value=".5">.5</option>
-              <option value="1">1</option>
-            </select>
-          </div>
-          <div data-tooltip="风格化">
-            <label for="id_stylize">风格化</label>
-            <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 - 1000"
-              class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
-          </div>
-          <div data-tooltip="参数后跟数值范围（0-100），数字越大，生成的图片越随机，越多样">
-            <label for="id_chaos">变化</label>
-            <input type="number" name="stylize" min="0" max="100" data-param-name="--chaos" placeholder="0 - 100"
-              class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
-          </div>
-          <div data-tooltip="停止">
-            <label for="id_stop">停止</label>
-            <input type="number" name="stylize" min="10" max="100" data-param-name="--stop" placeholder="10 - 100"
-              class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
-          </div>
-          <div data-tooltip="1">
-            <label for="id_Repeat">重复</label>
-            <input type="number" name="stylize" min="2" max="40" data-param-name="--repeat" placeholder="2 - 40"
-              class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
-          </div>
-          <div data-tooltip="1">
-            <label for="id_Weird">奇怪</label>
-            <input type="number" name="stylize" min="0" max="1000" data-param-name="--weird" placeholder="0 - 3000"
-              class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
-          </div>
-          <div data-tooltip="1">
-            <label for="id_tile">重复</label>
-            <select id="id_tile" name="tile" data-param-name="--tile">
-              <option value="yes">不重复</option>
-              <option value="no">重复</option>
-            </select>
-          </div>
-          <div>
-            <label for="id_seed" data-tooltip="固定种子，用于生成图片重现">种子</label>
-            <input type="number" name="stylize" min="0" max="4294967295" data-param-name="--seed"
-              placeholder="0 - 4294967295" class="numberinput form-control" id="id_stylize"
-              data-gtm-form-interact-field-id="0">
-          </div>
-          <div>
-            <label for="id_exclude" data-tooltip="排除词汇">排除</label>
-            <input type="text" name="exclude" min="0" max="1000" data-param-name="--no" placeholder="排除词汇"
-              class="numberinput form-control" id="id_exclude" data-gtm-form-interact-field-id="0">
+          <div class="right">
+            <div data-tooltip="质量参数，参数后添加数字，数字越大，渲染时间越长">
+              <label for="id_quality">quality 质量</label>
+              <select id="id_quality" name="quality" data-param-name="--q">
+                <option value="">---</option>
+                <option value=".25">.25</option>
+                <option value=".5">.5</option>
+                <option value="1">1</option>
+              </select>
+            </div>
+            <div data-tooltip="风格化">
+              <label for="id_stylize">stylize 风格</label>
+              <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 - 1000"
+                class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
+            </div>
+            <div data-tooltip="参数后跟数值范围（0-100），数字越大，生成的图片越随机，越多样">
+              <label for="id_chaos">chaos 变化</label>
+              <input type="number" name="stylize" min="0" max="100" data-param-name="--chaos" placeholder="0 - 100"
+                class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
+            </div>
+            <div data-tooltip="停止">
+              <label for="id_stop">stop 停止</label>
+              <input type="number" name="stylize" min="10" max="100" data-param-name="--stop" placeholder="10 - 100"
+                class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
+            </div>
+            <div data-tooltip="1">
+              <label for="id_repeat">repeat 重复</label>
+              <input type="number" name="stylize" min="2" max="40" data-param-name="--repeat" placeholder="2 - 40"
+                class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
+            </div>
+            <div data-tooltip="1">
+              <label for="id_weird">weird 奇异</label>
+              <input type="number" name="stylize" min="0" max="1000" data-param-name="--weird" placeholder="0 - 3000"
+                class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
+            </div>
+            <div data-tooltip="1">
+              <label for="id_tile">tile 重复</label>
+              <select id="id_tile" name="tile" data-param-name="--tile">
+                <option value="yes">不重复</option>
+                <option value="no">重复</option>
+              </select>
+            </div>
+            <div>
+              <label for="id_seed" data-tooltip="固定种子，用于生成图片重现">seed 种子</label>
+              <input type="number" name="stylize" min="0" max="4294967295" data-param-name="--seed"
+                placeholder="0 - 4294967295" class="numberinput form-control" id="id_stylize"
+                data-gtm-form-interact-field-id="0">
+            </div>
+            <div>
+              <label for="id_exclude" data-tooltip="排除词汇">排除</label>
+              <input type="text" name="exclude" min="0" max="1000" data-param-name="--no" placeholder="排除词汇"
+                class="numberinput form-control" id="id_exclude" data-gtm-form-interact-field-id="0">
+            </div>
           </div>
         </div>
       </div>
@@ -513,7 +510,7 @@
 
   </div>
   <script src="js/xlsx.full.min.js"></script>
-  <script src="https://kit.fontawesome.com/fe364aecc5.js" crossorigin="anonymous"></script>
+  <script src="js/fontawesome.js"></script>
   <script type="module" src="main.js"></script>
 
 </body>
