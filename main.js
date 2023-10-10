@@ -1,5 +1,7 @@
 "use strict";
 console.log("严格模式:", this === undefined); // 输出 true 表示严格模式启用
+// import { Vue } from "./js/vue.esm.browser.js"
+import Vue from './js/vue.esm.browser.js'
 
 import { translate_API, translate_tmt } from "./js/translate.js";
 import { Resize } from "./js/ui.js";
@@ -18,6 +20,7 @@ import {
   prompts_splitwords,
   add_keyword,
 } from "./js/prompts.js";
+
 
 const p_zh = getById("p_zh"); // 英文指令编辑区
 const p_en = getById("p_en"); // 中文指令编辑区
@@ -54,6 +57,12 @@ let status_bar = getElement(".zh_wrap .status_bar");
 let g_JSONdata;
 let storedData;
 
+const app = new Vue({
+  el: '#full_version .nav',
+  data: {
+    title: '收藏夹'
+  }
+});
 
 // 提示词收藏夹
 const Prompt_favorites = {
@@ -97,8 +106,10 @@ const Prompt_favorites = {
 
   // 导入
   import: function (event) {
+    console.log("111111111111111111");
     var fileInput = document.getElementById('file-input');
     var file = fileInput.files[0];
+    console.log(file);
     var self = this; // 保存Prompt_favorites对象的引用
     if (file) {
       var reader = new FileReader();
@@ -488,6 +499,7 @@ const Prompt = {
   // 修改提示词
   command_replace: function (sourceText, regexPattern, replacementText) {
     var regex = new RegExp(regexPattern, "g");
+    console.log("regexPattern", regexPattern);
     if (regex.test(sourceText)) {
       sourceText = sourceText.replace(regex, replacementText);
     } else {
@@ -980,6 +992,7 @@ document.querySelector("#main .left").addEventListener("mouseover", function (ev
 // 监听 iframe 的 load 事件
 document.querySelector("iframe").addEventListener('load', function () {
   let info = document.querySelector("#main .left .info");
+  console.log(info);
   info.classList.contains("on") && info.classList.remove("on")
   console.log('外链网页加载完成！');
 });
@@ -1218,32 +1231,52 @@ Prompt.load_last();
 // 所选字体显示为大字号
 getById("imagelist2").addEventListener("mouseover", setFontToLargeSize);
 getElement(".commonds_wrap").addEventListener("change", comman_click);
-getElement(".commonds_wrap").addEventListener("input", commond_input);
+// getElement(".commonds_wrap").addEventListener("input", comman_click);
 
-// 点击命令
-function commond_input(event) {
-  const tagname = event.target.tagName;
-  if (tagname === "INPUT") {
-    console.log("input", event.target.value);
-  }
-}
+// // 点击命令
+// function commond_input(event) {
+//   const tagname = event.target.tagName;
+//   const promptcontent = p_en.innerText;
+//   let paramName = "";
+//   let commond = "";
+//   if (tagname === "INPUT") {
+//     paramName = event.target.dataset.paramName;
+//     if (paramName === "" || paramName === "---" || paramName === "0") {
+//       commond = "";
+//     } else {
+//       commond = paramName + " " + event.target.value;
+//     }
+//     let commond_after = Prompt.command_replace(
+//       promptcontent,
+//       paramName + "\\s+[^\\s]+",
+//       commond,
+//     );
+//     p_en.innerText = commond_after;
+//   }
+// }
 
 // 点击命令
 function comman_click(event) {
   const tagname = event.target.tagName;
   const promptcontent = p_en.innerText;
-  let paramName = "";
-  if (tagname === "SELECT") {
+  let paramName = "", regexPattern = "";
+  let commond = "";
+  let value = event.target.value;
+  if (tagname === "SELECT" || tagname === "INPUT") {
     paramName = event.target.dataset.paramName;
-    // console.log(
-    //   event.target.name,
-    //   event.target.dataset.paramName,
-    //   event.target.value,
-    // );
-    const commond = paramName + " " + event.target.value;
+    if (value === "" || value === "---" || value === "0") {
+      regexPattern = paramName + "\\s+[^\\s]+";
+      commond = " ";
+      console.log("paramName1", paramName);
+    } else {
+      regexPattern = paramName + "\\s+[^\\s]+";
+      commond = paramName + " " + event.target.value;
+      console.log("paramName2", paramName);
+    }
+
     let commond_after = Prompt.command_replace(
       promptcontent,
-      paramName + "\\s+[^\\s]+",
+      regexPattern,
       commond,
     );
     p_en.innerText = commond_after;
@@ -1579,6 +1612,9 @@ function delayedImageLoading(event) {
       img.src = dataSrc;
     }
   });
+
+  let iframe = document.querySelector("iframe");
+  iframe.src = `https://lexica.art/`;
 }
 
 function placeholder_clear() {
@@ -1667,7 +1703,6 @@ document.querySelector('#full_version').addEventListener('click', function (even
     return;
   }
 
-  console.log(111);
   const li = event.target.closest("li");
   if (!li) { return };
   const uuid = li.dataset.uuid;
@@ -1701,6 +1736,28 @@ document.querySelector('#full_version').addEventListener('click', function (even
 })
 
 document.getElementById('file-input').addEventListener('change', Prompt_favorites.import);
+// 导出Excel
+document.getElementById('file-excel').addEventListener('change', function (event) {
+  const file = event.target.files[0];
+  // 使用FileReader读取文件
+  const reader = new FileReader();
+  reader.onload = function (event) {
+    const data = event.target.result;
 
+    // 通过xlsx库解析Excel数据
+    const workbook = XLSX.read(data, { type: 'binary' });
 
+    // 获取所有工作表名称
+    var sheetNames = workbook.SheetNames;
+    console.log('工作表名称：', sheetNames);
+
+    // 获取第一个工作表的数据
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    const jsonData = XLSX.utils.sheet_to_json(sheet);  // 将Excel数据转换为JSON格式
+    // 处理jsonData
+    console.log(jsonData);
+  };
+  reader.readAsBinaryString(file);
+});
 

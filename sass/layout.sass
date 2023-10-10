@@ -13,6 +13,7 @@
   --font-size: 16px
   --color-tab-bk: #222
   --color-tab-bk-hover: #111
+  --color-caret: #fee082
 
 .tooltip
   position: fixed
@@ -328,7 +329,7 @@ body
       transition: border 0.3s ease
       overflow: hidden
       border-radius: 8px
-      border: 2px solid transparent
+      border: 2px solid #222
       &.on
         border: 2px solid #fff
       footer
@@ -807,6 +808,7 @@ body
   font-size: 16px
   line-height: 1.5em
   color: rgb(180, 180, 180)
+  caret-color: var(--color-caret)
   span
     padding: 0 2px 0 2px
     i
@@ -818,6 +820,7 @@ body
         color: rgb(36, 36, 36)
         background-color: rgb(39, 156, 117)
 .div_edit
+  caret-color: var(--color-caret)
   padding: 20px
   width: 100%
   height: 100%
