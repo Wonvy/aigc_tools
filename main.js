@@ -1428,25 +1428,20 @@ function fullScreen_click(event) {
   const temp_en_edit = getById("temp_en_edit");
   let li;
   let full_screen = getById("full_screen");
-
-  if (event.target.tagName === "DIV") {
+  const tagName = event.target.tagName
+  if (tagName === "DIV") {
     full_screen.classList.contains("ontop") && full_screen.classList.remove("ontop");
     return;
   }
 
-  if (event.target.tagName === "H2") {
+  if (tagName === "H2") {
     li = event.target.parentElement;
   } else {
     li = event.target;
   }
 
-  // if (event.target.tagName === "LI") {
-  //   li = event.target;
-  // } else {
-  //   li = event.target;
-  // }
-
-  if (li.tagName === "LI") {
+  if (tagName === "LI") {
+    li = event.target;
     li.classList.toggle("selected"); //切换
     if (li.classList.contains("selected")) {
       if (temp_en_edit.innerText.includes("," + li.dataset.en)) {
@@ -1777,3 +1772,23 @@ document.querySelector(".view_img4").addEventListener("click", function (event) 
   }
 
 })
+
+// word_wrap
+// wheel 鼠标滚轮
+document.querySelector(".view_img4").addEventListener("wheel", function (event) {
+  let tagName = event.target.tagName;
+  const view_img4 = getElement(".view_img4")
+  if (tagName === "H3") {
+    let scrollwidth = view_img4.offsetWidth - event.target.offsetWidth;
+    let scrollDirection = (event.deltaX || event.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
+    view_img4.scrollLeft += scrollwidth * scrollDirection;
+    return;
+  }
+  let ul = event.target.closest("ul");
+  if (ul) {
+    let scrollheight = view_img4.offsetHeight;
+    let scrollDirection = (event.deltaX || event.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
+    ul.scrollTop += scrollheight * scrollDirection;
+    return;
+  }
+});
