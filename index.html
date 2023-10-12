@@ -15,40 +15,44 @@
   </div>
 
   <div id="full_version" class="on">
-    <div class="container">
-      <div class="nav">
-        <h2>{{ title }}</h2>
-        <p>
-          <i class="lang_zh on">中</i>
-          <i class="lang_en">EN</i>
-        </p>
+    <div class="blur_full"></div>
+    <div class="version_wrap">
+      <div class="container">
+        <div class="nav">
+          <h2>{{ title }}</h2>
+          <p>
+            <i class="lang_zh on">中</i>
+            <i class="lang_en">EN</i>
+          </p>
 
-      </div>
-      <div class="wrap">
-        <ul>
-        </ul>
-      </div>
-      <div class="open">
-        <button class="clearAll">清空</button>
-        <label for="file-input" title="导入">
-          导入
-          <input type="file" id="file-input" title="导入" accept=".json" style="display: none;">
-        </label>
-        <label for="file-excel" title="Excel">
-          关键词Excel导入
-          <input type="file" id="file-excel" title="Excel" accept=".xlsx" style="display: none;">
-        </label>
-        <label for="file-excel" title="Excel">
-          关键词Excel导出
-          <input type="file" id="file-excel" title="Excel" accept=".xlsx" style="display: none;">
-        </label>
-        <button class="export">导出</button>
+        </div>
+        <div class="wrap">
+          <ul>
+          </ul>
+        </div>
+        <div class="open">
+          <button class="clearAll">清空</button>
+          <label for="file-input" title="导入">
+            导入
+            <input type="file" id="file-input" title="导入" accept=".json" style="display: none;">
+          </label>
+          <label for="file-excel" title="Excel">
+            关键词Excel导入
+            <input type="file" id="file-excel" title="Excel" accept=".xlsx" style="display: none;">
+          </label>
+          <label for="file-excel" title="Excel">
+            关键词Excel导出
+            <input type="file" id="file-excel" title="Excel" accept=".xlsx" style="display: none;">
+          </label>
+          <button class="export">导出</button>
 
+        </div>
+      </div>
+      <div class="folding">
+        <i class="fa-regular fa-bookmark"></i>
       </div>
     </div>
-    <div class="folding">
-      <i class="fa-regular fa-bookmark"></i>
-    </div>
+
   </div>
 
   <div id="full_screen">
@@ -56,8 +60,9 @@
       <div id="fixed-header">
         <div class="top">
           <img src="../img/Midjourney-102.png" alt="">
-          <h1 id="en_preview">AIGC/h1>
-            <p id="zh_preview">东方山水画</p>
+          <h1 id="en_preview"></h1>
+          <p id="zh_preview"></p>
+          <p id="zh_intro"></p>
         </div>
         <div id="temp_en_edit">列表</div>
       </div>
@@ -70,8 +75,17 @@
             <li data-tab="tab2"><i class="fa-solid fa-align-left"></i></li>
           </ul>
         </div>
-        <div class="view_img4" id="imagelist2">
+        <div class="list_wrap">
+          <div class="prev">
+            <i class="fa-solid fa-chevron-left"></i>
+          </div>
+          <div class="view_img4" id="imagelist2">
+          </div>
+          <div class="next">
+            <i class="fa-solid fa-chevron-right"></i>
+          </div>
         </div>
+
 
         <div class="view_bar">
           <button id="view_bar-unselect" class="left">重选</button>

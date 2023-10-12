@@ -5,8 +5,32 @@ export {
   startCountdown,
   uuid,
   getCurrentDateTime,
-  sha256
+  sha256,
+  getWikipediaInfo
 };
+
+
+async function getWikipediaInfo(searchTerm, lang = "zh") {
+  try {
+    const apiUrl = `https://${lang}.wikipedia.org/w/api.php`;
+    const response = await fetch(`${apiUrl}?action=query&format=json&origin=*&prop=extracts|pageimages&exintro&explaintext&titles=${searchTerm}&piprop=thumbnail&pithumbsize=500`);
+    const data = await response.json();
+
+    const pages = data.query.pages;
+    const pageId = Object.keys(pages)[0];
+    const page = pages[pageId];
+
+    const intro = page.extract;
+    const imageUrl = page.thumbnail ? page.thumbnail.source : null;
+
+    return { intro, imageUrl };
+  } catch (error) {
+    throw new Error("API请求错误: " + error.message);
+  }
+}
+
+
+
 
 // 根据id后去元素
 function getById(id) {

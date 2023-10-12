@@ -12,7 +12,8 @@ import {
   sha256,
   random_bkcolor,
   startCountdown,
-  getCurrentDateTime
+  getCurrentDateTime,
+  getWikipediaInfo
 } from "./js/func.js";
 import {
   prompts_DeleteCommand,
@@ -1357,27 +1358,7 @@ getById("en_tabs").addEventListener("click", function (event) {
 getById("p_zh").addEventListener("input", debounce(Translates.live, 500));
 
 
-// 所选字体显示为大字号
-function setFontToLargeSize(event) {
-  let li;
 
-  if (event.target.tagName === "LI") {
-    li = event.target;
-  } else {
-    li = event.target.closest("li");
-  }
-
-  if (!li) { return };
-
-  getById("zh_preview").innerText = li.dataset.zh;
-  getById("en_preview").innerText = li.dataset.en;
-  let image = document.querySelector("#fixed-header img");
-  let src = li.querySelector("img");
-  image.src = src.dataset.src;
-  // let randomParam = Math.random(); // 生成一个随机数作为参数
-  // image.src = "https://picsum.photos/200?" + randomParam;
-
-}
 
 // 提示词多行显示
 function prompt_switch_multiLine(event) {
@@ -1429,11 +1410,12 @@ function fullScreen_click(event) {
   let li;
   let full_screen = getById("full_screen");
   const tagName = event.target.tagName
-  if (tagName === "DIV") {
-    full_screen.classList.contains("ontop") && full_screen.classList.remove("ontop");
-    return;
-  }
-
+  console.log(tagName)
+  // if (tagName === "DIV") {
+  //   full_screen.classList.contains("ontop") && full_screen.classList.remove("ontop");
+  //   return;
+  // }
+  return;
   if (tagName === "H2") {
     li = event.target.parentElement;
   } else {
@@ -1761,6 +1743,7 @@ document.getElementById('file-excel').addEventListener('change', function (event
 document.querySelector(".view_img4").addEventListener("click", function (event) {
   const tagname = event.target.tagName;
   const view_img4 = document.querySelector(".view_img4");
+  return;
   console.log(tagname);
   if (tagname === "SPAN") {
     // view_img4.classList.toggle("en");
@@ -1778,10 +1761,13 @@ document.querySelector(".view_img4").addEventListener("click", function (event) 
 document.querySelector(".view_img4").addEventListener("wheel", function (event) {
   let tagName = event.target.tagName;
   const view_img4 = getElement(".view_img4")
-  if (tagName === "H3") {
+  if (tagName === "H3" || tagName === "H3") {
     let scrollwidth = view_img4.offsetWidth - event.target.offsetWidth;
     let scrollDirection = (event.deltaX || event.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
+    blur
+    view_img4.classList.add("blur");
     view_img4.scrollLeft += scrollwidth * scrollDirection;
+    view_img4.classList.remove("blur");
     return;
   }
   let ul = event.target.closest("ul");
@@ -1792,3 +1778,77 @@ document.querySelector(".view_img4").addEventListener("wheel", function (event) 
     return;
   }
 });
+
+
+document.querySelector(".list_wrap").addEventListener("click", function (event) {
+  const view_img4 = getElement(".view_img4")
+  let scrollwidth = view_img4.querySelector(".word_wrap").offsetWidth
+  console.log(event.target.classList);
+  if (event.target.parentNode.classList.contains("prev")) {
+    view_img4.scrollLeft -= scrollwidth;
+    return
+  }
+  if (event.target.parentNode.classList.contains("next")) {
+    view_img4.scrollLeft += scrollwidth;
+    return
+  }
+});
+
+document.querySelector(".list_wrap").addEventListener("wheel", function (event) {
+  let tagName = event.target.tagName;
+  const view_img4 = getElement(".view_img4")
+  if (tagName === "H3" || tagName === "DIV") {
+    let scrollwidth = view_img4.offsetWidth - event.target.offsetWidth;
+    let scrollDirection = (event.deltaX || event.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
+    blur
+    view_img4.classList.add("blur");
+    view_img4.scrollLeft += scrollwidth * scrollDirection;
+    view_img4.classList.remove("blur");
+    return;
+  }
+});
+
+
+// 维基百科API
+async function wiki_APi(searchTerm, lang) {
+  try {
+    const { intro, imageUrl } = await getWikipediaInfo(searchTerm, lang);
+    // console.log("简介:", intro);
+    getById("zh_intro").textContent = intro;
+    let image = document.querySelector("#fixed-header .top img");
+    if (imageUrl) {
+      image.src = imageUrl
+    } else {
+      image.src = "/img/placeholder.png"
+    };
+
+    // console.log("图片URL:", imageUrl);
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+
+// 所选字体显示为大字号
+function setFontToLargeSize(event) {
+  let li;
+
+  if (event.target.tagName === "LI") {
+    li = event.target;
+  } else {
+    li = event.target.closest("li");
+  }
+
+  if (!li) { return };
+  getById("zh_preview").textContent = li.dataset.zh;
+  getById("en_preview").textContent = li.dataset.en;
+  wiki_APi(li.dataset.zh, "zh");
+
+  // let image = document.querySelector("#fixed-header img");
+  // let src = li.querySelector("img");
+  // image.src = src.dataset.src;
+  // let randomParam = Math.random(); // 生成一个随机数作为参数
+  // image.src = "https://picsum.photos/200?" + randomParam;
+
+}
+

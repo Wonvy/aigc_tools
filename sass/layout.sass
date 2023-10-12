@@ -42,172 +42,183 @@ body
   background: var(--body-bk-color)
 
 #full_version
-  user-select: none
   position: absolute
   left: 0
   top: 0
-  display: flex
-  min-width: 12%
-  max-width: 300px
   height: 100%
-  // background: #222
-  flex-direction: column
-  background: #232222
-  // overflow: hidden
-  box-shadow: 0px 10px 38px -3px rgba(0, 0, 0, 0.1),0px 10px 15px -3px rgba(0, 0, 0, 0.1)
-  z-index: 199
-  transition: all 0.3s ease
+  width: 100%
   &.on
     min-width: 0%
     width: 0px
     .container
-      opacity: 0
-  .container
+      opacity: 0.5
+  .version_wrap
+    position: relative
+    user-select: none
     display: flex
-    padding: 15px 0 15px 0
+    min-width: 12%
+    max-width: 300px
     height: 100%
-    width: 100%
-    overflow: hidden
-    opacity: 1
-    transition: opacity 0.1s ease-in
     flex-direction: column
-    .nav
-      box-sizing: border-box
+    background: #232222
+    box-shadow: 0px 10px 38px -3px rgba(0, 0, 0, 0.1),0px 10px 15px -3px rgba(0, 0, 0, 0.1)
+    z-index: 199
+    transition: all 0.3s ease
+    .container
       display: flex
-      height: 40px
+      padding: 15px 0 15px 0
+      height: 100%
       width: 100%
-      padding: 0 15px 0 15px
-      align-content: center
-      h2
-        font-size: 16px
-        width: 100%
-        padding-left: 10px
-      p
-        display: flex
-        width: 100%
-        height: 100%
-        flex-direction: row
-        column-gap: 20px
-        flex-wrap: nowrap
-        align-items: center
-        justify-content: flex-end
-        i
-          font-size: 14px
-          color: #666
-          &:hover
-            color: #ccc
-          &.on
-            color: #eee
-    .wrap
-      opacity: 100
-      width: 100%
-      height: calc(100% - 90px)
-      transition: all 0.1s ease
-      overflow: hidden
-      ul
-        width: 100%
-        height: 100%
-        padding: 12px
-        box-sizing: border-box
-        display: flex
-        flex-direction: column
-        overflow-x: hidden
-        overflow-y: auto
-        row-gap: 8px
-        li
-          border-bottom: 1px solid #333
-          padding: 10px 15px 10px 15px
-          cursor: pointer
-          max-height: 20%
-          height: 100%
-          display: flex
-          transition: background 0.1s ease
-          flex-direction: column
-          border-radius: 8px
-          row-gap: 10px
-          overflow: hidden
-          background: #171717
-          &:hover
-            background: #555
-            h2
-              color: #ccc
-              p
-                visibility: visible
-            p
-              color: #fff
-          h2
-            display: flex
-            text-align: left
-            width: 100%
-            height: 20px
-            line-height: 20px
-            font-size: 14px
-            padding: 0
-            color: #777
-            justify-content: space-between
-            span
-              width: 100%
-            p
-              display: flex
-              visibility: hidden
-              column-gap: 12px
-              justify-content: flex-end
-          p
-            text-overflow: ellipsis
-            width: 100%
-            font-size: 14px
-            color: #ccc
-    .open
-      box-sizing: border-box
-      padding: 0 15px 0 15px
-      width: 100%
-      height: 70px
-      display: flex
-      flex-direction: row
-      column-gap: 10px
       overflow: hidden
       opacity: 1
-      transition: opacity 0.1s ease
-      cursor: pointer
-      align-items: center
-      justify-content: flex-end
-      label
+      transition: opacity 0.1s ease-in
+      flex-direction: column
+      .nav
+        box-sizing: border-box
         display: flex
+        height: 40px
+        width: 100%
         padding: 0 15px 0 15px
-        height: 34px
-        background: #111
-        font-size: 15px
-        color: #fff
-        justify-content: center
+        align-content: center
+        h2
+          font-size: 16px
+          width: 100%
+          padding-left: 10px
+        p
+          display: flex
+          width: 100%
+          height: 100%
+          flex-direction: row
+          column-gap: 20px
+          flex-wrap: nowrap
+          align-items: center
+          justify-content: flex-end
+          i
+            font-size: 14px
+            color: #666
+            &:hover
+              color: #ccc
+            &.on
+              color: #eee
+      .wrap
+        opacity: 100
+        width: 100%
+        height: calc(100% - 90px)
+        transition: all 0.1s ease
+        overflow: hidden
+        ul
+          width: 100%
+          height: 100%
+          padding: 12px
+          box-sizing: border-box
+          display: flex
+          flex-direction: column
+          overflow-x: hidden
+          overflow-y: auto
+          row-gap: 8px
+          li
+            border-bottom: 1px solid #333
+            padding: 10px 15px 10px 15px
+            cursor: pointer
+            max-height: 20%
+            height: 100%
+            display: flex
+            transition: background 0.1s ease
+            flex-direction: column
+            border-radius: 8px
+            row-gap: 10px
+            overflow: hidden
+            background: #171717
+            &:hover
+              background: #555
+              h2
+                color: #ccc
+                p
+                  visibility: visible
+              p
+                color: #fff
+            h2
+              display: flex
+              text-align: left
+              width: 100%
+              height: 20px
+              line-height: 20px
+              font-size: 14px
+              padding: 0
+              color: #777
+              justify-content: space-between
+              span
+                width: 100%
+              p
+                display: flex
+                visibility: hidden
+                column-gap: 12px
+                justify-content: flex-end
+            p
+              text-overflow: ellipsis
+              width: 100%
+              font-size: 14px
+              color: #ccc
+      .open
+        box-sizing: border-box
+        padding: 0 15px 0 15px
+        width: 100%
+        height: 70px
+        display: flex
+        flex-direction: row
+        column-gap: 10px
+        overflow: hidden
+        opacity: 1
+        transition: opacity 0.1s ease
+        cursor: pointer
         align-items: center
-        border-radius: 5px
-        border: 1px solid transparent
-        transition: border, background 0.2s ease
-        &:hover
-          background: transparent
-          border: 1px solid #fff
-        input
-          display: none
+        justify-content: flex-end
+        label
+          display: flex
+          padding: 0 15px 0 15px
+          height: 34px
+          background: #111
+          font-size: 15px
+          color: #fff
+          justify-content: center
+          align-items: center
+          border-radius: 5px
+          border: 1px solid transparent
+          transition: border, background 0.2s ease
+          &:hover
+            background: transparent
+            border: 1px solid #fff
+          input
+            display: none
 
-  .folding
-    width: 36px
-    height: 50px
-    font-size: 14px
+    .folding
+      width: 36px
+      height: 50px
+      font-size: 14px
+      position: absolute
+      display: flex
+      background: #222
+      right: -36px
+      cursor: pointer
+      color: #ccc
+      top: calc(50% - 25px)
+      justify-content: center
+      align-items: center
+      border-radius: 0 8px 8px 0
+      user-select: none
+      transition: all 0.3s ease
+      &:hover
+        background: #444
+  .blur_full
+    display: none
+    width: 100%
+    height: 100%
     position: absolute
-    display: flex
-    background: #222
-    right: -36px
-    cursor: pointer
-    color: #ccc
-    top: calc(50% - 25px)
-    justify-content: center
-    align-items: center
-    border-radius: 0 8px 8px 0
-    user-select: none
-    transition: all 0.3s ease
-    &:hover
-      background: #444
-
+    left: 0
+    top: 0
+    // -web-kit-backdrop-filter: blur(5px)
+    // backdrop-filter: blur(5px)
+    z-index: 999
 #main_wrap
   background: var(--body-bk-color)
 
@@ -261,16 +272,25 @@ body
         font-size: 15px
         color: #fff
       .top
-        display: none
+        // display: none
         /* padding-top: 40px; */
-        // display: flex
+        display: flex
         width: 100%
+        overflow: hidden
+        height: 50%
         flex-direction: column
         row-gap: 5px
         align-items: center
         img
           width: 150px
           height: 150px
+        p#zh_intro
+          width: 100%
+          height: 100%
+          color: #bebebe !important
+          font-size: 14px !important
+          padding: 20px
+          overflow-y: auto
     .view_bar
       position: relative
       display: flex
@@ -871,7 +891,7 @@ body
   height: 100%
 
 #temp_en_edit
-  display: none
+  // display: none
   font-family: Consolas, monospace
   font-size: 12px
   line-height: 1.5em
@@ -894,100 +914,149 @@ body
         color: rgb(36, 36, 36)
         background-color: rgb(39, 156, 117)
 
-.view_img4
+.list_wrap
+  position: relative
   width: 100%
   height: 100%
-  overflow-x: auto
-  overflow-y: hidden
-  white-space: nowrap
-  padding: 0 20px 0 20px
-  scroll-behavior: smooth
-  &::-webkit-scrollbar
-    // width: 10px
-    height: 12px
-  &::-webkit-scrollbar-track
-    background: transparent
-
-  .word_wrap
-    box-sizing: border-box
+  overflow: hidden
+  .prev,.next
+    display: flex
+    position: absolute
     width: 300px
     height: 100%
-    display: inline-block
-    overflow: hidden
-    // background: #333
-    // margin: 5px
-    color: #eee
-    h3
-      display: flex
-      height: 60px
-      font-size: 16px
-      text-align: center
-      align-content: center
-      justify-content: center
-      align-items: center
-    ul
-      // display: flex
-      row-gap: 10px
-      column-gap: 10px
-      padding: 0 10px
-      height: 100%
-      overflow-y: auto
-      flex-direction: column
-      justify-content: flex-start
-      scroll-behavior: smooth
-      li
-        padding: 10px
-        box-sizing: border-box
-        height: 60px
-        margin-bottom: 10px
-        overflow: hidden
-        border: 1px solid #171717
-        border-radius: 5px
-        background: #171717
-        transition: all 0.15s ease
-        position: relative
-        &:hover
-          background: #000
-          border: 1px solid #000
-          h4
-            color: #fff
-        h4
-          color: #9e9e9e
-          font-size: 14px
-          z-index: 2
-          transition: font-size,color 0.2s ease
-          span
-            display: block
-            font-size: 9px
-            transition: font-size 0.2s ease
-            color: #767676
-        img
-          position: absolute
-          right: 0
-          top: 0
-          z-index: 1
-          // object-fit: cover
-        &.selected
-          background: #302d66
-          border-color: #302d66
-          h4
-            color: #fff
+    top: 0
+    z-index: 1
+    justify-content: center
+    align-items: center
+    user-select: none
+  .prev
+    left: 0
+    background: linear-gradient(90deg, #000 23.9%, rgba(0, 0, 0, 0) 101.11%)
+    i
+      font-size: 40px
+      transition: opacity,font-size,color 0.15s ease
+      color: #888
+      opacity: 0.3
+    &:hover
+      i
+        color: #fff
+        font-size: 60px
+        opacity: 1
+  .next
+    right: 0
+    background: linear-gradient(-90deg, #000 23.9%, rgba(0, 0, 0, 0) 101.11%)
+    i
+      font-size: 40px
+      color: #888
+      opacity: 0.3
+      transition: opacity,font-size,color 0.15s ease
+    &:hover
+      i
+        color: #fff
+        opacity: 1
+        font-size: 60px
+  .view_img4
+    width: 100%
+    height: 100%
+    overflow-x: auto
+    overflow-y: hidden
+    white-space: nowrap
+    padding: 0 20px 0 20px
+    scroll-behavior: smooth
+    z-index: 1
+    &.blur
+      filter: blur(10px)
+      transition: filter 0.3s ease-in-out
 
-    &:nth-child(even)
-      background-color: #111
-    &:nth-child(odd)
-      background-color: #000
-  &.en
-    h4
-      font-size: 8px !important
-      color: #999 !important
-      span
-        font-size: 19px !important
-        color: #fff !important
-  &.zh
-    h4
-      font-size: 14px !important
-      span
-        font-size: 9px !important
+    &::-webkit-scrollbar
+      // width: 10px
+      height: 12px
+    &::-webkit-scrollbar-track
+      background: transparent
+
+    .word_wrap
+      box-sizing: border-box
+      width: 300px
+      height: 100%
+      display: inline-block
+      overflow: hidden
+      background: transparent
+      // margin: 5px
+      color: #eee
+      &:nth-child(even)
+        // background-color: #111
+      &:nth-child(odd)
+        // background-color: #000
+      &:hover
+        background: #333
+      h3
+        display: flex
+        height: 60px
+        font-size: 16px
+        text-align: center
+        align-content: center
+        justify-content: center
+        align-items: center
+      ul
+        // display: flex
+        row-gap: 10px
+        column-gap: 10px
+        padding: 0 10px
+        height: 100%
+        overflow-y: auto
+        flex-direction: column
+        justify-content: flex-start
+        scroll-behavior: smooth
+        li
+          padding: 10px
+          box-sizing: border-box
+          height: 60px
+          margin-bottom: 10px
+          overflow: hidden
+          border: 1px solid #171717
+          border-radius: 5px
+          background: #171717
+          user-select: none
+          // transition: all 0.15s ease
+          position: relative
+          &:hover
+            background: #000
+            border: 1px solid #000
+            h4
+              color: #fff
+          h4
+            color: #9e9e9e
+            font-size: 14px
+            z-index: 2
+            transition: font-size,color 0.2s ease
+            span
+              display: block
+              font-size: 9px
+              transition: font-size 0.2s ease
+              color: #767676
+          img
+            display: none
+            position: absolute
+            right: 0
+            top: 0
+            z-index: 1
+            // object-fit: cover
+          &.selected
+            background: #302d66
+            border-color: #302d66
+            h4
+              color: #fff
+    &.en
+      h4
+        font-size: 8px !important
+        color: #999 !important
+        span
+          font-size: 19px !important
+          color: #fff !important
+    &.zh
+      h4
+        font-size: 14px !important
+        span
+          font-size: 9px !important
 
 @import './components/media'
