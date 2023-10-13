@@ -107,10 +107,9 @@ const Prompt_favorites = {
 
   // 导入
   import: function (event) {
-    console.log("111111111111111111");
     var fileInput = document.getElementById('file-input');
     var file = fileInput.files[0];
-    console.log(file);
+    // console.log(file);
     var self = this; // 保存Prompt_favorites对象的引用
     if (file) {
       var reader = new FileReader();
@@ -118,7 +117,7 @@ const Prompt_favorites = {
         try {
           let jsonData = JSON.parse(event.target.result); // 解析JSON数据       
           storedData = jsonData; // 替换全局的data变量
-          console.log('替换后的data:', storedData); // 打印替换后的data
+          // console.log('替换后的data:', storedData); // 打印替换后的data
           localStorage.setItem('storedData', JSON.stringify(storedData));
           Prompt_favorites.load();
         } catch (error) {
@@ -133,7 +132,7 @@ const Prompt_favorites = {
 
   // 是否包含指定的uuid
   has_uuid: function (uuidstr) {
-    console.log("uuidstr", uuidstr);
+    // console.log("uuidstr", uuidstr);
     if (!uuidstr) {
       return false
     };
@@ -355,7 +354,7 @@ const Prompt = {
             if (!Translated) {
               translate_API(word).then((result) => {
                 let result_text = result.translations[0].text;
-                console.log(word, result_text);
+                // console.log(word, result_text);
                 localStorage.setItem(word, result_text); // 存储翻译结果到本地
                 document.getElementById("p_words").innerText = result_text;
               });
@@ -404,7 +403,7 @@ const Prompt = {
             if (!Translated) {
               translate_API(word).then((result) => {
                 let result_text = result.translations[0].text;
-                console.log(word, result_text);
+                // console.log(word, result_text);
                 localStorage.setItem(word, result_text); // 存储翻译结果到本地
                 document.getElementById("p_words").innerText = result_text;
               });
@@ -427,11 +426,11 @@ const Prompt = {
       uuidtext = p_en.dataset.uuid;
     }
 
-    console.log("uuid: ", uuidtext)
+    // console.log("uuid: ", uuidtext)
     sha256(p_en.innerText).then(hash => {
 
       // 判断uuid是否存在
-      console.log("has", Prompt_favorites.has_uuid(uuidtext))
+      // console.log("has", Prompt_favorites.has_uuid(uuidtext))
       if (Prompt_favorites.has_uuid(uuidtext)) {
         let item = {
           "time": getCurrentDateTime(),
@@ -500,7 +499,7 @@ const Prompt = {
   // 修改提示词
   command_replace: function (sourceText, regexPattern, replacementText) {
     var regex = new RegExp(regexPattern, "g");
-    console.log("regexPattern", regexPattern);
+    // console.log("regexPattern", regexPattern);
     if (regex.test(sourceText)) {
       sourceText = sourceText.replace(regex, replacementText);
     } else {
@@ -995,7 +994,7 @@ document.querySelector("#main .left").addEventListener("mouseover", function (ev
 // 监听 iframe 的 load 事件
 document.querySelector("iframe").addEventListener('load', function () {
   let info = document.querySelector("#main .left .info");
-  console.log(info);
+  // console.log(info);
   info.classList.contains("on") && info.classList.remove("on")
   console.log('外链网页加载完成！');
 });
@@ -1034,8 +1033,12 @@ function tab_switch(event) {
 //click 点击构图
 getElement(".div_after").addEventListener("click", composition_click);
 getElement(".right").addEventListener("click", composition_click);
+
 function composition_click(event) {
   let li;
+
+
+
   if (event.target.tagName === "LI") {
     li = event.target;
   } else {
@@ -1046,20 +1049,39 @@ function composition_click(event) {
     return;
   }
 
+
   li.classList.toggle("selected");
-  let isSelected = li.classList.contains("selected");
+  const li_parent = li.parentNode;
+  const isSelected = li.classList.contains("selected");
+  const li_height = li.offsetHeight + parseInt(window.getComputedStyle(li).marginBottom);
+
   if (isSelected) {
+    li_parent.prepend(li);
     const bkcolor = random_bkcolor(1);
     checkElementType(p_en, li.dataset.en, "add", li.dataset.en);
     checkElementType(p_zh, li.dataset.cn, "add", li.dataset.en);
     checkElementType(ul_en, li.dataset.en, "add", li.dataset.en, bkcolor);
     checkElementType(ul_zh, li.dataset.cn, "add", li.dataset.en, bkcolor);
+    li_parent.querySelectorAll("li.selected").forEach((element, index) => {
+      const offset = index * li_height; // 每个元素的偏移量为 50px（可以根据需要调整）
+      element.style.top = offset + 'px';
+    });
   } else {
+    li_parent.appendChild(li);
+    li.style.removeProperty('top');
     checkElementType(p_en, li.dataset.en, "del");
     checkElementType(p_zh, li.dataset.cn, "del");
     checkElementType(ul_en, li.dataset.en, "del");
     checkElementType(ul_zh, li.dataset.cn, "del");
+    // li_parent.querySelectorAll("li:not(.selected)").forEach((element, index) => {
+    //   element.style.removeProperty('top');
+    // });
   }
+
+
+
+
+
 }
 
 function checkElementType(
@@ -1270,11 +1292,11 @@ function comman_click(event) {
     if (value === "" || value === "---" || value === "0") {
       regexPattern = paramName + "\\s+[^\\s]+";
       commond = " ";
-      console.log("paramName1", paramName);
+      // console.log("paramName1", paramName);
     } else {
       regexPattern = paramName + "\\s+[^\\s]+";
       commond = paramName + " " + event.target.value;
-      console.log("paramName2", paramName);
+      // console.log("paramName2", paramName);
     }
 
     let commond_after = Prompt.command_replace(
@@ -1410,7 +1432,7 @@ function fullScreen_click(event) {
   let li;
   let full_screen = getById("full_screen");
   const tagName = event.target.tagName
-  console.log(tagName)
+  // console.log(tagName)
   // if (tagName === "DIV") {
   //   full_screen.classList.contains("ontop") && full_screen.classList.remove("ontop");
   //   return;
@@ -1783,21 +1805,67 @@ document.querySelector(".view_img4").addEventListener("wheel", function (event) 
 document.querySelector(".list_wrap").addEventListener("click", function (event) {
   const view_img4 = getElement(".view_img4")
   let scrollwidth = view_img4.querySelector(".word_wrap").offsetWidth
-  console.log(event.target.classList);
-  if (event.target.parentNode.classList.contains("prev")) {
+  // console.log(event.target.classList);
+  const prev = getElement(".list_wrap .prev");
+  const next = getElement(".list_wrap .next");
+
+  let pagediv = event.target.closest(".page")
+  console.log("before", view_img4.scrollLeft);
+  if (!pagediv) { return };
+  if (pagediv.classList.contains("prev")) {
     view_img4.scrollLeft -= scrollwidth;
-    return
   }
-  if (event.target.parentNode.classList.contains("next")) {
+
+  if (pagediv.classList.contains("next")) {
     view_img4.scrollLeft += scrollwidth;
-    return
+  }
+
+  // console.log("after", view_img4.scrollLeft);
+
+  // if (view_img4.scrollLeft <= 0) {
+  //   prev.classList.add("hide");
+  // } else {
+  //   prev.classList.contains("hide") && prev.classList.remove("hide");
+  // }
+
+});
+
+
+
+// 添加滚动事件监听器
+getElement(".view_img4").addEventListener("scroll", function () {
+  const view_img4 = getElement(".view_img4")
+  const prev = getElement(".list_wrap .prev");
+  const next = getElement(".list_wrap .next");
+  let lastScrollLeft = view_img4.scrollLeft;
+  const scrollWidth = view_img4.scrollWidth;
+  const clientWidth = view_img4.clientWidth;
+  const scrollLeft = view_img4.scrollLeft;
+  const scrollright = scrollWidth - clientWidth - scrollLeft;
+
+  // console.log("scrollright", scrollright);
+  if (scrollLeft <= 100) {
+    prev.classList.add("hide");
+  } else {
+    prev.classList.contains("hide") && prev.classList.remove("hide");
+  }
+
+  if (scrollright <= 100) {
+    next.classList.add("hide");
+  } else {
+    next.classList.contains("hide") && next.classList.remove("hide");
   }
 });
 
+
+
+
+
 document.querySelector(".list_wrap").addEventListener("wheel", function (event) {
   let tagName = event.target.tagName;
+
   const view_img4 = getElement(".view_img4")
-  if (tagName === "H3" || tagName === "DIV") {
+  if (tagName === "H3" || tagName === "DIV" || tagName === "I") {
     let scrollwidth = view_img4.offsetWidth - event.target.offsetWidth;
     let scrollDirection = (event.deltaX || event.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
     blur
@@ -1808,6 +1876,32 @@ document.querySelector(".list_wrap").addEventListener("wheel", function (event) 
   }
 });
 
+let div_page_Triggered = false; // 标志，用于控制事件触发次数
+document.querySelector(".list_wrap").addEventListener("mouseover", function (event) {
+  const view_img4 = getElement(".view_img4")
+  const div_page = event.target.closest(".page");
+  const scrollwidth = view_img4.querySelector(".word_wrap").offsetWidth;
+
+  if (!div_page) { return }
+
+  if (div_page.classList.contains("prev") && !div_page_Triggered) {
+    console.log(scrollwidth);
+    view_img4.scrollLeft -= scrollwidth;
+    div_page_Triggered = true;
+    return;
+  }
+  if (div_page.classList.contains("next") && !div_page_Triggered) {
+    view_img4.scrollLeft += scrollwidth;
+    div_page_Triggered = true;
+    return;
+  }
+});
+document.querySelectorAll(".list_wrap .page").forEach(function (page) {
+  page.addEventListener("mouseout", (event) => {
+    // console.log(event.target.tagName);
+    div_page_Triggered = false;
+  });
+})
 
 // 维基百科API
 async function wiki_APi(searchTerm, lang) {
@@ -1843,12 +1937,10 @@ function setFontToLargeSize(event) {
   getById("zh_preview").textContent = li.dataset.zh;
   getById("en_preview").textContent = li.dataset.en;
   wiki_APi(li.dataset.zh, "zh");
-
   // let image = document.querySelector("#fixed-header img");
   // let src = li.querySelector("img");
   // image.src = src.dataset.src;
   // let randomParam = Math.random(); // 生成一个随机数作为参数
   // image.src = "https://picsum.photos/200?" + randomParam;
-
 }
 

@@ -68,27 +68,29 @@
       </div>
 
       <div class="right">
-        <div class="view">
-          <ul>
-            <li><i class="fa-solid fa-chevron-right"></i></li>
-            <li data-tab="tab1" class="active"><i class="fa-solid fa-align-justify"></i></li>
-            <li data-tab="tab2"><i class="fa-solid fa-align-left"></i></li>
-          </ul>
-        </div>
+
         <div class="list_wrap">
-          <div class="prev">
+          <div class="page prev hide">
             <i class="fa-solid fa-chevron-left"></i>
           </div>
           <div class="view_img4" id="imagelist2">
           </div>
-          <div class="next">
+          <div class="page next">
             <i class="fa-solid fa-chevron-right"></i>
           </div>
         </div>
 
 
         <div class="view_bar">
-          <button id="view_bar-unselect" class="left">重选</button>
+          <div class="view left">
+            <ul>
+              <li><i class="fa-solid fa-chevron-right"></i></li>
+              <li data-tab="tab1" class="active"><i class="fa-solid fa-align-justify"></i></li>
+              <li data-tab="tab2"><i class="fa-solid fa-align-left"></i></li>
+            </ul>
+          </div>
+
+          <button id="view_bar-unselect">重选</button>
           <button id="view_bar-add">确定</button>
           <!-- <button id="view_bar-options">视图</button> -->
           <button class="close">取消</button>

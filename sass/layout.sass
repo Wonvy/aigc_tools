@@ -310,22 +310,23 @@ body
       height: 100%
       flex-direction: column
       justify-content: space-between
-      .view
-        display: none
-        // display: flex
-        color: #333
-        height: 40px
-        padding: 0 20px
-        align-items: center
-        justify-content: flex-end
-        ul
-          display: flex
-          column-gap: 10px
-          flex-direction: row
-          justify-content: flex-end
-          li
-            font-size: 18px
-            color: rgb(204, 204, 204)
+
+.view
+  // display: none
+  // display: flex
+  color: #333
+  height: 40px
+  padding: 0 20px
+  align-items: center
+  justify-content: flex-end
+  ul
+    display: flex
+    column-gap: 10px
+    flex-direction: row
+    justify-content: flex-end
+    li
+      font-size: 18px
+      color: rgb(204, 204, 204)
 
 #main
   display: flex
@@ -922,10 +923,10 @@ body
   .prev,.next
     display: flex
     position: absolute
-    width: 300px
+    width: 10%
     height: 100%
     top: 0
-    z-index: 1
+    z-index: 10
     justify-content: center
     align-items: center
     user-select: none
@@ -933,28 +934,46 @@ body
     left: 0
     background: linear-gradient(90deg, #000 23.9%, rgba(0, 0, 0, 0) 101.11%)
     i
+      text-align: center
       font-size: 40px
-      transition: opacity,font-size,color 0.15s ease
       color: #888
+      width: 100%
+      height: 100%
+      display: flex
+      justify-content: center
+      align-items: center
       opacity: 0.3
+      transition: opacity, font-size, color 0.5s ease
     &:hover
       i
         color: #fff
         font-size: 60px
         opacity: 1
+    &.hide
+      visibility: hidden
+
   .next
     right: 0
     background: linear-gradient(-90deg, #000 23.9%, rgba(0, 0, 0, 0) 101.11%)
     i
+      text-align: center
       font-size: 40px
       color: #888
+      width: 100%
+      height: 100%
+      display: flex
+      justify-content: center
+      align-items: center
+      display: flex
       opacity: 0.3
-      transition: opacity,font-size,color 0.15s ease
+      transition: opacity, font-size, color 0.5s ease
     &:hover
       i
         color: #fff
         opacity: 1
         font-size: 60px
+    &.hide
+      visibility: hidden
   .view_img4
     width: 100%
     height: 100%
@@ -1002,11 +1021,12 @@ body
         row-gap: 10px
         column-gap: 10px
         padding: 0 10px
-        height: 100%
+        height: calc(100% - 60px)
         overflow-y: auto
         flex-direction: column
         justify-content: flex-start
         scroll-behavior: smooth
+        position: relative
         li
           padding: 10px
           box-sizing: border-box
@@ -1019,6 +1039,7 @@ body
           user-select: none
           // transition: all 0.15s ease
           position: relative
+          z-index: 5
           &:hover
             background: #000
             border: 1px solid #000
@@ -1042,10 +1063,14 @@ body
             z-index: 1
             // object-fit: cover
           &.selected
+            z-index: 10
+            top: 0
+            position: sticky
             background: #302d66
             border-color: #302d66
             h4
               color: #fff
+
     &.en
       h4
         font-size: 8px !important
