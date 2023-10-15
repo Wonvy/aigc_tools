@@ -13,7 +13,8 @@ import {
   random_bkcolor,
   startCountdown,
   getCurrentDateTime,
-  getWikipediaInfo
+  wiki_APi,
+  debounce
 } from "./js/func.js";
 import {
   prompts_DeleteCommand,
@@ -22,41 +23,28 @@ import {
   add_keyword,
 } from "./js/prompts.js";
 
-
-const p_zh = getById("p_zh"); // 英文指令编辑区
-const p_en = getById("p_en"); // 中文指令编辑区
-const bt_zh = getById("bt_zh"); // 中文翻译按钮
-const bt_en = getById("bt_en"); // 英文翻译按钮
-const ul_en = getById("ul_en"); // 英文翻译按钮
-const ul_zh = getById("ul_zh"); // 英文翻译按钮
-
+const full_version = getById("full_version");
 const line_en = getElement("#word_edit_en ul");
 const line_zh = getElement("#word_edit ul");
-
-let show_en = false;
-// 元素拖拽
-
+const full_screen = getById("full_screen");
+const list_wrap = document.querySelector(".list_wrap");
+const en_wrap = getElement(".en_wrap");
+const zh_wrap = getElement(".zh_wrap");
+const status_bar = zh_wrap.querySelector(".status_bar");
+const p_zh = getById("p_zh"); // 英文指令编辑区
+const p_en = getById("p_en"); // 中文指令编辑区
+const ul_en = getById("ul_en"); // 英文翻译按钮
+const ul_zh = getById("ul_zh"); // 英文翻译按钮
+const view_img4 = document.querySelector(".view_img4");
+let show_en = false; // 元素拖拽
 let lastparent_uuid = "";
 let currenuuid, Translated;
-let tooltip;
 let ctrlPressed = false;
-const leftDiv = document.getElementById("word_edit_en");
-const rightDiv = document.getElementById("word_edit");
+let tooltip;
 
-// 记录左右两个 div 的滚动状态
-let isLeftScrolling = false;
-let isRightScrolling = false;
-
-// 处理双击事件
-let clicks = 0;
-let timer2;
-
-let timeoutId;
-let status_bar = getElement(".zh_wrap .status_bar");
-
+let clicks = 0, timer2, timeoutId; // 处理双击事件
 // 初始化JSON数据
-let g_JSONdata;
-let storedData;
+let g_JSONdata, storedData;
 
 const app = new Vue({
   el: '#full_version .nav',
@@ -254,9 +242,6 @@ const Prompt_favorites = {
   }
 
 }
-
-
-
 // 提示词相关
 const Prompt = {
   // 载入最后一次使用的提示词
@@ -552,14 +537,12 @@ const Prompt = {
   }
 
 }
-
 // 提示关键词
 const PromptWords = {
 
   // 载入提示词库
   load: function (event) {
     const bt_title = event.target.dataset.name;
-    let full_screen = getById("full_screen");
     let imagelist2 = getById("imagelist2");
 
     JSONS.render(imagelist2, g_JSONdata);
@@ -576,7 +559,6 @@ const PromptWords = {
   // 添加所选关键词
   add_selected: function (event) {
     const lis = document.querySelectorAll("#full_screen li.selected");
-    const full_screen = getById("full_screen")
     lis.forEach((li) => {
       const bkcolor = random_bkcolor(1);
       checkElementType(p_en, li.dataset.en, "add", li.dataset.en, bkcolor);
@@ -682,7 +664,6 @@ const PromptWords = {
   }
 
 }
-
 // JSON相关
 const JSONS = {
 
@@ -713,7 +694,9 @@ const JSONS = {
         const div = document.createElement("div");
         const h3 = document.createElement("h3");
         const ul = document.createElement("ul");
+        const span1 = document.createElement("span");
         h3.textContent = key2;
+        h3.appendChild(span1);
         h3.dataset.title = key2;
         div.appendChild(h3);
         div.appendChild(ul);
@@ -813,7 +796,6 @@ const JSONS = {
 
 
 }
-
 // 翻译相关
 const Translates = {
   // 翻译为中文
@@ -897,113 +879,370 @@ const Translates = {
   },
 }
 
-JSONS.init()
-Prompt_favorites.load();
-// console.log("Prompt_favorites", storedData)
+// FullScreen
+const elFullScreen = {
+  // 关闭
+  close: (e) => {
+    full_screen.classList.contains("ontop") && full_screen.classList.remove("ontop")
+  },
 
+  mouseout: (e) => {
+    if (e.target.id === "full_screen") {
+      e.target.style.cursor = "default";
+    }
+  },
 
-// wheel 鼠标滚轮
-document.querySelectorAll(".div_after > div").forEach(function (div) {
-  div.addEventListener("wheel", tab_wheel, { passive: true });
-});
+  mouseover: (e) => {
+    if (e.target.id === "full_screen") {
+      e.target.style.cursor = "not-allowed";
+    }
+  },
 
+  click: (event) => {
+    const temp_en_edit = getById("temp_en_edit");
+    let li;
+    const tagName = event.target.tagName
+    // console.log(tagName)
+    // if (tagName === "DIV") {
+    //   full_screen.classList.contains("ontop") && full_screen.classList.remove("ontop");
+    //   return;
+    // }
+    return;
+    if (tagName === "H2") {
+      li = event.target.parentElement;
+    } else {
+      li = event.target;
+    }
 
-getElement(".zh_wrap .status_bar").addEventListener("wheel", tab_wheel, { passive: true });
-// 添加鼠标滚轮事件监听器
-function tab_wheel(event) {
-  // console.log(event.target);
-  let ul;
-  let scrollDirection = (event.deltaX || event.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
-  let scrollAmount = 150;
-  // console.log(event.target.tagName);
-  if (event.target.tagName === "BUTTON") {
-    // console.log(event.target.dataset.name);
-    ul = document.querySelector(
-      `.div_after div[data-name="${event.target.dataset.name}"] > ul`,
-    );
-  } else {
-    ul = event.target.closest("ul");
-  }
+    if (tagName === "LI") {
+      li = event.target;
+      li.classList.toggle("selected"); //切换
+      if (li.classList.contains("selected")) {
+        if (temp_en_edit.innerText.includes("," + li.dataset.en)) {
+        } else {
+          temp_en_edit.innerText = add_keyword(
+            temp_en_edit.innerText,
+            "," + li.dataset.en,
+          );
+        }
+      } else {
+        if (temp_en_edit.innerText.includes("," + li.dataset.en)) {
+          temp_en_edit.innerText = temp_en_edit.innerText.replace(
+            "," + li.dataset.en,
+            "",
+          );
+        }
+      }
+    }
+    return;
 
-  ul.scrollTop += scrollAmount * scrollDirection;
-  event.preventDefault(); // 阻止事件的默认行为，避免影响其他滚动
+    if (event.target.tagName === "IMG") {
+      const li = event.target.parentElement.parentElement;
+      if (li.tagName === "LI") {
+        li.classList.toggle("selected");
+      }
+    }
+  },
+
 }
 
-// tab切换
-
-status_bar.addEventListener("mouseover", (event) => {
-  timeoutId = setTimeout(() => {
-    tab_switch(event);
-  }, 200);
-});
-status_bar.addEventListener("mouseout", () => {
-  clearTimeout(timeoutId);
-});
-
-//#ul_zh click
-document.querySelector("#ul_zh").addEventListener("click", function (event) {
-  const li = event.target.closest("li");
-  if (!li) { return };
-  const lis = document.querySelectorAll("#ul_zh li.clicked");
-  lis.forEach((li1) => {
-    li1.classList.remove("clicked");
-  });
-  li.classList.toggle("clicked")
-})
-
-//#ul_en click
-document.querySelector("#ul_en").addEventListener("click", function (event) {
-  const li = event.target.closest("li");
-  if (!li) { return };
-  let q = li.innerText;
-  const lis = document.querySelectorAll("#ul_en li.clicked");
-  lis.forEach((li1) => {
-    if (li !== li1) {
-      li1.classList.remove("clicked");
+// elViewList
+const elViewList = {
+  // 所选字体显示为大字号
+  mouseover: (e) => {
+    let li;
+    if (e.target.tagName === "LI") {
+      li = e.target;
+    } else {
+      li = e.target.closest("li");
     }
-  });
-  li.classList.toggle("clicked")
-  let iframe = document.querySelector("iframe");
-  let url1 = `https://lexica.art/?q=${q}`
-  let url2 = `https://prompthero.com/search?model=Midjourney&q=${q}`
-  iframe.src = url1;
-  let left = iframe.closest(".left")
-  const info = left.querySelector(".info")
+    if (!li) { return };
+    getById("zh_preview").textContent = li.dataset.zh;
+    getById("en_preview").textContent = li.dataset.en;
+    wiki_APi(li.dataset.zh, "zh");
+    // let image = document.querySelector("#fixed-header img");
+    // let src = li.querySelector("img");
+    // image.src = src.dataset.src;
+    // let randomParam = Math.random(); // 生成一个随机数作为参数
+    // image.src = "https://picsum.photos/200?" + randomParam;
+  },
+
+  // 所选字体显示为大字号
+  click: (e) => {
+    let li;
+    if (e.target.tagName === "LI") {
+      li = e.target;
+    } else {
+      li = e.target.closest("li");
+    }
+    if (!li) {
+      return;
+    }
+    li.classList.toggle("selected");
+
+    let ul = e.target.closest("ul");
+    let h3 = ul.previousElementSibling;
+    let span = h3.querySelector("span");
+    const li_parent = li.parentNode;
+    const isSelected = li.classList.contains("selected");
+    const li_height = li.offsetHeight + parseInt(window.getComputedStyle(li).marginBottom);
+
+    if (isSelected) {
+      // li_parent.prepend(li);
+      const bkcolor = random_bkcolor(1);
+      checkElementType(p_en, li.dataset.en, "add", li.dataset.en);
+      checkElementType(p_zh, li.dataset.cn, "add", li.dataset.en);
+      checkElementType(ul_en, li.dataset.en, "add", li.dataset.en, bkcolor);
+      checkElementType(ul_zh, li.dataset.cn, "add", li.dataset.en, bkcolor);
+      li_parent.querySelectorAll("li.selected").forEach((element, index) => {
+        const offset = index * li_height; // 每个元素的偏移量为 50px（可以根据需要调整）
+        // element.style.top = offset + 'px';
+      });
+    } else {
+      // li_parent.appendChild(li);
+      li.style.removeProperty('top');
+      checkElementType(p_en, li.dataset.en, "del");
+      checkElementType(p_zh, li.dataset.cn, "del");
+      checkElementType(ul_en, li.dataset.en, "del");
+      checkElementType(ul_zh, li.dataset.cn, "del");
+      // li_parent.querySelectorAll("li:not(.selected)").forEach((element, index) => {
+      //   element.style.removeProperty('top');
+      // });
+    }
+    let li_num = li_parent.querySelectorAll("li.selected").length;
+    if (li_num <= 0) {
+      span.textContent = "";
+    } else {
+      span.textContent = `(${li_num})`;
+    }
 
 
-  const hasclicked = document.querySelector("#ul_en li.clicked");
-  if (hasclicked) {
-    info.classList.add("on")
-    left.classList.add("on")
+  },
 
-  } else {
-    info.classList.contains("on") && info.classList.remove("on")
-    left.classList.contains("on") && left.classList.remove("on")
+  wheel: (e) => {
+    let tagName = e.target.tagName;
+    if (tagName === "H3" || tagName === "H3") {
+      let scrollwidth = view_img4.offsetWidth - e.target.offsetWidth;
+      let scrollDirection = (e.originalEvent.deltaX || e.originalEvent.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
+      blur
+      view_img4.classList.add("blur");
+      view_img4.scrollLeft += scrollwidth * scrollDirection;
+      view_img4.classList.remove("blur");
+      return;
+    }
+    let ul = e.target.closest("ul");
+
+    if (ul) {
+      // let scrollheight = view_img4.offsetHeight;
+      console.log(ul);
+      let scrollheight = ul.clientHeight;
+      console.log("e", e)
+      console.log("e.deltaX:", e.originalEvent.deltaX);
+      console.log("e.deltaY:", e.originalEvent.deltaY);
+      let scrollDirection = (e.originalEvent.deltaX || e.originalEvent.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
+      console.log("scrollDirection:", scrollDirection);
+      console.log("scrollHeight:", ul.scrollHeight);
+      console.log("clientHeight:", ul.clientHeight);
+      console.log("scrollTop:", ul.scrollTop);
+      console.log("scroll:", scrollheight * scrollDirection);
+      ul.scrollTop += scrollheight * scrollDirection;
+      return;
+    }
+  },
+
+  scroll: (e) => {
+    const prev = document.querySelector(".list_wrap .prev");
+    const next = document.querySelector(".list_wrap .next");
+    let lastScrollLeft = view_img4.scrollLeft;
+    const scrollWidth = view_img4.scrollWidth;
+    const clientWidth = view_img4.clientWidth;
+    const scrollLeft = view_img4.scrollLeft;
+    const scrollright = scrollWidth - clientWidth - scrollLeft;
+
+    // console.log("scrollright", scrollright);
+    if (scrollLeft <= 100) {
+      prev.classList.add("hide");
+    } else {
+      prev.classList.contains("hide") && prev.classList.remove("hide");
+    }
+
+    if (scrollright <= 100) {
+      next.classList.add("hide");
+    } else {
+      next.classList.contains("hide") && next.classList.remove("hide");
+    }
   }
 
-})
+}
 
 
-// .left mouseover
-document.querySelector("#main .left").addEventListener("mouseover", function (event) {
-  let left = document.querySelector("#main .left");
-  left.classList.contains("on") && left.classList.remove("on")
-})
+const elListwrap = {
+
+  click: (event) => {
+
+    let scrollwidth = view_img4.querySelector(".word_wrap").offsetWidth
+
+    const prev = document.querySelector(".list_wrap .prev");
+    const next = document.querySelector(".list_wrap .next");
+
+    let pagediv = event.target.closest(".page")
+    console.log("before", view_img4.scrollLeft);
+    if (!pagediv) { return };
+    if (pagediv.classList.contains("prev")) {
+      view_img4.scrollLeft -= scrollwidth;
+    }
+
+    if (pagediv.classList.contains("next")) {
+      view_img4.scrollLeft += scrollwidth;
+    }
+
+    // console.log("after", view_img4.scrollLeft);
+
+    // if (view_img4.scrollLeft <= 0) {
+    //   prev.classList.add("hide");
+    // } else {
+    //   prev.classList.contains("hide") && prev.classList.remove("hide");
+    // }
+  },
+
+  wheel: (event) => {
+    let tagName = event.target.tagName;
+    if (tagName === "H3" || tagName === "DIV" || tagName === "I") {
+      let scrollwidth = view_img4.offsetWidth - event.target.offsetWidth;
+      let scrollDirection = (event.deltaX || event.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
+      blur
+      view_img4.classList.add("blur");
+      view_img4.scrollLeft += scrollwidth * scrollDirection;
+      view_img4.classList.remove("blur");
+      return;
+    }
+  },
+
+  mouseover: (event) => {
+    const div_page = event.target.closest(".page");
+    const scrollwidth = view_img4.querySelector(".word_wrap").offsetWidth;
+
+    if (!div_page) { return }
+
+    if (div_page.classList.contains("prev") && !div_page_Triggered) {
+      console.log(scrollwidth);
+      view_img4.scrollLeft -= scrollwidth;
+      div_page_Triggered = true;
+      return;
+    }
+    if (div_page.classList.contains("next") && !div_page_Triggered) {
+      view_img4.scrollLeft += scrollwidth;
+      div_page_Triggered = true;
+      return;
+    }
+  },
+
+  mouseout: (event) => {
+  }
+}
 
 
-// 监听 iframe 的 load 事件
-document.querySelector("iframe").addEventListener('load', function () {
-  let info = document.querySelector("#main .left .info");
-  // console.log(info);
-  info.classList.contains("on") && info.classList.remove("on")
-  console.log('外链网页加载完成！');
-});
+const elTemplate = {
+  click: (event) => {
+  },
+  wheel: (event) => {
+  },
+  mouseover: (event) => {
+  },
+  mouseout: (event) => {
+  },
+  keyup: (event) => {
+  },
+  keydown: (event) => {
+  },
+  change: (event) => {
+  },
+  input: (event) => {
+  },
 
+}
+
+
+const Excel = {
+  read: (e) => {
+    const file = event.target.files[0];
+    // 使用FileReader读取文件
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      const data = event.target.result;
+
+      // 通过xlsx库解析Excel数据
+      const workbook = XLSX.read(data, { type: 'binary' });
+
+      // 获取所有工作表名称
+      var sheetNames = workbook.SheetNames;
+      console.log('工作表名称：', sheetNames);
+
+      // 获取第一个工作表的数据
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(sheet);  // 将Excel数据转换为JSON格式
+      // 处理jsonData
+      console.log(jsonData);
+    };
+    reader.readAsBinaryString(file);
+  },
+  export: (e) => {
+
+  },
+
+}
+
+
+
+// function ---------------------------------------------------------------------------------
+
+// 提示词多行显示
+function prompt_switch_multiLine(event) {
+  const tagName = event.target.tagName;
+  let li = event.target.closest("li");
+
+  if (!li) { return }
+  if (tagName === "LI") { li = event.target; }
+  if (tagName === "I") { li = event.target.parentElement; }
+
+  // 获取所在的ul
+  const enzh = li.closest("ul").dataset.class;
+  const tabtext = li.dataset.tab;
+  const tabclass = li.dataset.class;
+
+  if (enzh === "zh") { Prompt.zh_MultiLine() };// 转成多行
+  if (enzh === "en") { Prompt.en_MultiLine() };// 转成多行
+
+  const nav = document.querySelector(`.${enzh}_wrap .active`);
+  nav && nav.classList.remove("active");
+
+  const current_tab = document.querySelector(`.${enzh}_wrap [data-tab=${tabtext}]`);
+  current_tab && current_tab.classList.add("active");
+  const tab = document.querySelector(`#${enzh}_tabs .ontop`);
+  tab && tab.classList.remove("ontop");
+  document.querySelector(`#${enzh}_tabs .${tabtext}`).classList.add("ontop");
+}
+// 添加拆分词
+function prompt_split_add() {
+  const sentenceSpans = p_en.querySelectorAll("span");
+  sentenceSpans.forEach((span) => {
+    const li = document.createElement("li");
+    const i = document.createElement("i");
+    i.innerText = span.innerText;
+    const span1 = document.createElement("span");
+    li.setAttribute("uuid", span.getAttribute("uuid"));
+    span1.innerText = localStorage.getItem(span.innerText);
+    li.style.backgroundColor = random_bkcolor(1);
+    li.appendChild(i);
+    li.appendChild(span1);
+    word_edit_ul.appendChild(li);
+  });
+}
 
 // tab切换
 function tab_switch(event) {
   const button = event.target.closest("button");
-
   if (button) {
     const name = button.dataset.tab;
     const tabs = document.querySelectorAll(".div_after > div");
@@ -1030,58 +1269,32 @@ function tab_switch(event) {
   }
 }
 
-//click 点击构图
-getElement(".div_after").addEventListener("click", composition_click);
-getElement(".right").addEventListener("click", composition_click);
+
 
 function composition_click(event) {
   let li;
-
-
-
   if (event.target.tagName === "LI") {
     li = event.target;
   } else {
     li = event.target.closest("li");
   }
-
   if (!li) {
     return;
   }
-
-
   li.classList.toggle("selected");
-  const li_parent = li.parentNode;
   const isSelected = li.classList.contains("selected");
-  const li_height = li.offsetHeight + parseInt(window.getComputedStyle(li).marginBottom);
-
   if (isSelected) {
-    li_parent.prepend(li);
     const bkcolor = random_bkcolor(1);
     checkElementType(p_en, li.dataset.en, "add", li.dataset.en);
     checkElementType(p_zh, li.dataset.cn, "add", li.dataset.en);
     checkElementType(ul_en, li.dataset.en, "add", li.dataset.en, bkcolor);
     checkElementType(ul_zh, li.dataset.cn, "add", li.dataset.en, bkcolor);
-    li_parent.querySelectorAll("li.selected").forEach((element, index) => {
-      const offset = index * li_height; // 每个元素的偏移量为 50px（可以根据需要调整）
-      element.style.top = offset + 'px';
-    });
   } else {
-    li_parent.appendChild(li);
-    li.style.removeProperty('top');
     checkElementType(p_en, li.dataset.en, "del");
     checkElementType(p_zh, li.dataset.cn, "del");
     checkElementType(ul_en, li.dataset.en, "del");
     checkElementType(ul_zh, li.dataset.cn, "del");
-    // li_parent.querySelectorAll("li:not(.selected)").forEach((element, index) => {
-    //   element.style.removeProperty('top');
-    // });
   }
-
-
-
-
-
 }
 
 function checkElementType(
@@ -1132,69 +1345,15 @@ function checkElementType(
   }
 }
 
-function weiji(keyword) {
-  // 维基百科API的请求地址，指定语言为中文
-  const apiUrl = `https://zh.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&titles=${encodeURIComponent(
-    keyword,
-  )}`;
-
-  // 发送GET请求
-  fetch(apiUrl)
-    .then((response) => response.json())
-    .then((data) => {
-      // 获取页面的内容
-      const pages = data.query.pages;
-      const pageId = Object.keys(pages)[0];
-      const extract = pages[pageId].extract;
-      // console.log(extract);
-
-      // 将内容显示在页面上
-      // const resultDiv = document.getElementById("result");
-      // resultDiv.textContent = extract;
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
-}
-
-// 调整滑块单击和双击
-getElement(".resize").addEventListener("click", function () {
-  clicks++;
-  if (clicks === 1) {
-    timer2 = setTimeout(function () {
-      // 处理单击事件
-      // console.log("单击");
-      clicks = 0;
-    }, 300); // 等待第二次点击的时间（毫秒）
-  } else if (clicks === 2) {
-    clearTimeout(timer2);
-    // 处理双击事件
-    resize_reset();
-    // console.log("双击");
-    clicks = 0;
-  }
-});
-
-// 点击折叠按钮
-getElement(".resize i").addEventListener("click", function (event) {
-  if (event.target.parentNode.classList.contains("mgleft")) {
-    resize_reset();
-  } else {
-    resize_reset();
-  }
-});
-
 // 调整滑块重置
 function resize_reset() {
   getElement(".resize").style.left = "";
-  getElement(".en_wrap").style.width = "";
-  getElement(".zh_wrap").style.width = "";
+  en_wrap.style.width = "";
+  zh_wrap.style.width = "";
   getElement(".resize").classList.remove("mgleft");
   getElement(".resize").classList.remove("mgright");
 }
 
-// 项目拖拽
-keyword_drags();
 function keyword_drags() {
   const list = getElement("#word_edit ul");
   let currentLi;
@@ -1229,250 +1388,7 @@ function keyword_drags() {
   });
 }
 
-// 调整元素大小拖拽
-new Resize(".rz1").main();
 
-// 监听左侧 div 的滚动事件
-leftDiv.addEventListener("scroll", function () {
-  if (!isLeftScrolling) {
-    isRightScrolling = true;
-    rightDiv.scrollTop = leftDiv.scrollTop;
-  }
-  isLeftScrolling = false;
-});
-
-// 监听右侧 div 的滚动事件
-rightDiv.addEventListener("scroll", function () {
-  if (!isRightScrolling) {
-    isLeftScrolling = true;
-    leftDiv.scrollTop = rightDiv.scrollTop;
-  }
-  isRightScrolling = false;
-});
-
-// 载入最后一次使用的提示词
-Prompt.load_last();
-
-// 所选字体显示为大字号
-getById("imagelist2").addEventListener("mouseover", setFontToLargeSize);
-getElement(".commonds_wrap").addEventListener("change", comman_click);
-// getElement(".commonds_wrap").addEventListener("input", comman_click);
-
-// // 点击命令
-// function commond_input(event) {
-//   const tagname = event.target.tagName;
-//   const promptcontent = p_en.innerText;
-//   let paramName = "";
-//   let commond = "";
-//   if (tagname === "INPUT") {
-//     paramName = event.target.dataset.paramName;
-//     if (paramName === "" || paramName === "---" || paramName === "0") {
-//       commond = "";
-//     } else {
-//       commond = paramName + " " + event.target.value;
-//     }
-//     let commond_after = Prompt.command_replace(
-//       promptcontent,
-//       paramName + "\\s+[^\\s]+",
-//       commond,
-//     );
-//     p_en.innerText = commond_after;
-//   }
-// }
-
-// 点击命令
-function comman_click(event) {
-  const tagname = event.target.tagName;
-  const promptcontent = p_en.innerText;
-  let paramName = "", regexPattern = "";
-  let commond = "";
-  let value = event.target.value;
-  if (tagname === "SELECT" || tagname === "INPUT") {
-    paramName = event.target.dataset.paramName;
-    if (value === "" || value === "---" || value === "0") {
-      regexPattern = paramName + "\\s+[^\\s]+";
-      commond = " ";
-      // console.log("paramName1", paramName);
-    } else {
-      regexPattern = paramName + "\\s+[^\\s]+";
-      commond = paramName + " " + event.target.value;
-      // console.log("paramName2", paramName);
-    }
-
-    let commond_after = Prompt.command_replace(
-      promptcontent,
-      regexPattern,
-      commond,
-    );
-    p_en.innerText = commond_after;
-    // console.log(commond_after);
-  }
-  if (tagname === "INPUT") {
-    // console.log(event.target.name, event.target.value);
-    // alert(event.target.value);
-  }
-}
-
-
-// 提示词多行显示
-document.querySelectorAll(".tab-container").forEach(function (div) {
-  div.addEventListener("click", prompt_switch_multiLine);
-});
-
-// 添加所选提示词-确定
-getById("view_bar-add").addEventListener("click", PromptWords.add_selected);
-
-// 载入提示词库
-getById("bt_add").addEventListener("click", PromptWords.load);
-getElement(".zh_wrap .status_bar").addEventListener(
-  "click",
-  PromptWords.load,
-);
-
-getById("view_bar-unselect").addEventListener("click", PromptWords.unselect); // 取消所选提示词
-bt_en.addEventListener("click", Translates.toZH); // 翻译为中文
-bt_zh.addEventListener("click", Translates.toEN); // 翻译为英文
-
-// 高亮/取消鼠标经过的提示词
-p_en.addEventListener("mouseover", PromptWords.highlight_hover);
-p_en.addEventListener("mouseout", PromptWords.highlight_clear);
-
-getById("full_screen").addEventListener("mouseover", function (event) {
-  if (event.target.id === "full_screen") {
-    event.target.style.cursor = "not-allowed";
-  }
-});
-getById("full_screen").addEventListener("mouseout", function (event) {
-  if (event.target.id === "full_screen") {
-    event.target.style.cursor = "default";
-  }
-});
-
-document.addEventListener("keyup", keyupEvent); // 键盘弹起
-document.addEventListener("keydown", keydownEvent); // 键盘按下
-
-// 全屏点击
-getById("full_screen").addEventListener("click", fullScreen_click);
-
-// 关闭提示词弹窗
-getElement("#full_screen button.close").addEventListener(
-  "click",
-  full_screenclose,
-);
-
-getById("bt_new").addEventListener("click", Prompt.new); // 新建
-getById("bt_save").addEventListener("click", Prompt.save); // 保存
-getById("bt_copy").addEventListener("click", Prompt.copy); // 复制
-getById("bt_paste").addEventListener("click", Prompt.paste); // 粘贴
-getById("bt_clear").addEventListener("click", Prompt.clear); // 清空
-
-
-// 设置输入框焦点
-p_zh.focus();
-getById("zh_tabs").addEventListener("click", function (event) {
-  p_zh.focus();
-});
-getById("en_tabs").addEventListener("click", function (event) {
-  p_en.focus();
-});
-
-// 实时翻译
-getById("p_zh").addEventListener("input", debounce(Translates.live, 500));
-
-
-
-
-// 提示词多行显示
-function prompt_switch_multiLine(event) {
-  const tagName = event.target.tagName;
-  let li = event.target.closest("li");
-
-  if (!li) { return }
-  if (tagName === "LI") { li = event.target; }
-  if (tagName === "I") { li = event.target.parentElement; }
-
-  // 获取所在的ul
-  const enzh = li.closest("ul").dataset.class;
-  const tabtext = li.dataset.tab;
-  const tabclass = li.dataset.class;
-
-  if (enzh === "zh") { Prompt.zh_MultiLine() };// 转成多行
-  if (enzh === "en") { Prompt.en_MultiLine() };// 转成多行
-
-  const nav = document.querySelector(`.${enzh}_wrap .active`);
-  nav && nav.classList.remove("active");
-
-  const current_tab = document.querySelector(`.${enzh}_wrap [data-tab=${tabtext}]`);
-  current_tab && current_tab.classList.add("active");
-  const tab = document.querySelector(`#${enzh}_tabs .ontop`);
-  tab && tab.classList.remove("ontop");
-  document.querySelector(`#${enzh}_tabs .${tabtext}`).classList.add("ontop");
-}
-
-// 添加拆分词
-function prompt_split_add() {
-  const sentenceSpans = p_en.querySelectorAll("span");
-  sentenceSpans.forEach((span) => {
-    const li = document.createElement("li");
-    const i = document.createElement("i");
-    i.innerText = span.innerText;
-    const span1 = document.createElement("span");
-    li.setAttribute("uuid", span.getAttribute("uuid"));
-    span1.innerText = localStorage.getItem(span.innerText);
-    li.style.backgroundColor = random_bkcolor(1);
-    li.appendChild(i);
-    li.appendChild(span1);
-    word_edit_ul.appendChild(li);
-  });
-}
-
-// 全屏点击
-function fullScreen_click(event) {
-  const temp_en_edit = getById("temp_en_edit");
-  let li;
-  let full_screen = getById("full_screen");
-  const tagName = event.target.tagName
-  // console.log(tagName)
-  // if (tagName === "DIV") {
-  //   full_screen.classList.contains("ontop") && full_screen.classList.remove("ontop");
-  //   return;
-  // }
-  return;
-  if (tagName === "H2") {
-    li = event.target.parentElement;
-  } else {
-    li = event.target;
-  }
-
-  if (tagName === "LI") {
-    li = event.target;
-    li.classList.toggle("selected"); //切换
-    if (li.classList.contains("selected")) {
-      if (temp_en_edit.innerText.includes("," + li.dataset.en)) {
-      } else {
-        temp_en_edit.innerText = add_keyword(
-          temp_en_edit.innerText,
-          "," + li.dataset.en,
-        );
-      }
-    } else {
-      if (temp_en_edit.innerText.includes("," + li.dataset.en)) {
-        temp_en_edit.innerText = temp_en_edit.innerText.replace(
-          "," + li.dataset.en,
-          "",
-        );
-      }
-    }
-  }
-  return;
-
-  if (event.target.tagName === "IMG") {
-    const li = event.target.parentElement.parentElement;
-    if (li.tagName === "LI") {
-      li.classList.toggle("selected");
-    }
-  }
-}
 
 // 键盘弹起
 function keyupEvent(event) {
@@ -1501,78 +1417,243 @@ function keydownEvent(event) {
   // 检查是否按下 ESC 键 (键码为 27)
   if (event.keyCode === 27) {
     // 处理 ESC 键事件
-    let full_screen = getById("full_screen");
-    full_screen.classList.add("ontop")
+    full_screen.classList.contains("ontop") && full_screen.classList.remove("ontop")
   }
 
   // 检查是否按下 `~` 键 (键码为 192)
   if (event.keyCode === 192) {
     // 处理 `~` 键事件
-    let full_screen = getById("full_screen");
     full_screen.classList.add("ontop")
   }
 }
 
-// 关闭提示词弹窗
-function full_screenclose(event) {
-  let full_screen = document.getElementById("full_screen");
-  full_screen.classList.contains("ontop") && full_screen.classList.remove("ontop")
+
+
+
+// init ---------------------------------------------------------------------------------
+JSONS.init()
+Prompt_favorites.load();
+keyword_drags(); // 项目拖拽
+new Resize(".rz1").main(); // 调整元素大小拖拽
+Prompt.load_last(); // 载入最后一次使用的提示词
+p_zh.focus(); // 设置输入框焦点
+
+// div_after --------------------------------------------------------------------------
+$(".div_after > div").on("wheel", tab_wheel);
+
+function tab_wheel(event) {
+  // console.log(event.target);
+  let ul;
+  let scrollDirection = (event.deltaX || event.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
+  let scrollAmount = 150;
+  if (event.target.tagName === "BUTTON") {
+    ul = document.querySelector(
+      `.div_after div[data-name="${event.target.dataset.name}"] > ul`,
+    );
+  } else {
+    ul = event.target.closest("ul");
+  }
+
+  ul.scrollTop += scrollAmount * scrollDirection;
+  event.preventDefault(); // 阻止事件的默认行为，避免影响其他滚动
 }
 
-// 防抖函数，用于减少频繁触发API请求
-function debounce(func, delay) {
-  let timeout;
-  return function () {
-    const context = this;
-    const args = arguments;
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      func.apply(context, args);
-    }, delay);
-  };
+// status_bar ---------------------------------------------------------------------------------
+status_bar.addEventListener("mouseover", (e) => {
+  timeoutId = setTimeout(() => {
+    tab_switch(e);
+  }, 200);
+});
+status_bar.addEventListener("mouseout", () => {
+  clearTimeout(timeoutId);
+});
+status_bar.addEventListener("wheel", tab_wheel, { passive: true });
+
+// iframe ---------------------------------------------------------
+document.querySelector("#main .left").addEventListener("mouseover", function (event) {
+  let left = document.querySelector("#main .left");
+  left.classList.contains("on") && left.classList.remove("on")
+})
+
+document.querySelector("iframe").addEventListener('load', function () {
+  let info = document.querySelector("#main .left .info");
+  console.log(info);
+  info.classList.contains("on") && info.classList.remove("on")
+  console.log('外链网页加载完成！');
+});
+
+
+getElement(".div_after").addEventListener("click", composition_click);
+
+// resize ---------------------------------------------------------------
+
+$(".main_wrap .resize").on("click", () => {
+  clicks++;
+  if (clicks === 1) {
+    timer2 = setTimeout(function () {
+      // 处理单击事件
+      // console.log("单击");
+      clicks = 0;
+    }, 300); // 等待第二次点击的时间（毫秒）
+  } else if (clicks === 2) {
+    clearTimeout(timer2);
+    // 处理双击事件
+    resize_reset();
+    // console.log("双击");
+    clicks = 0;
+  }
+});
+$(".main_wrap .resize i").on("click", (e) => {
+  if (e.target.parentNode.classList.contains("mgleft")) {
+    resize_reset();
+  } else {
+    resize_reset();
+  }
+});
+
+const leftDiv = document.getElementById("word_edit_en");
+const rightDiv = document.getElementById("word_edit");
+let isLeftScrolling = false, isRightScrolling = false; // 记录左右两个 div 的滚动状态
+
+leftDiv.addEventListener("scroll", function () {
+  if (!isLeftScrolling) {
+    isRightScrolling = true;
+    rightDiv.scrollTop = leftDiv.scrollTop;
+  }
+  isLeftScrolling = false;
+});
+
+rightDiv.addEventListener("scroll", function () {
+  if (!isRightScrolling) {
+    isLeftScrolling = true;
+    leftDiv.scrollTop = rightDiv.scrollTop;
+  }
+  isRightScrolling = false;
+});
+
+getElement(".commonds_wrap").addEventListener("change", comman_click);
+
+function comman_click(event) {
+  const tagname = event.target.tagName;
+  const promptcontent = p_en.innerText;
+  let paramName = "", regexPattern = "";
+  let commond = "";
+  let value = event.target.value;
+  if (tagname === "SELECT" || tagname === "INPUT") {
+    paramName = event.target.dataset.paramName;
+    if (value === "" || value === "---" || value === "0") {
+      regexPattern = paramName + "\\s+[^\\s]+";
+      commond = " ";
+      // console.log("paramName1", paramName);
+    } else {
+      regexPattern = paramName + "\\s+[^\\s]+";
+      commond = paramName + " " + event.target.value;
+      // console.log("paramName2", paramName);
+    }
+
+    let commond_after = Prompt.command_replace(
+      promptcontent,
+      regexPattern,
+      commond,
+    );
+    p_en.innerText = commond_after;
+    // console.log(commond_after);
+  }
 }
 
-document.querySelectorAll("button").forEach(function (div) {
-  div.addEventListener("mouseover", button_mouseover);
-  div.addEventListener("mouseout", button_mouseout);
+// 提示词多行显示
+$(".tab_container").on("click", prompt_switch_multiLine);
+$(".button_wrap #view_bar-add").on("click", PromptWords.add_selected);
+$(".button_wrap #view_bar-unselect").on("click", PromptWords.unselect);  // 取消所选提示词
+$("#bt_add").on("click", PromptWords.load);  // 载入提示词库
+$("#bt_en").on("click", Translates.toZH); // 载入提示词库
+$("#bt_zh").on("click", Translates.toEN); // 载入提示词库
+$(".status_bar button").on("click", PromptWords.load);  // 载入提示词库
+
+full_screen.addEventListener("mouseover", elFullScreen.mouseover);
+full_screen.addEventListener("mouseout", elFullScreen.mouseout);
+full_screen.addEventListener("click", elFullScreen.click);
+full_screen.querySelector("button.close").addEventListener("click", elFullScreen.close);
+
+
+$(".view_img4").on("mouseover", elViewList.mouseover);
+$(".view_img4").on("click", elViewList.click);
+$(".view_img4").on("wheel", elViewList.wheel)
+$(".view_img4").on("scroll", elViewList.scroll);
+
+document.querySelector(".view_bar .lang_zh").addEventListener("click", () => {
+  view_img4.classList.toggle("en");
+})
+
+
+// zh_wrap  ------------------------------------------------------------
+zh_wrap.querySelector("#zh_tabs").addEventListener("click", () => {
+  p_zh.focus();
+});
+zh_wrap.querySelector("#ul_zh").addEventListener("click", function (event) {
+  const li = event.target.closest("li");
+  if (!li) { return };
+  const lis = document.querySelectorAll("#ul_zh li.clicked");
+  lis.forEach((li1) => {
+    li1.classList.remove("clicked");
+  });
+  li.classList.toggle("clicked")
+})
+zh_wrap.querySelector("#p_zh").addEventListener("input",
+  debounce(Translates.live, 500)
+);
+
+// en_wrap -------------------------------------------------------------
+$("#bt_new").on("click", Prompt.new); // 新建咒语
+$("#bt_save").on("click", Prompt.save); // 保存咒语
+$("#bt_copy").on("click", Prompt.copy); // 复制咒语
+$("#bt_paste").on("click", Prompt.paste); // 粘贴咒语
+$("#bt_clear").on("click", Prompt.clear); // 清空咒语
+$("#en_tabs").on("click", () => { $("#p_en").focus() });
+$("#p_en").on("mouseover", PromptWords.highlight_hover);
+$("#p_en").on("mouseout", PromptWords.highlight_clear);
+$("#ul_en").on("click", "li", function () {
+  const li = $(this);
+  if (!li.length) {
+    return;
+  }
+  let q = li.text();
+  $("#ul_en li.clicked").not(li).removeClass("clicked");
+  li.toggleClass("clicked");
+  let iframe = $("iframe");
+  let url1 = `https://lexica.art/?q=${q}`;
+  iframe.attr("src", url1);
+  let left = iframe.closest(".left");
+  const info = left.find(".info");
+  const hasClicked = $("#ul_en li.clicked").length > 0;
+  if (hasClicked) {
+    info.addClass("on");
+    left.addClass("on");
+  } else {
+    info.removeClass("on");
+    left.removeClass("on");
+  }
 });
 
-document.querySelectorAll(".div_after img").forEach(function (div) {
-  div.addEventListener("mouseover", button_mouseover);
-  div.addEventListener("mouseout", button_mouseout);
-});
 
-document.querySelectorAll(".commonds_wrap > div").forEach(function (div) {
-  div.addEventListener("mouseover", button_mouseover);
-  div.addEventListener("mouseout", button_mouseout);
-});
-
-document.querySelectorAll(".tab-container ul li").forEach(function (div) {
-  div.addEventListener("mouseover", button_mouseover);
-  div.addEventListener("mouseout", button_mouseout);
+// tooltips ----------------------------------------------------------------
+$("button").on({
+  mouseover: button_mouseover,
+  mouseout: button_mouseout
 });
 
 
-
-
-
-
-// 按钮停留
 function button_mouseover(event) {
   let anchorElem = event.target.closest("[data-tooltip]");
   if (!anchorElem) return;
   tooltip = show_Tooltip(anchorElem, anchorElem.dataset.tooltip);
 }
-
-// 按钮离开
 function button_mouseout(event) {
   if (tooltip) {
     tooltip.remove();
     tooltip = false;
   }
 }
-
-// 显示提示
 function show_Tooltip(anchorElem, html) {
   let tooltipElem = document.createElement("div");
   tooltipElem.className = "tooltip";
@@ -1597,19 +1678,13 @@ function show_Tooltip(anchorElem, html) {
   return tooltipElem;
 }
 
-// 延迟加载图片
+// window ------------------------------------------------------------------
 window.addEventListener("load", delayedImageLoading); // 延迟加载图片
 function delayedImageLoading(event) {
   let images = document.querySelectorAll("img[data-src]");
   images.forEach(function (img) {
-    // img.onload = function () {
-    //   img.parentElement.classList.remove("load");
-    // };
-    // 将图片的src设置为data - src以开始加载
     let dataSrc = img.dataset.src;
-    // console.log("dataSrc", dataSrc);
     if (dataSrc) {
-      // console.log(dataSrc);
       img.src = dataSrc;
     }
   });
@@ -1617,46 +1692,21 @@ function delayedImageLoading(event) {
   let iframe = document.querySelector("iframe");
   iframe.src = `https://lexica.art/`;
 }
+document.querySelectorAll(".div_after img").forEach(function (div) {
+  div.addEventListener("mouseover", button_mouseover);
+  div.addEventListener("mouseout", button_mouseout);
+});
+document.querySelectorAll(".commonds_wrap > div").forEach(function (div) {
+  div.addEventListener("mouseover", button_mouseover);
+  div.addEventListener("mouseout", button_mouseout);
+});
+document.querySelectorAll(".tab_container ul li").forEach(function (div) {
+  div.addEventListener("mouseover", button_mouseover);
+  div.addEventListener("mouseout", button_mouseout);
+});
 
-function placeholder_clear() {
-  if (inputText.value === "请输入文字") {
-    inputText.value = "";
-  }
-}
-
-
-
-// 检查网站是否可以访问
-function checkWebsiteAvailability(url) {
-  return fetch(url)
-    .then(function (response) {
-      if (response.ok) {
-        return Promise.resolve();
-      } else {
-        return Promise.reject();
-      }
-    }).catch((error) => {
-      console.error("web_Error:", error);
-    });;
-}
-
-
-// 检查网站可访问性并显示/隐藏iframe
-// checkWebsiteAvailability("https://www.baidu.com/")
-//   .then(function () {
-//     const iframe = document.querySelector("iframe");
-//     iframe.style.display = "block";
-//   })
-//   .catch((error) => {
-//     const iframe = document.querySelector("iframe");
-//     iframe.style.display = "none";
-//     console.error("web_Error11111111111111:", error);
-//   });
-
-
-
-// 历史记录 - 预览
-document.querySelector('#full_version').addEventListener('click', function (event) {
+// full_version -------------------------------------------------------------
+full_version.addEventListener('click', function (event) {
   const classLists = event.target.classList;
   const full_version = document.querySelector("#full_version")
   const lang_en = document.querySelector("#full_version .lang_en");
@@ -1736,211 +1786,53 @@ document.querySelector('#full_version').addEventListener('click', function (even
 
 })
 
-document.getElementById('file-input').addEventListener('change', Prompt_favorites.import);
-// 导出Excel
-document.getElementById('file-excel').addEventListener('change', function (event) {
-  const file = event.target.files[0];
-  // 使用FileReader读取文件
-  const reader = new FileReader();
-  reader.onload = function (event) {
-    const data = event.target.result;
 
-    // 通过xlsx库解析Excel数据
-    const workbook = XLSX.read(data, { type: 'binary' });
-
-    // 获取所有工作表名称
-    var sheetNames = workbook.SheetNames;
-    console.log('工作表名称：', sheetNames);
-
-    // 获取第一个工作表的数据
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-    const jsonData = XLSX.utils.sheet_to_json(sheet);  // 将Excel数据转换为JSON格式
-    // 处理jsonData
-    console.log(jsonData);
-  };
-  reader.readAsBinaryString(file);
-});
-
-document.querySelector(".view_img4").addEventListener("click", function (event) {
-  const tagname = event.target.tagName;
-  const view_img4 = document.querySelector(".view_img4");
-  return;
-  console.log(tagname);
-  if (tagname === "SPAN") {
-    // view_img4.classList.toggle("en");
-    return;
-  }
-  if (tagname === "H4") {
-    // view_img4.classList.toggle("en");
-    return;
-  }
-
-})
-
-// word_wrap
-// wheel 鼠标滚轮
-document.querySelector(".view_img4").addEventListener("wheel", function (event) {
-  let tagName = event.target.tagName;
-  const view_img4 = getElement(".view_img4")
-  if (tagName === "H3" || tagName === "H3") {
-    let scrollwidth = view_img4.offsetWidth - event.target.offsetWidth;
-    let scrollDirection = (event.deltaX || event.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
-    blur
-    view_img4.classList.add("blur");
-    view_img4.scrollLeft += scrollwidth * scrollDirection;
-    view_img4.classList.remove("blur");
-    return;
-  }
-  let ul = event.target.closest("ul");
-  if (ul) {
-    let scrollheight = view_img4.offsetHeight;
-    let scrollDirection = (event.deltaX || event.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
-    ul.scrollTop += scrollheight * scrollDirection;
-    return;
-  }
-});
-
-
-document.querySelector(".list_wrap").addEventListener("click", function (event) {
-  const view_img4 = getElement(".view_img4")
-  let scrollwidth = view_img4.querySelector(".word_wrap").offsetWidth
-  // console.log(event.target.classList);
-  const prev = getElement(".list_wrap .prev");
-  const next = getElement(".list_wrap .next");
-
-  let pagediv = event.target.closest(".page")
-  console.log("before", view_img4.scrollLeft);
-  if (!pagediv) { return };
-  if (pagediv.classList.contains("prev")) {
-    view_img4.scrollLeft -= scrollwidth;
-  }
-
-  if (pagediv.classList.contains("next")) {
-    view_img4.scrollLeft += scrollwidth;
-  }
-
-  // console.log("after", view_img4.scrollLeft);
-
-  // if (view_img4.scrollLeft <= 0) {
-  //   prev.classList.add("hide");
-  // } else {
-  //   prev.classList.contains("hide") && prev.classList.remove("hide");
-  // }
-
-});
-
-
-
-// 添加滚动事件监听器
-getElement(".view_img4").addEventListener("scroll", function () {
-  const view_img4 = getElement(".view_img4")
-  const prev = getElement(".list_wrap .prev");
-  const next = getElement(".list_wrap .next");
-  let lastScrollLeft = view_img4.scrollLeft;
-  const scrollWidth = view_img4.scrollWidth;
-  const clientWidth = view_img4.clientWidth;
-  const scrollLeft = view_img4.scrollLeft;
-  const scrollright = scrollWidth - clientWidth - scrollLeft;
-
-  // console.log("scrollright", scrollright);
-  if (scrollLeft <= 100) {
-    prev.classList.add("hide");
-  } else {
-    prev.classList.contains("hide") && prev.classList.remove("hide");
-  }
-
-  if (scrollright <= 100) {
-    next.classList.add("hide");
-  } else {
-    next.classList.contains("hide") && next.classList.remove("hide");
-  }
-});
-
-
-
-
-
-document.querySelector(".list_wrap").addEventListener("wheel", function (event) {
-  let tagName = event.target.tagName;
-
-  const view_img4 = getElement(".view_img4")
-  if (tagName === "H3" || tagName === "DIV" || tagName === "I") {
-    let scrollwidth = view_img4.offsetWidth - event.target.offsetWidth;
-    let scrollDirection = (event.deltaX || event.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
-    blur
-    view_img4.classList.add("blur");
-    view_img4.scrollLeft += scrollwidth * scrollDirection;
-    view_img4.classList.remove("blur");
-    return;
-  }
-});
-
+// list_wrap -------------------------------------------------------------
 let div_page_Triggered = false; // 标志，用于控制事件触发次数
-document.querySelector(".list_wrap").addEventListener("mouseover", function (event) {
-  const view_img4 = getElement(".view_img4")
-  const div_page = event.target.closest(".page");
-  const scrollwidth = view_img4.querySelector(".word_wrap").offsetWidth;
+list_wrap.addEventListener("click", elListwrap.click);
+list_wrap.addEventListener("wheel", elListwrap.wheel);
+list_wrap.addEventListener("mouseover", elListwrap.mouseover);
 
-  if (!div_page) { return }
-
-  if (div_page.classList.contains("prev") && !div_page_Triggered) {
-    console.log(scrollwidth);
-    view_img4.scrollLeft -= scrollwidth;
-    div_page_Triggered = true;
-    return;
-  }
-  if (div_page.classList.contains("next") && !div_page_Triggered) {
-    view_img4.scrollLeft += scrollwidth;
-    div_page_Triggered = true;
-    return;
-  }
-});
 document.querySelectorAll(".list_wrap .page").forEach(function (page) {
   page.addEventListener("mouseout", (event) => {
-    // console.log(event.target.tagName);
     div_page_Triggered = false;
   });
 })
 
-// 维基百科API
-async function wiki_APi(searchTerm, lang) {
-  try {
-    const { intro, imageUrl } = await getWikipediaInfo(searchTerm, lang);
-    // console.log("简介:", intro);
-    getById("zh_intro").textContent = intro;
-    let image = document.querySelector("#fixed-header .top img");
-    if (imageUrl) {
-      image.src = imageUrl
-    } else {
-      image.src = "/img/placeholder.png"
-    };
+// Excel -------------------------------------------------------------
+document.getElementById('file-input').addEventListener('change', Prompt_favorites.import);
+document.getElementById('file-excel').addEventListener('change', Excel.read);
 
-    // console.log("图片URL:", imageUrl);
-  } catch (error) {
-    console.error(error.message);
-  }
-}
+// keybord -------------------------------------------------------------
+document.addEventListener("keyup", keyupEvent); // 键盘弹起
+document.addEventListener("keydown", keydownEvent); // 键盘按下
 
 
-// 所选字体显示为大字号
-function setFontToLargeSize(event) {
-  let li;
+const ListSlider_width = document.getElementById("ListSlider_width");
+const ListSlider_width_value = document.getElementById("ListSlider_width_value");
 
-  if (event.target.tagName === "LI") {
-    li = event.target;
-  } else {
-    li = event.target.closest("li");
-  }
+ListSlider_width.addEventListener("input", function () {
+  ListSlider_width_value.textContent = ListSlider_width.value;
+  const elements = document.querySelectorAll('.word_wrap');
+  elements.forEach(el => {
+    el.style.setProperty('width', ListSlider_width.value + "px");
+  });
 
+});
+
+
+
+document.querySelector(".view_bar").addEventListener("click", function (e) {
+  let li = e.target.closest("li");
+  let imagelist = document.getElementById("imagelist2");
   if (!li) { return };
-  getById("zh_preview").textContent = li.dataset.zh;
-  getById("en_preview").textContent = li.dataset.en;
-  wiki_APi(li.dataset.zh, "zh");
-  // let image = document.querySelector("#fixed-header img");
-  // let src = li.querySelector("img");
-  // image.src = src.dataset.src;
-  // let randomParam = Math.random(); // 生成一个随机数作为参数
-  // image.src = "https://picsum.photos/200?" + randomParam;
-}
+  let view_name = li.dataset.button;
 
+  imagelist.classList.forEach(className => {
+    if (className.startsWith("cssview_")) {
+      imagelist.classList.remove(className);
+    }
+  });
+  imagelist.classList.add(view_name);
+
+})

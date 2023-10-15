@@ -1,13 +1,34 @@
-export {
-  getById,
-  getElement,
-  random_bkcolor,
-  startCountdown,
-  uuid,
-  getCurrentDateTime,
-  sha256,
-  getWikipediaInfo
-};
+// 防抖函数，用于减少频繁触发API请求
+export function debounce(func, delay) {
+  let timeout;
+  return function () {
+    const context = this;
+    const args = arguments;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func.apply(context, args);
+    }, delay);
+  };
+}
+
+
+// wiki_APi
+export async function wiki_APi(searchTerm, lang) {
+  try {
+    const { intro, imageUrl } = await getWikipediaInfo(searchTerm, lang);
+    // console.log("简介:", intro);
+    document.getElementById("zh_intro").textContent = intro;
+    let image = document.querySelector("#fixed-header .top img");
+    if (imageUrl) {
+      image.src = imageUrl
+    } else {
+      image.src = "/img/placeholder.png"
+    };
+    // console.log("图片URL:", imageUrl);
+  } catch (error) {
+    console.error(error.message);
+  }
+}
 
 
 async function getWikipediaInfo(searchTerm, lang = "zh") {
@@ -29,21 +50,18 @@ async function getWikipediaInfo(searchTerm, lang = "zh") {
   }
 }
 
-
-
-
 // 根据id后去元素
-function getById(id) {
+export function getById(id) {
   return document.getElementById(id);
 }
 
 // 根据表达式获取元素
-function getElement(selector) {
+export function getElement(selector) {
   return document.querySelector(selector);
 }
 
 // 随机背景色
-function random_bkcolor(trans = 1) {
+export function random_bkcolor(trans = 1) {
   const hue = Math.floor(Math.random() * 361);
   const saturation = 30; // 饱和度
   const lightness = 30; // 亮度
@@ -52,7 +70,7 @@ function random_bkcolor(trans = 1) {
 }
 
 // 按钮倒计时
-function startCountdown(button, name = "成功") {
+export function startCountdown(button, name = "成功") {
   button.disabled = true; // 禁用按钮，防止连续点击
   let beforename = button.innerText;
   let count = 3; // 初始倒计时值
@@ -72,7 +90,7 @@ function startCountdown(button, name = "成功") {
 }
 
 // 生成uuid
-function uuid() {
+export function uuid() {
   var s = [];
   var x = "0123456789abcdef";
   for (var i = 0; i < 36; i++) {
@@ -90,21 +108,19 @@ function uuid() {
 // sha256(text1).then(hash1 => {
 //   console.log("Hash 1:", hash1);
 // });
-async function sha256(text) {
+export async function sha256(text) {
   const encoder = new TextEncoder();
   const data = encoder.encode(text);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-
   // 将二进制哈希值转换为十六进制字符串
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
-
   return hashHex;
 }
 
 
 // 获取当前时间
-function getCurrentDateTime() {
+export function getCurrentDateTime() {
   var now = new Date();
   var year = now.getFullYear();
   var month = now.getMonth() + 1; // 月份从0开始，所以要加1
@@ -121,4 +137,3 @@ function getCurrentDateTime() {
   // 返回格式化后的日期时间字符串
   return year + '/' + month + '/' + day + ' ' + hours + ':' + minutes;
 }
-
