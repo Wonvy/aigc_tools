@@ -462,9 +462,10 @@ body
         user-select: none
         -web-kit-user-select: none
         &.active
-          color: #ccc
-          background-color: #252525
+          color: #ccc !important
+          background-color: #000 !important
         &:hover
+          color: #999
           background-color: #111
   .status_bar
     position: relative
@@ -542,6 +543,10 @@ body
       #word_edit_en
         &.ontop
           z-index: 26
+        &.ontop_row
+          z-index: 26
+          ul
+            flex-direction: row
         ul
           display: flex
           flex-direction: column
@@ -591,6 +596,10 @@ body
       div
         &.ontop
           z-index: 29
+        &.ontop_row
+          z-index: 29
+          ul
+            flex-direction: row
 
   &:hover
     background-color: rgb(30, 30, 30)
@@ -795,8 +804,8 @@ body
     li
       &:hover,&.on
         top: -2px
-        background-color: transparent
-        border: 1px solid #999
+        // background-color: transparent !important
+        border: 1px solid #999 !important
         span
           color: #fff
       &.clicked
@@ -1013,7 +1022,10 @@ body
             justify-content: center
             h3
               text-align: center
-
+    &.cssview_C
+      .word_wrap
+        ul
+          grid-template-columns: 1fr
     .word_wrap
       box-sizing: border-box
       width: 300px
@@ -1021,14 +1033,19 @@ body
       display: inline-block
       overflow: hidden
       background: transparent
+      transition: background 0.4s ease
       // margin: 5px
-      color: #eee
+      color: #999
+
       &:nth-child(even)
         // background-color: #111
       &:nth-child(odd)
         // background-color: #000
       &:hover
         background: #333
+        h3
+          color: #fff
+
       h3
         display: flex
         height: 60px
@@ -1037,6 +1054,7 @@ body
         align-content: center
         justify-content: center
         align-items: center
+        transition: h3 0.4s ease
       ul
         display: grid
         row-gap: 10px

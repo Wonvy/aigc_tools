@@ -1039,10 +1039,11 @@ body {
   -web-kit-user-select: none;
 }
 .main_wrap nav ul li.active {
-  color: #ccc;
-  background-color: #252525;
+  color: #ccc !important;
+  background-color: #000 !important;
 }
 .main_wrap nav ul li:hover {
+  color: #999;
   background-color: #111;
 }
 .main_wrap .status_bar {
@@ -1131,6 +1132,12 @@ body {
 .main_wrap .en_wrap #en_tabs #word_edit_en.ontop {
   z-index: 26;
 }
+.main_wrap .en_wrap #en_tabs #word_edit_en.ontop_row {
+  z-index: 26;
+}
+.main_wrap .en_wrap #en_tabs #word_edit_en.ontop_row ul {
+  flex-direction: row;
+}
 .main_wrap .en_wrap #en_tabs #word_edit_en ul {
   display: flex;
   flex-direction: column;
@@ -1184,6 +1191,12 @@ body {
 }
 .main_wrap .zh_wrap #zh_tabs div.ontop {
   z-index: 29;
+}
+.main_wrap .zh_wrap #zh_tabs div.ontop_row {
+  z-index: 29;
+}
+.main_wrap .zh_wrap #zh_tabs div.ontop_row ul {
+  flex-direction: row;
 }
 .main_wrap:hover {
   background-color: rgb(30, 30, 30);
@@ -1416,8 +1429,7 @@ body {
 
 #word_edit_en ul li:hover, #word_edit_en ul li.on {
   top: -2px;
-  background-color: transparent;
-  border: 1px solid #999;
+  border: 1px solid #999 !important;
 }
 #word_edit_en ul li:hover span, #word_edit_en ul li.on span {
   color: #fff;
@@ -1664,6 +1676,9 @@ body {
 .list_wrap .view_img4.cssview_B .word_wrap ul li h3 {
   text-align: center;
 }
+.list_wrap .view_img4.cssview_C .word_wrap ul {
+  grid-template-columns: 1fr;
+}
 .list_wrap .view_img4 .word_wrap {
   box-sizing: border-box;
   width: 300px;
@@ -1671,10 +1686,14 @@ body {
   display: inline-block;
   overflow: hidden;
   background: transparent;
-  color: #eee;
+  transition: background 0.4s ease;
+  color: #999;
 }
 .list_wrap .view_img4 .word_wrap:hover {
   background: #333;
+}
+.list_wrap .view_img4 .word_wrap:hover h3 {
+  color: #fff;
 }
 .list_wrap .view_img4 .word_wrap h3 {
   display: flex;
@@ -1684,6 +1703,7 @@ body {
   align-content: center;
   justify-content: center;
   align-items: center;
+  transition: h3 0.4s ease;
 }
 .list_wrap .view_img4 .word_wrap ul {
   display: grid;

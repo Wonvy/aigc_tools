@@ -3,6 +3,9 @@
 提示词Cool
 免登录-支持本地数据
 
+https://www.mubu.com/doc/7cDy5_PdSjm
+
+
 [咒语管理]
 - [x] 添加提示词
 - [x] CTRL+S 保存提示词

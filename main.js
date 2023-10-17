@@ -3,7 +3,7 @@ console.log("严格模式:", this === undefined); // 输出 true 表示严格模
 // import { Vue } from "./js/vue.esm.browser.js"
 import Vue from './js/vue.esm.browser.js'
 
-import { translate_API, translate_tmt } from "./js/translate.js";
+import { translate_API } from "./js/translate.js";
 import { Resize } from "./js/ui.js";
 import {
   getById,
@@ -41,6 +41,7 @@ let lastparent_uuid = "";
 let currenuuid, Translated;
 let ctrlPressed = false;
 let tooltip;
+let g_hash_zh, g_hash_en;
 
 let clicks = 0, timer2, timeoutId; // 处理双击事件
 // 初始化JSON数据
@@ -337,8 +338,7 @@ const Prompt = {
           if (word.trim() !== "") {
             Translated = localStorage.getItem(word);
             if (!Translated) {
-              translate_API(word).then((result) => {
-                let result_text = result.translations[0].text;
+              translate_API(word).then((result_text) => {
                 // console.log(word, result_text);
                 localStorage.setItem(word, result_text); // 存储翻译结果到本地
                 document.getElementById("p_words").innerText = result_text;
@@ -386,9 +386,7 @@ const Prompt = {
           if (word.trim() !== "") {
             Translated = localStorage.getItem(word);
             if (!Translated) {
-              translate_API(word).then((result) => {
-                let result_text = result.translations[0].text;
-                // console.log(word, result_text);
+              translate_API(word).then((result_text) => {
                 localStorage.setItem(word, result_text); // 存储翻译结果到本地
                 document.getElementById("p_words").innerText = result_text;
               });
@@ -500,17 +498,30 @@ const Prompt = {
     const lines = text.split(new RegExp(`[${punctuations.join("")}]`));
     const ul_local = document.querySelector("#word_edit ul");
     const ul = document.createElement("ul");
-    lines.forEach((line) => {
+    const ulen_lis = document.querySelectorAll("#ul_en li");
+
+    console.log("ulen_lis", ulen_lis.length, lines.length);
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
       if (line.trim() !== "") {
         const li = document.createElement("li");
-        li.style.backgroundColor = random_bkcolor(1);
+        // console.log(ul_en[i].dataset.bkcolor);
+        // li.style.backgroundColor = ul_en[i].dataset.bkcolor;
+        if (ulen_lis[i]) {
+          // console.log("ul_en[i].backgroundColor", window.getComputedStyle(ulen_lis[i]).backgroundColor);
+          li.style.backgroundColor = window.getComputedStyle(ulen_lis[i]).backgroundColor;
+        }
+
+
         li.setAttribute("draggable", "true");
         li.dataset.en = "111";
         li.dataset.zh = "222";
         li.textContent = line.trim();
         ul.appendChild(li);
       }
-    });
+    }
+
+
     ul_local.innerHTML = ul.innerHTML;
   },
 
@@ -527,6 +538,7 @@ const Prompt = {
         const li = document.createElement("li");
         li.style.backgroundColor = random_bkcolor(1);
         li.setAttribute("draggable", "true");
+        li.dataset.bkcolor = random_bkcolor(1);;
         li.dataset.en = "111";
         li.dataset.zh = "222";
         li.textContent = line.trim();
@@ -548,11 +560,11 @@ const PromptWords = {
     JSONS.render(imagelist2, g_JSONdata);
 
     getById("temp_en_edit").innerHTML = getById("p_en").innerHTML;
-    document.querySelector("h3[data-title=" + bt_title + "]").scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-      inline: "nearest",
-    });
+    // document.querySelector("h3[data-title=" + bt_title + "]").scrollIntoView({
+    //   behavior: "smooth",
+    //   block: "center",
+    //   inline: "nearest",
+    // });
     full_screen.classList.add("ontop");
   },
 
@@ -614,8 +626,7 @@ const PromptWords = {
           document.querySelector(`li[uuid="${currenuuid}"]`).classList.add("on");
         } else {
           translate_API(searchword)
-            .then((result) => {
-              let result_text = result.translations[0].text;
+            .then((result_text) => {
               localStorage.setItem(searchword, result_text); // 存储翻译结果到本地
               document.getElementById("p_words").innerText = result_text;
             })
@@ -821,8 +832,7 @@ const Translates = {
     } else {
 
       translate_API(text_en, "en", "zh")
-        .then((result) => {
-          let result_text = result.translations[0].text;
+        .then((result_text) => {
           localStorage.setItem(text_en, result_text); // 存储翻译结果到本地
           p_zh.innerText = result_text; // 替换内容
           Prompt.en_MultiLine(); //多行布局
@@ -856,9 +866,8 @@ const Translates = {
       // Prompt.format_Word(); // 拆分段落
       // prompt_split_add();
     } else {
-      translate_API(p_zh, "ZH", "EN", true)
-        .then((result) => {
-          let result_text = result.translations[0].text;
+      translate_API(p_zh, "ZH", "EN") // true
+        .then((result_text) => {
           localStorage.setItem(p_zh, result_text);
           p_en.innerText = result_text;
           // Prompt.format_Word();
@@ -872,10 +881,17 @@ const Translates = {
 
   // 实时翻译
   live: function (event) {
-    const text = p_zh.innerText;
-    translate_API(text, "zh", "en", true).then((result) => {
-      p_en.innerText = result.translations[0].text;
-    });
+    const lang = event.target.closest("p").dataset.lang;
+    if (lang === "en") {
+      translate_API(p_en.innerText, "en", "zh").then((result) => {
+        p_zh.innerText = result;
+      });
+    } else { // zh
+      translate_API(p_zh.innerText, "zh", "en").then((result) => {
+        p_en.innerText = result;
+      });
+    }
+
   },
 }
 
@@ -1199,30 +1215,40 @@ const Excel = {
 
 // 提示词多行显示
 function prompt_switch_multiLine(event) {
-  const tagName = event.target.tagName;
   let li = event.target.closest("li");
-
   if (!li) { return }
-  if (tagName === "LI") { li = event.target; }
-  if (tagName === "I") { li = event.target.parentElement; }
 
-  // 获取所在的ul
-  const enzh = li.closest("ul").dataset.class;
   const tabtext = li.dataset.tab;
-  const tabclass = li.dataset.class;
+  const liIndex = li.dataset.index;
+  const tabcss = li.dataset.css;
 
-  if (enzh === "zh") { Prompt.zh_MultiLine() };// 转成多行
-  if (enzh === "en") { Prompt.en_MultiLine() };// 转成多行
+  Prompt.en_MultiLine();
+  Prompt.zh_MultiLine();
 
-  const nav = document.querySelector(`.${enzh}_wrap .active`);
-  nav && nav.classList.remove("active");
+  const lis = document.querySelectorAll(`.main_wrap [class*="active"]`);
+  lis.forEach(li => {
+    li.classList.remove("active");
+  });
 
-  const current_tab = document.querySelector(`.${enzh}_wrap [data-tab=${tabtext}]`);
-  current_tab && current_tab.classList.add("active");
-  const tab = document.querySelector(`#${enzh}_tabs .ontop`);
-  tab && tab.classList.remove("ontop");
-  document.querySelector(`#${enzh}_tabs .${tabtext}`).classList.add("ontop");
+
+  document.querySelector(`.en_wrap [data-index="${liIndex}"]`).classList.add("active");
+  document.querySelector(`.zh_wrap [data-index="${liIndex}"]`).classList.add("active");
+
+  const elements = document.querySelectorAll(`.main_wrap [class*="ontop"]`);
+  elements.forEach(element => {
+    const classes = element.classList;
+    for (let i = 0; i < classes.length; i++) {
+      const className = classes[i];
+      if (className.startsWith("ontop")) {
+        element.classList.remove(className);
+      }
+    }
+  });
+
+  document.querySelector(`#zh_tabs .${tabtext}`).classList.add(tabcss);
+  document.querySelector(`#en_tabs .${tabtext}`).classList.add(tabcss);
 }
+
 // 添加拆分词
 function prompt_split_add() {
   const sentenceSpans = p_en.querySelectorAll("span");
@@ -1568,7 +1594,7 @@ $(".button_wrap #view_bar-unselect").on("click", PromptWords.unselect);  // 取�
 $("#bt_add").on("click", PromptWords.load);  // 载入提示词库
 $("#bt_en").on("click", Translates.toZH); // 载入提示词库
 $("#bt_zh").on("click", Translates.toEN); // 载入提示词库
-$(".status_bar button").on("click", PromptWords.load);  // 载入提示词库
+$(".zh_wrap .status_bar button").on("click", PromptWords.load);  // 载入提示词库
 
 full_screen.addEventListener("mouseover", elFullScreen.mouseover);
 full_screen.addEventListener("mouseout", elFullScreen.mouseout);
@@ -1600,6 +1626,10 @@ zh_wrap.querySelector("#ul_zh").addEventListener("click", function (event) {
   li.classList.toggle("clicked")
 })
 zh_wrap.querySelector("#p_zh").addEventListener("input",
+  debounce(Translates.live, 500)
+);
+
+en_wrap.querySelector("#p_en").addEventListener("input",
   debounce(Translates.live, 500)
 );
 
@@ -1834,5 +1864,29 @@ document.querySelector(".view_bar").addEventListener("click", function (e) {
     }
   });
   imagelist.classList.add(view_name);
+
+})
+
+
+
+ul_zh.addEventListener("mouseover", (e) => {
+  const li = e.target.closest("li");
+  if (!li) { return };
+  const liIndex = Array.from(ul_zh.children).indexOf(li); // 获取当前索引
+
+  li.classList.add("on");
+  const en_li = ul_en.children[liIndex];
+  if (!en_li) { return }
+  en_li.classList.add("on");
+})
+
+ul_zh.addEventListener("mouseout", (e) => {
+  const li = e.target.closest("li");
+  if (!li) { return };
+  const liIndex = Array.from(ul_zh.children).indexOf(li); // 获取当前索引
+  li.classList.contains("on") && li.classList.remove("on");
+  const en_li = ul_en.children[liIndex];
+  if (!en_li) { return }
+  en_li.classList.contains("on") && en_li.classList.remove("on");
 
 })

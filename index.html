@@ -82,17 +82,17 @@
 
 
         <div class="view_bar">
-
           <div class="view left">
             <ul>
               <li>
                 <input title="-" type="range" min="100" max="400" value="300" step="1" id="ListSlider_width">
-                <p>当前值：<span id="ListSlider_width_value">300</span></p>
+                <p><span id="ListSlider_width_value">300</span></p>
               </li>
               <li data-button="lang_zh" class="lang_zh"><i class="lang_zh">中</i></li>
               <li data-button="lang_en" class="lang_en"><i class="lang_en">EN</i></li>
               <li data-button="cssview_A" class="lang_en">A</li>
               <li data-button="cssview_B" class="lang_en">B</li>
+              <li data-button="cssview_C" class="lang_en">C</li>
 
             </ul>
           </div>
@@ -149,16 +149,19 @@
           <nav class="tab_container">
             <h2>英文咒语</h2>
             <ul data-class="en">
-              <li data-tab="tab1" data-tooltip="段落" data-class="tab1" class="active"><i
+              <li data-index="1" data-tab="tab1" data-tooltip="段落" data-css="ontop" class="active"><i
                   class="fa-regular fa-pen-to-square"></i></li>
-              <li data-tab="tab2" data-tooltip="多行显示1" data-class="tab2"><i class="fa-solid fa-align-left"></i></li>
-              <li data-tab="tab2" data-tooltip="多行显示2" data-class="view3"><i class="fa-solid fa-align-justify"></i></li>
+              <li data-index="2" data-tab="tab2" data-tooltip="多行显示1" data-css="ontop"><i
+                  class="fa-solid fa-align-left"></i></li>
+              <li data-index="3" data-tab="tab2" data-tooltip="多行显示2" data-css="ontop_row"><i
+                  class="fa-solid fa-align-justify"></i>
+              </li>
             </ul>
           </nav>
 
           <div id="en_tabs">
             <div class="tab1 div_edit">
-              <p id="p_en" contenteditable="true" spellcheck="false">)</p>
+              <p id="p_en" data-lang="en" contenteditable="true" spellcheck="false">)</p>
             </div>
             <div class="tab2" id="word_edit_en">
               <ul id="ul_en"></ul>
@@ -186,10 +189,12 @@
             <h2>中文咒语</h2>
             <ul data-class="zh">
               <!-- <li><i class="fa-solid fa-chevron-right"></i></li> -->
-              <li data-tab="tab1" data-tooltip="段落" data-class="tab1" class="active"><i
+              <li data-index="1" data-tab="tab1" data-tooltip="段落" data-css="ontop" class="active"><i
                   class="fa-regular fa-pen-to-square"></i></li>
-              <li data-tab="tab2" data-tooltip="分行显示1" data-class="tab2"><i class="fa-solid fa-align-left"></i></li>
-              <li data-tab="tab2" data-tooltip="分行显示2" data-class="view3"><i class="fa-solid fa-align-justify"></i>
+              <li data-index="2" data-tab="tab2" data-tooltip="分行显示1" data-css="ontop"><i
+                  class="fa-solid fa-align-left"></i></li>
+              <li data-index="3" data-tab="tab2" data-tooltip="分行显示2" data-css="ontop_row"><i
+                  class="fa-solid fa-align-justify"></i>
               </li>
             </ul>
           </nav>
@@ -199,7 +204,7 @@
             <div class="tab1 div_edit" data-tab="tab1">
               <!-- <input type="text" id="p_zh" placeholder="请输入文字"> -->
               <p id="p_words" spellcheck="false"></p>
-              <p id="p_zh" contenteditable="true" spellcheck="false">
+              <p id="p_zh" data-lang="zh" contenteditable="true" spellcheck="false">
               </p>
             </div>
 
@@ -275,28 +280,29 @@
               </div>
               <div data-tooltip="风格化">
                 <label for="id_stylize">stylize 风格</label>
-                <input type="number" name="stylize" min="0" max="1000" data-param-name="--stylize"
-                  placeholder="0 - 1000" class="numberinput form-control" id="id_stylize"
-                  data-gtm-form-interact-field-id="0">
+                <input type="text" name="stylize" min="0" max="1000" data-param-name="--stylize"
+                  class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
+                <input type="range" name="stylize" min="0" max="1000" data-param-name="--stylize" placeholder="0 - 1000"
+                  class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
               </div>
               <div data-tooltip="参数后跟数值范围（0-100），数字越大，生成的图片越随机，越多样">
                 <label for="id_chaos">chaos 变化</label>
-                <input type="number" name="stylize" min="0" max="100" data-param-name="--chaos" placeholder="0 - 100"
+                <input type="range" name="stylize" min="0" max="100" data-param-name="--chaos" placeholder="0 - 100"
                   class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
               </div>
               <div data-tooltip="停止">
                 <label for="id_stop">stop 停止</label>
-                <input type="number" name="stylize" min="10" max="100" data-param-name="--stop" placeholder="10 - 100"
+                <input type="range" name="stylize" min="10" max="100" data-param-name="--stop" placeholder="10 - 100"
                   class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
               </div>
               <div data-tooltip="1">
                 <label for="id_repeat">repeat 重复</label>
-                <input type="number" name="stylize" min="2" max="40" data-param-name="--repeat" placeholder="2 - 40"
+                <input type="range" name="stylize" min="2" max="40" data-param-name="--repeat" placeholder="2 - 40"
                   class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
               </div>
               <div data-tooltip="1">
                 <label for="id_weird">weird 奇异</label>
-                <input type="number" name="stylize" min="0" max="1000" data-param-name="--weird" placeholder="0 - 3000"
+                <input type="range" name="stylize" min="0" max="1000" data-param-name="--weird" placeholder="0 - 3000"
                   class="numberinput form-control" id="id_stylize" data-gtm-form-interact-field-id="0">
               </div>
               <div data-tooltip="1">
@@ -542,8 +548,8 @@
 
   </div>
   <script src="js/xlsx.full.min.js"></script>
-  <script src="js/fontawesome.js"></script>
   <script type="module" src="main.js"></script>
+  <script src="js/fontawesome.js"></script>
 
 </body>
 
