@@ -500,7 +500,7 @@ const Prompt = {
     const ul = document.createElement("ul");
     const ulen_lis = document.querySelectorAll("#ul_en li");
 
-    console.log("ulen_lis", ulen_lis.length, lines.length);
+    // console.log("ulen_lis", ulen_lis.length, lines.length);
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       if (line.trim() !== "") {
@@ -510,12 +510,11 @@ const Prompt = {
         if (ulen_lis[i]) {
           // console.log("ul_en[i].backgroundColor", window.getComputedStyle(ulen_lis[i]).backgroundColor);
           li.style.backgroundColor = window.getComputedStyle(ulen_lis[i]).backgroundColor;
+          li.dataset.uuid = ulen_lis[i].dataset.uuid;
+          li.dataset.en = ulen_lis[i].dataset.en;
         }
-
-
         li.setAttribute("draggable", "true");
-        li.dataset.en = "111";
-        li.dataset.zh = "222";
+        li.dataset.zh = line.trim();
         li.textContent = line.trim();
         ul.appendChild(li);
       }
@@ -525,7 +524,7 @@ const Prompt = {
     ul_local.innerHTML = ul.innerHTML;
   },
 
-  // 中文提示词转为多行
+  // 英文提示词转为多行
   en_MultiLine: function () {
     const text = getById("p_en").innerText;
     // const punctuations = [",", "，", ".", "。", "、", ";", "；"];
@@ -539,7 +538,8 @@ const Prompt = {
         li.style.backgroundColor = random_bkcolor(1);
         li.setAttribute("draggable", "true");
         li.dataset.bkcolor = random_bkcolor(1);;
-        li.dataset.en = "111";
+        li.dataset.en = line.trim();
+        li.dataset.uuid = uuid();
         li.dataset.zh = "222";
         li.textContent = line.trim();
         ul.appendChild(li);
@@ -1158,6 +1158,130 @@ const elListwrap = {
 }
 
 
+const el_ulzh = {
+
+  click: (e) => {
+    const li = e.target.closest("li");
+    if (!li) { return };
+    const liIndex = Array.from(li.parentNode.children).indexOf(li); // 获取当前索引
+
+    const lis = document.querySelectorAll(".main_wrap li.clicked");
+    lis.forEach((li_clicked) => {
+      if (li.dataset.uuid != li_clicked.dataset.uuid) {
+        li_clicked.classList.remove("clicked");
+      }
+    });
+
+    li.classList.toggle("clicked")
+    const en_li = ul_en.children[liIndex];
+    if (!en_li) { return }
+    en_li.classList.toggle("clicked")
+
+    el_iframe.open(li.dataset.en);
+  },
+
+  mouseover: (e) => {
+    const li = e.target.closest("li");
+    if (!li) { return };
+    const liIndex = Array.from(li.parentNode.children).indexOf(li); // 获取当前索引
+
+    li.classList.add("on");
+    const en_li = ul_en.children[liIndex];
+    if (!en_li) { return }
+    en_li.classList.add("on");
+  },
+
+  mouseout: (e) => {
+    const li = e.target.closest("li");
+    if (!li) { return };
+    const liIndex = Array.from(li.parentNode.children).indexOf(li); // 获取当前索引
+    li.classList.contains("on") && li.classList.remove("on");
+    const en_li = ul_en.children[liIndex];
+    if (!en_li) { return }
+    en_li.classList.contains("on") && en_li.classList.remove("on");
+  },
+  keyup: (event) => {
+  },
+  keydown: (event) => {
+  },
+  change: (event) => {
+  },
+  input: (event) => {
+  },
+}
+
+const el_ulen = {
+
+  click: (e) => {
+    const li = e.target.closest("li");
+    if (!li) { return };
+    const liIndex = Array.from(li.parentNode.children).indexOf(li); // 获取当前索引
+    console.log(liIndex);
+    const lis = document.querySelectorAll(".main_wrap li.clicked");
+    lis.forEach((li_clicked) => {
+      if (li.dataset.uuid != li_clicked.dataset.uuid) {
+        li_clicked.classList.remove("clicked");
+      }
+    });
+
+    li.classList.toggle("clicked")
+    const zh_li = ul_zh.children[liIndex];
+    if (!zh_li) { return }
+    zh_li.classList.toggle("clicked")
+    el_iframe.open(li.dataset.en);
+  },
+
+  mouseover: (e) => {
+    const li = e.target.closest("li");
+    if (!li) { return };
+    const liIndex = Array.from(li.parentNode.children).indexOf(li); // 获取当前索引
+
+    li.classList.add("on");
+    const zh_li = ul_zh.children[liIndex];
+    if (!zh_li) { return }
+    zh_li.classList.add("on");
+  },
+
+  mouseout: (e) => {
+    const li = e.target.closest("li");
+    if (!li) { return };
+    const liIndex = Array.from(li.parentNode.children).indexOf(li); // 获取当前索引
+    li.classList.contains("on") && li.classList.remove("on");
+    const zh_li = ul_zh.children[liIndex];
+    if (!zh_li) { return }
+    zh_li.classList.contains("on") && zh_li.classList.remove("on");
+  },
+  keyup: (event) => {
+  },
+  keydown: (event) => {
+  },
+  change: (event) => {
+  },
+  input: (event) => {
+  },
+
+}
+
+
+const el_iframe = {
+  open: (q) => {
+    let iframe = $("iframe");
+    let url1 = `https://lexica.art/?q=${q}`;
+    iframe.attr("src", url1);
+    let left = iframe.closest(".left");
+    const info = left.find(".info");
+    const hasClicked = $("#ul_en li.clicked").length > 0;
+    if (hasClicked) {
+      info.addClass("on");
+      left.addClass("on");
+    } else {
+      info.removeClass("on");
+      left.removeClass("on");
+    }
+  },
+}
+
+
 const elTemplate = {
   click: (event) => {
   },
@@ -1383,11 +1507,21 @@ function resize_reset() {
 function keyword_drags() {
   const list = getElement("#word_edit ul");
   let currentLi;
+
   list.addEventListener("dragstart", (e) => {
     e.dataTransfer.effectAllowed = "move";
     currentLi = e.target;
+
+
+
     setTimeout(() => {
       currentLi.classList.add("moving");
+
+      const liIndex = Array.from(currentLi.parentNode.children).indexOf(currentLi);
+      const en_li = ul_en.children[liIndex];
+      if (en_li) {
+        en_li.classList.add("moving");
+      };
     });
   });
 
@@ -1400,17 +1534,29 @@ function keyword_drags() {
     let currentIndex = liArray.indexOf(currentLi);
     let targetindex = liArray.indexOf(e.target);
 
+    console.log("liArray:", liArray);
+    console.log("currentIndex:", currentIndex);
+    console.log("targetindex:", targetindex);
+
     if (currentIndex < targetindex) {
       list.insertBefore(currentLi, e.target.nextElementSibling);
     } else {
       list.insertBefore(currentLi, e.target);
     }
   });
+
   list.addEventListener("dragover", (e) => {
     e.preventDefault();
   });
+
   list.addEventListener("dragend", (e) => {
     currentLi.classList.remove("moving");
+
+    const liIndex = Array.from(currentLi.parentNode.children).indexOf(currentLi);
+    const en_li = ul_en.children[liIndex];
+    if (en_li) {
+      en_li.classList.remove("moving");
+    };
   });
 }
 
@@ -1490,9 +1636,11 @@ status_bar.addEventListener("mouseover", (e) => {
     tab_switch(e);
   }, 200);
 });
+
 status_bar.addEventListener("mouseout", () => {
   clearTimeout(timeoutId);
 });
+
 status_bar.addEventListener("wheel", tab_wheel, { passive: true });
 
 // iframe ---------------------------------------------------------
@@ -1503,7 +1651,6 @@ document.querySelector("#main .left").addEventListener("mouseover", function (ev
 
 document.querySelector("iframe").addEventListener('load', function () {
   let info = document.querySelector("#main .left .info");
-  console.log(info);
   info.classList.contains("on") && info.classList.remove("on")
   console.log('外链网页加载完成！');
 });
@@ -1616,33 +1763,23 @@ document.querySelector(".view_bar .lang_zh").addEventListener("click", () => {
 zh_wrap.querySelector("#zh_tabs").addEventListener("click", () => {
   p_zh.focus();
 });
-zh_wrap.querySelector("#ul_zh").addEventListener("click", function (event) {
-  const li = event.target.closest("li");
-  if (!li) { return };
-  const lis = document.querySelectorAll("#ul_zh li.clicked");
-  lis.forEach((li1) => {
-    li1.classList.remove("clicked");
-  });
-  li.classList.toggle("clicked")
-})
+
 zh_wrap.querySelector("#p_zh").addEventListener("input",
   debounce(Translates.live, 500)
 );
 
-en_wrap.querySelector("#p_en").addEventListener("input",
-  debounce(Translates.live, 500)
-);
+ul_zh.addEventListener("click", el_ulzh.click)
+ul_zh.addEventListener("mouseover", el_ulzh.mouseover)
+ul_zh.addEventListener("mouseout", el_ulzh.mouseout)
 
-// en_wrap -------------------------------------------------------------
-$("#bt_new").on("click", Prompt.new); // 新建咒语
-$("#bt_save").on("click", Prompt.save); // 保存咒语
-$("#bt_copy").on("click", Prompt.copy); // 复制咒语
-$("#bt_paste").on("click", Prompt.paste); // 粘贴咒语
-$("#bt_clear").on("click", Prompt.clear); // 清空咒语
-$("#en_tabs").on("click", () => { $("#p_en").focus() });
-$("#p_en").on("mouseover", PromptWords.highlight_hover);
-$("#p_en").on("mouseout", PromptWords.highlight_clear);
+
+ul_en.addEventListener("click", el_ulen.click)
+ul_en.addEventListener("mouseover", el_ulen.mouseover)
+ul_en.addEventListener("mouseout", el_ulen.mouseout)
+
+
 $("#ul_en").on("click", "li", function () {
+  return;
   const li = $(this);
   if (!li.length) {
     return;
@@ -1664,6 +1801,21 @@ $("#ul_en").on("click", "li", function () {
     left.removeClass("on");
   }
 });
+
+en_wrap.querySelector("#p_en").addEventListener("input",
+  debounce(Translates.live, 500)
+);
+
+// en_wrap -------------------------------------------------------------
+$("#bt_new").on("click", Prompt.new); // 新建咒语
+$("#bt_save").on("click", Prompt.save); // 保存咒语
+$("#bt_copy").on("click", Prompt.copy); // 复制咒语
+$("#bt_paste").on("click", Prompt.paste); // 粘贴咒语
+$("#bt_clear").on("click", Prompt.clear); // 清空咒语
+$("#en_tabs").on("click", () => { $("#p_en").focus() });
+$("#p_en").on("mouseover", PromptWords.highlight_hover);
+$("#p_en").on("mouseout", PromptWords.highlight_clear);
+
 
 
 // tooltips ----------------------------------------------------------------
@@ -1720,7 +1872,12 @@ function delayedImageLoading(event) {
   });
 
   let iframe = document.querySelector("iframe");
-  iframe.src = `https://lexica.art/`;
+  // 判断是否
+  if (isMobileDevice()) {
+  } else {
+    iframe.src = `https://lexica.art/`;
+  }
+
 }
 document.querySelectorAll(".div_after img").forEach(function (div) {
   div.addEventListener("mouseover", button_mouseover);
@@ -1869,24 +2026,8 @@ document.querySelector(".view_bar").addEventListener("click", function (e) {
 
 
 
-ul_zh.addEventListener("mouseover", (e) => {
-  const li = e.target.closest("li");
-  if (!li) { return };
-  const liIndex = Array.from(ul_zh.children).indexOf(li); // 获取当前索引
 
-  li.classList.add("on");
-  const en_li = ul_en.children[liIndex];
-  if (!en_li) { return }
-  en_li.classList.add("on");
-})
+function isMobileDevice() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
 
-ul_zh.addEventListener("mouseout", (e) => {
-  const li = e.target.closest("li");
-  if (!li) { return };
-  const liIndex = Array.from(ul_zh.children).indexOf(li); // 获取当前索引
-  li.classList.contains("on") && li.classList.remove("on");
-  const en_li = ul_en.children[liIndex];
-  if (!en_li) { return }
-  en_li.classList.contains("on") && en_li.classList.remove("on");
-
-})
