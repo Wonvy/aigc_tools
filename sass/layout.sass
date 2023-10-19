@@ -455,7 +455,6 @@ body
         text-align: center
         font-size: 18px
         line-height: 40px
-
         cursor: pointer
         color: #666
         background-color: transparent
@@ -464,9 +463,18 @@ body
         &.active
           color: #ccc !important
           background-color: #000 !important
+          svg
+            path
+              stroke: #fff
         &:hover
           color: #999
           background-color: #111
+          svg
+            path
+              stroke: #ccc
+        svg
+          path
+            stroke: #999
   .status_bar
     position: relative
     display: flex
@@ -1127,5 +1135,18 @@ body
         font-size: 14px !important
         span
           font-size: 9px !important
+
+.show_weight
+  position: fixed
+  width: 18px
+  height: 18px
+  border-radius: 9px
+  color: #fff
+  background: #f00
+  text-align: center
+  z-index: 100
+  margin-left: -9px
+  margin-top: -9px
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3)
 
 @import './components/media'

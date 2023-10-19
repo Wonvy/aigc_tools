@@ -8,7 +8,6 @@ async function translate_tmt(text, sourceLanguage, targetLanguage) {
   // 删除提示词
   text = prompts_DeleteCommand(text);
   const apiUrl = "https://wonvy.cn/fanyi";
-
   try {
     const data = {
       text: text,
@@ -72,7 +71,7 @@ async function translate_deepl(text, sourceLanguage = "en", targetLanguage = "zh
 
 
 // translationOption: deepl tmt
-function translate_API(text, sourceLanguage = "en", targetLanguage = "zh", translationOption = 'deepl') {
+function translate_API(text, sourceLanguage = "en", targetLanguage = "zh", translationOption = 'tmt') {
   text = prompts_DeleteCommand(text); // 删除提示词
   return new Promise(async (resolve, reject) => {
     try {

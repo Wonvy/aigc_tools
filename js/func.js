@@ -56,8 +56,13 @@ export function getById(id) {
 }
 
 // 根据表达式获取元素
-export function getElement(selector) {
+export function getEl(selector) {
   return document.querySelector(selector);
+}
+
+// 根据表达式获取元素
+export function getElA(selector) {
+  return document.querySelectorAll(selector);
 }
 
 // 随机背景色

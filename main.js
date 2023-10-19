@@ -7,7 +7,8 @@ import { translate_API } from "./js/translate.js";
 import { Resize } from "./js/ui.js";
 import {
   getById,
-  getElement,
+  getEl,
+  getElA,
   uuid,
   sha256,
   random_bkcolor,
@@ -23,24 +24,26 @@ import {
   add_keyword,
 } from "./js/prompts.js";
 
-const full_version = getById("full_version");
-const line_en = getElement("#word_edit_en ul");
-const line_zh = getElement("#word_edit ul");
-const full_screen = getById("full_screen");
+const full_version = document.getElementById("full_version");
+const line_en = document.querySelector("#word_edit_en ul");
+const line_zh = document.querySelector("#word_edit ul");
+const full_screen = document.getElementById("full_screen");
 const list_wrap = document.querySelector(".list_wrap");
-const en_wrap = getElement(".en_wrap");
-const zh_wrap = getElement(".zh_wrap");
+const en_wrap = document.querySelector(".en_wrap");
+const zh_wrap = document.querySelector(".zh_wrap");
+const div_after = document.querySelector(".div_after");
+
 const status_bar = zh_wrap.querySelector(".status_bar");
-const p_zh = getById("p_zh"); // 英文指令编辑区
-const p_en = getById("p_en"); // 中文指令编辑区
-const ul_en = getById("ul_en"); // 英文翻译按钮
-const ul_zh = getById("ul_zh"); // 英文翻译按钮
+const p_zh = document.getElementById("p_zh"); // 英文指令编辑区
+const p_en = document.getElementById("p_en"); // 中文指令编辑区
+const ul_en = document.getElementById("ul_en"); // 英文翻译按钮
+const ul_zh = document.getElementById("ul_zh"); // 英文翻译按钮
 const view_img4 = document.querySelector(".view_img4");
 let show_en = false; // 元素拖拽
 let lastparent_uuid = "";
 let currenuuid, Translated;
 let ctrlPressed = false;
-let tooltip;
+let tooltip, show_1;
 let g_hash_zh, g_hash_en;
 
 let clicks = 0, timer2, timeoutId; // 处理双击事件
@@ -54,7 +57,6 @@ const app = new Vue({
   }
 });
 
-// 提示词收藏夹
 const Prompt_favorites = {
 
   // 渲染
@@ -243,7 +245,7 @@ const Prompt_favorites = {
   }
 
 }
-// 提示词相关
+
 const Prompt = {
   // 载入最后一次使用的提示词
   load_last: function () {
@@ -519,8 +521,6 @@ const Prompt = {
         ul.appendChild(li);
       }
     }
-
-
     ul_local.innerHTML = ul.innerHTML;
   },
 
@@ -546,13 +546,49 @@ const Prompt = {
       }
     });
     ul_local.innerHTML = ul.innerHTML;
+  },
+
+  // 提示词多行显示
+  switch_multiLine: function (event) {
+    let li = event.target.closest("li");
+    if (!li) { return }
+    console.log(li);
+    const tabtext = li.dataset.tab;
+    const liIndex = li.dataset.index;
+    const tabcss = li.dataset.css;
+
+    Prompt.en_MultiLine();
+    Prompt.zh_MultiLine();
+
+    const lis = document.querySelectorAll(`.main_wrap [class*="active"]`);
+    lis.forEach(li => {
+      li.classList.remove("active");
+    });
+
+
+    document.querySelector(`.en_wrap [data-index="${liIndex}"]`).classList.add("active");
+    document.querySelector(`.zh_wrap [data-index="${liIndex}"]`).classList.add("active");
+
+    const elements = document.querySelectorAll(`.main_wrap [class*="ontop"]`);
+    elements.forEach(element => {
+      const classes = element.classList;
+      for (let i = 0; i < classes.length; i++) {
+        const className = classes[i];
+        if (className.startsWith("ontop")) {
+          element.classList.remove(className);
+        }
+      }
+    });
+
+    document.querySelector(`#zh_tabs .${tabtext}`).classList.add(tabcss);
+    document.querySelector(`#en_tabs .${tabtext}`).classList.add(tabcss);
   }
 
-}
-// 提示关键词
-const PromptWords = {
 
-  // 载入提示词库
+}
+
+const Prompt_Words = {
+
   load: function (event) {
     const bt_title = event.target.dataset.name;
     let imagelist2 = getById("imagelist2");
@@ -568,20 +604,19 @@ const PromptWords = {
     full_screen.classList.add("ontop");
   },
 
-  // 添加所选关键词
   add_selected: function (event) {
     const lis = document.querySelectorAll("#full_screen li.selected");
     lis.forEach((li) => {
       const bkcolor = random_bkcolor(1);
-      checkElementType(p_en, li.dataset.en, "add", li.dataset.en, bkcolor);
-      checkElementType(p_zh, li.dataset.zh, "add", li.dataset.en, bkcolor);
-      checkElementType(ul_en, li.dataset.en, "add", li.dataset.en);
-      checkElementType(ul_zh, li.dataset.zh, "add", li.dataset.en);
+      const uuidstr = uuid();
+      checkElementType(p_en, li.dataset.en, "add", li.dataset.en);
+      checkElementType(p_zh, li.dataset.zh, "add", li.dataset.en);
+      checkElementType(ul_en, li.dataset.en, "add", li.dataset.en, bkcolor, uuidstr);
+      checkElementType(ul_zh, li.dataset.zh, "add", li.dataset.en, bkcolor, uuidstr);
     });
     full_screen.classList.contains("ontop") && full_screen.classList.remove("ontop")
   },
 
-  // 取消所选提示词
   unselect: function (event) {
     const result = window.confirm("您确定要执行此操作吗？");
     if (result) {
@@ -593,7 +628,6 @@ const PromptWords = {
     }
   },
 
-  // 高亮鼠标经过的提示词
   highlight_hover: function (event) {
     p_en.classList.add("textdark");
     if (event.target.tagName === "I") {
@@ -653,7 +687,6 @@ const PromptWords = {
     }
   },
 
-  // 取消提示词高亮
   highlight_clear: function (event) {
     if (event.target.parentNode.tagName === "SPAN") {
       p_en.classList.remove("textdark");
@@ -675,7 +708,7 @@ const PromptWords = {
   }
 
 }
-// JSON相关
+
 const JSONS = {
 
   // 初始化
@@ -807,7 +840,7 @@ const JSONS = {
 
 
 }
-// 翻译相关
+
 const Translates = {
   // 翻译为中文
   toZH: function () {
@@ -891,30 +924,33 @@ const Translates = {
         p_en.innerText = result;
       });
     }
-
   },
 }
 
-// FullScreen
-const elFullScreen = {
+const el_FullScreen = {
   // 关闭
-  close: (e) => {
-    full_screen.classList.contains("ontop") && full_screen.classList.remove("ontop")
+  close: function (e) {
+    full_screen.classList.contains("ontop") && full_screen.classList.remove("ontop");
   },
 
-  mouseout: (e) => {
+  mouseout: function (e) {
     if (e.target.id === "full_screen") {
       e.target.style.cursor = "default";
     }
   },
 
-  mouseover: (e) => {
+  mouseover: function (e) {
     if (e.target.id === "full_screen") {
       e.target.style.cursor = "not-allowed";
     }
   },
 
-  click: (event) => {
+  click: function (e) {
+    if (e.target === full_screen && !e.target.closest('.full_screen-wrap')) {
+      el_FullScreen.close(e);
+    }
+
+    return;
     const temp_en_edit = getById("temp_en_edit");
     let li;
     const tagName = event.target.tagName
@@ -923,7 +959,7 @@ const elFullScreen = {
     //   full_screen.classList.contains("ontop") && full_screen.classList.remove("ontop");
     //   return;
     // }
-    return;
+
     if (tagName === "H2") {
       li = event.target.parentElement;
     } else {
@@ -962,8 +998,7 @@ const elFullScreen = {
 
 }
 
-// elViewList
-const elViewList = {
+const el_ViewList = {
   // 所选字体显示为大字号
   mouseover: (e) => {
     let li;
@@ -1005,11 +1040,13 @@ const elViewList = {
 
     if (isSelected) {
       // li_parent.prepend(li);
+
       const bkcolor = random_bkcolor(1);
+      const uuidstr = uuid();
       checkElementType(p_en, li.dataset.en, "add", li.dataset.en);
-      checkElementType(p_zh, li.dataset.cn, "add", li.dataset.en);
-      checkElementType(ul_en, li.dataset.en, "add", li.dataset.en, bkcolor);
-      checkElementType(ul_zh, li.dataset.cn, "add", li.dataset.en, bkcolor);
+      checkElementType(p_zh, li.dataset.zh, "add", li.dataset.en);
+      checkElementType(ul_en, li.dataset.en, "add", li.dataset.en, bkcolor, uuidstr);
+      checkElementType(ul_zh, li.dataset.zh, "add", li.dataset.en, bkcolor, uuidstr);
       li_parent.querySelectorAll("li.selected").forEach((element, index) => {
         const offset = index * li_height; // 每个元素的偏移量为 50px（可以根据需要调整）
         // element.style.top = offset + 'px';
@@ -1018,9 +1055,9 @@ const elViewList = {
       // li_parent.appendChild(li);
       li.style.removeProperty('top');
       checkElementType(p_en, li.dataset.en, "del");
-      checkElementType(p_zh, li.dataset.cn, "del");
-      checkElementType(ul_en, li.dataset.en, "del");
-      checkElementType(ul_zh, li.dataset.cn, "del");
+      checkElementType(p_zh, li.dataset.zh, "del");
+      checkElementType(ul_en, li.dataset.zh, "del");
+      checkElementType(ul_zh, li.dataset.zh, "del");
       // li_parent.querySelectorAll("li:not(.selected)").forEach((element, index) => {
       //   element.style.removeProperty('top');
       // });
@@ -1029,7 +1066,7 @@ const elViewList = {
     if (li_num <= 0) {
       span.textContent = "";
     } else {
-      span.textContent = `(${li_num})`;
+      // span.textContent = `(${li_num})`;
     }
 
 
@@ -1039,7 +1076,7 @@ const elViewList = {
     let tagName = e.target.tagName;
     if (tagName === "H3" || tagName === "H3") {
       let scrollwidth = view_img4.offsetWidth - e.target.offsetWidth;
-      let scrollDirection = (e.originalEvent.deltaX || e.originalEvent.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
+      let scrollDirection = (e.deltaX || e.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
       blur
       view_img4.classList.add("blur");
       view_img4.scrollLeft += scrollwidth * scrollDirection;
@@ -1053,9 +1090,9 @@ const elViewList = {
       console.log(ul);
       let scrollheight = ul.clientHeight;
       console.log("e", e)
-      console.log("e.deltaX:", e.originalEvent.deltaX);
-      console.log("e.deltaY:", e.originalEvent.deltaY);
-      let scrollDirection = (e.originalEvent.deltaX || e.originalEvent.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
+      console.log("e.deltaX:", e.deltaX);
+      console.log("e.deltaY:", e.deltaY);
+      let scrollDirection = (e.deltaX || e.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
       console.log("scrollDirection:", scrollDirection);
       console.log("scrollHeight:", ul.scrollHeight);
       console.log("clientHeight:", ul.clientHeight);
@@ -1091,8 +1128,7 @@ const elViewList = {
 
 }
 
-
-const elListwrap = {
+const el_Listwrap = {
 
   click: (event) => {
 
@@ -1157,7 +1193,6 @@ const elListwrap = {
   }
 }
 
-
 const el_ulzh = {
 
   click: (e) => {
@@ -1173,7 +1208,8 @@ const el_ulzh = {
     });
 
     li.classList.toggle("clicked")
-    const en_li = ul_en.children[liIndex];
+    const curuuid = li.dataset.uuid;
+    const en_li = ul_en.querySelector(`[data-uuid="${curuuid}"]`)
     if (!en_li) { return }
     en_li.classList.toggle("clicked")
 
@@ -1183,20 +1219,24 @@ const el_ulzh = {
   mouseover: (e) => {
     const li = e.target.closest("li");
     if (!li) { return };
-    const liIndex = Array.from(li.parentNode.children).indexOf(li); // 获取当前索引
-
     li.classList.add("on");
-    const en_li = ul_en.children[liIndex];
+    const curuuid = li.dataset.uuid;
+    const en_li = ul_en.querySelector(`[data-uuid="${curuuid}"]`)
     if (!en_li) { return }
     en_li.classList.add("on");
+    show_1 = show_close(li, "x");
   },
 
   mouseout: (e) => {
+    if (show_1) {
+      show_1.remove();
+      show_1 = false;
+    }
     const li = e.target.closest("li");
     if (!li) { return };
-    const liIndex = Array.from(li.parentNode.children).indexOf(li); // 获取当前索引
     li.classList.contains("on") && li.classList.remove("on");
-    const en_li = ul_en.children[liIndex];
+    const curuuid = li.dataset.uuid;
+    const en_li = ul_en.querySelector(`[data-uuid="${curuuid}"]`)
     if (!en_li) { return }
     en_li.classList.contains("on") && en_li.classList.remove("on");
   },
@@ -1225,7 +1265,8 @@ const el_ulen = {
     });
 
     li.classList.toggle("clicked")
-    const zh_li = ul_zh.children[liIndex];
+    const curuuid = li.dataset.uuid;
+    const zh_li = ul_zh.querySelector(`[data-uuid="${curuuid}"]`)
     if (!zh_li) { return }
     zh_li.classList.toggle("clicked")
     el_iframe.open(li.dataset.en);
@@ -1234,10 +1275,9 @@ const el_ulen = {
   mouseover: (e) => {
     const li = e.target.closest("li");
     if (!li) { return };
-    const liIndex = Array.from(li.parentNode.children).indexOf(li); // 获取当前索引
-
     li.classList.add("on");
-    const zh_li = ul_zh.children[liIndex];
+    const curuuid = li.dataset.uuid;
+    const zh_li = ul_zh.querySelector(`[data-uuid="${curuuid}"]`)
     if (!zh_li) { return }
     zh_li.classList.add("on");
   },
@@ -1245,9 +1285,9 @@ const el_ulen = {
   mouseout: (e) => {
     const li = e.target.closest("li");
     if (!li) { return };
-    const liIndex = Array.from(li.parentNode.children).indexOf(li); // 获取当前索引
     li.classList.contains("on") && li.classList.remove("on");
-    const zh_li = ul_zh.children[liIndex];
+    const curuuid = li.dataset.uuid;
+    const zh_li = ul_zh.querySelector(`[data-uuid="${curuuid}"]`)
     if (!zh_li) { return }
     zh_li.classList.contains("on") && zh_li.classList.remove("on");
   },
@@ -1262,46 +1302,175 @@ const el_ulen = {
 
 }
 
-
 const el_iframe = {
   open: (q) => {
-    let iframe = $("iframe");
+    let iframe = getEl("iframe");
     let url1 = `https://lexica.art/?q=${q}`;
-    iframe.attr("src", url1);
+    iframe.src = url1;;
     let left = iframe.closest(".left");
-    const info = left.find(".info");
-    const hasClicked = $("#ul_en li.clicked").length > 0;
+    const info = getEl(".info");
+    const hasClicked = document.querySelectorAll("#ul_en li.clicked").length > 0;
     if (hasClicked) {
-      info.addClass("on");
-      left.addClass("on");
+      info.classList.add("on");
+      left.classList.add("on");
     } else {
-      info.removeClass("on");
-      left.removeClass("on");
+      info.classList.remove("on");
+      left.classList.remove("on");
     }
   },
 }
 
-
-const elTemplate = {
-  click: (event) => {
+const el_Status_bar = {
+  click: (e) => {
   },
-  wheel: (event) => {
+  wheel: (e) => {
   },
-  mouseover: (event) => {
+  mouseover: (e) => {
+    timeoutId = setTimeout(() => {
+      tab_switch(e);
+    }, 200);
   },
-  mouseout: (event) => {
+  mouseout: (e) => {
+    clearTimeout(timeoutId);
   },
-  keyup: (event) => {
+  keyup: (e) => {
   },
-  keydown: (event) => {
+  keydown: (e) => {
   },
-  change: (event) => {
+  change: (e) => {
   },
-  input: (event) => {
+  input: (e) => {
   },
 
 }
 
+const el_Button = {
+  click: (e) => {
+  },
+  wheel: (e) => {
+  },
+  mouseover: (e) => {
+    let el = e.target.closest("[data-tooltip]");
+    if (!el) return;
+    tooltip = show_Tooltip(el, el.dataset.tooltip);
+  },
+  mouseout: (e) => {
+    if (tooltip) {
+      tooltip.remove();
+      tooltip = false;
+    }
+  },
+  keyup: (e) => {
+  },
+  keydown: (e) => {
+  },
+  change: (e) => {
+  },
+  input: (e) => {
+  },
+
+}
+
+const el_div_after = {
+  tab_wheel: (e) => {
+    let ul;
+    let scrollDirection = (e.deltaX || e.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
+    let scrollAmount = 150;
+    e.preventDefault();
+    if (e.target.tagName === "BUTTON") {
+      ul = document.querySelector(
+        `.div_after div[data-name="${e.target.dataset.name}"] > ul`,
+      );
+    } else {
+      ul = e.target.closest("ul");
+    }
+    if (!ul) { return };
+    ul.scrollTop += scrollAmount * scrollDirection;
+  },
+  click: (e) => {
+  },
+  wheel: (e) => {
+  },
+  mouseover: (e) => {
+  },
+  mouseout: (e) => {
+  },
+  keyup: (e) => {
+  },
+  keydown: (e) => {
+  },
+  change: (e) => {
+  },
+  input: (e) => {
+  },
+
+}
+
+const el_commonds = {
+  click: (e) => {
+  },
+  wheel: (e) => {
+  },
+  mouseover: (e) => {
+  },
+  mouseout: (e) => {
+  },
+  keyup: (e) => {
+  },
+  keydown: (e) => {
+  },
+  change: (e) => {
+    const tagname = e.target.tagName;
+    const promptcontent = p_en.innerText;
+    let paramName = "", regexPattern = "";
+    let commond = "";
+    let value = e.target.value;
+    if (tagname === "SELECT" || tagname === "INPUT") {
+      paramName = e.target.dataset.paramName;
+      if (value === "" || value === "---" || value === "0") {
+        regexPattern = paramName + "\\s+[^\\s]+";
+        commond = " ";
+        // console.log("paramName1", paramName);
+      } else {
+        regexPattern = paramName + "\\s+[^\\s]+";
+        commond = paramName + " " + e.target.value;
+        // console.log("paramName2", paramName);
+      }
+
+      let commond_after = Prompt.command_replace(
+        promptcontent,
+        regexPattern,
+        commond,
+      );
+      p_en.innerText = commond_after;
+    }
+  },
+  input: (e) => {
+  },
+
+}
+
+
+
+const el_Template = {
+  click: (e) => {
+  },
+  wheel: (e) => {
+  },
+  mouseover: (e) => {
+  },
+  mouseout: (e) => {
+  },
+  keyup: (e) => {
+  },
+  keydown: (e) => {
+  },
+  change: (e) => {
+  },
+  input: (e) => {
+  },
+
+}
 
 const Excel = {
   read: (e) => {
@@ -1333,47 +1502,6 @@ const Excel = {
 
 }
 
-
-
-// function ---------------------------------------------------------------------------------
-
-// 提示词多行显示
-function prompt_switch_multiLine(event) {
-  let li = event.target.closest("li");
-  if (!li) { return }
-
-  const tabtext = li.dataset.tab;
-  const liIndex = li.dataset.index;
-  const tabcss = li.dataset.css;
-
-  Prompt.en_MultiLine();
-  Prompt.zh_MultiLine();
-
-  const lis = document.querySelectorAll(`.main_wrap [class*="active"]`);
-  lis.forEach(li => {
-    li.classList.remove("active");
-  });
-
-
-  document.querySelector(`.en_wrap [data-index="${liIndex}"]`).classList.add("active");
-  document.querySelector(`.zh_wrap [data-index="${liIndex}"]`).classList.add("active");
-
-  const elements = document.querySelectorAll(`.main_wrap [class*="ontop"]`);
-  elements.forEach(element => {
-    const classes = element.classList;
-    for (let i = 0; i < classes.length; i++) {
-      const className = classes[i];
-      if (className.startsWith("ontop")) {
-        element.classList.remove(className);
-      }
-    }
-  });
-
-  document.querySelector(`#zh_tabs .${tabtext}`).classList.add(tabcss);
-  document.querySelector(`#en_tabs .${tabtext}`).classList.add(tabcss);
-}
-
-// 添加拆分词
 function prompt_split_add() {
   const sentenceSpans = p_en.querySelectorAll("span");
   sentenceSpans.forEach((span) => {
@@ -1390,7 +1518,6 @@ function prompt_split_add() {
   });
 }
 
-// tab切换
 function tab_switch(event) {
   const button = event.target.closest("button");
   if (button) {
@@ -1409,7 +1536,7 @@ function tab_switch(event) {
       let ul = div.querySelector("ul");
       // 如果ul子元素为空，加载JSON数据
       if (ul) {
-        if (PromptWords.unselect.childElementCount === 0) {
+        if (Prompt_Words.unselect.childElementCount === 0) {
           JSONS.render_search(button.dataset.tab);
         }
       } else {
@@ -1419,31 +1546,27 @@ function tab_switch(event) {
   }
 }
 
-
-
 function composition_click(event) {
   let li;
+  console.log(event);
   if (event.target.tagName === "LI") {
     li = event.target;
   } else {
     li = event.target.closest("li");
   }
-  if (!li) {
-    return;
-  }
+  if (!li) { return };
   li.classList.toggle("selected");
   const isSelected = li.classList.contains("selected");
   if (isSelected) {
     const bkcolor = random_bkcolor(1);
+    const uuidstr = uuid();
     checkElementType(p_en, li.dataset.en, "add", li.dataset.en);
-    checkElementType(p_zh, li.dataset.cn, "add", li.dataset.en);
-    checkElementType(ul_en, li.dataset.en, "add", li.dataset.en, bkcolor);
-    checkElementType(ul_zh, li.dataset.cn, "add", li.dataset.en, bkcolor);
+    checkElementType(p_zh, li.dataset.zh, "add", li.dataset.en);
+    checkElementType(ul_en, li.dataset.en, "add", li.dataset.en, bkcolor, uuidstr);
+    checkElementType(ul_zh, li.dataset.zh, "add", li.dataset.en, bkcolor, uuidstr);
   } else {
-    checkElementType(p_en, li.dataset.en, "del");
-    checkElementType(p_zh, li.dataset.cn, "del");
     checkElementType(ul_en, li.dataset.en, "del");
-    checkElementType(ul_zh, li.dataset.cn, "del");
+    checkElementType(ul_zh, li.dataset.zh, "del");
   }
 }
 
@@ -1453,12 +1576,13 @@ function checkElementType(
   operation,
   langEN = "",
   bkcolor = "#333",
+  uuid = ""
 ) {
   let searchText;
   if (node.nodeType !== 1) {
     return;
   }
-  // console.log(node.textContent, word, operation);
+  console.log(node.textContent, word, operation);
   switch (node.tagName) {
     case "P":
       const Text = node.textContent;
@@ -1495,72 +1619,78 @@ function checkElementType(
   }
 }
 
-// 调整滑块重置
 function resize_reset() {
-  getElement(".resize").style.left = "";
+  getEl(".resize").style.left = "";
   en_wrap.style.width = "";
   zh_wrap.style.width = "";
-  getElement(".resize").classList.remove("mgleft");
-  getElement(".resize").classList.remove("mgright");
+  getEl(".resize").classList.remove("mgleft");
+  getEl(".resize").classList.remove("mgright");
 }
 
 function keyword_drags() {
-  const list = getElement("#word_edit ul");
-  let currentLi;
-
-  list.addEventListener("dragstart", (e) => {
+  let curLi, curLi_Index;
+  let en_curLi;
+  ul_zh.addEventListener("dragstart", (e) => {
     e.dataTransfer.effectAllowed = "move";
-    currentLi = e.target;
-
-
+    curLi = e.target;
+    curLi_Index = Array.from(curLi.parentNode.children).indexOf(curLi);
+    en_curLi = ul_en.querySelector(`[data-uuid="${curLi.dataset.uuid}"]`);
 
     setTimeout(() => {
-      currentLi.classList.add("moving");
-
-      const liIndex = Array.from(currentLi.parentNode.children).indexOf(currentLi);
-      const en_li = ul_en.children[liIndex];
+      curLi.classList.add("moving");
+      const en_li = ul_en.children[curLi_Index];
       if (en_li) {
         en_li.classList.add("moving");
       };
     });
+
   });
 
-  list.addEventListener("dragenter", (e) => {
-    e.preventDefault();
-    if (e.target === currentLi || e.target === list) {
+  // 当拖拽的元素进入目标区域时触发事件
+  ul_zh.addEventListener("dragenter", (e) => {
+    // console.log(e); // 打印事件对象，用于调试和查看事件信息
+    e.preventDefault(); // 阻止默认的拖拽行为，通常在这种情况下要阻止默认行为以避免问题
+
+    // 如果拖拽的目标是当前正在拖动的元素或者是列表本身，则不执行后续操作
+    if (e.target === curLi || e.target === ul_zh) {
       return;
     }
-    let liArray = Array.from(list.childNodes);
-    let currentIndex = liArray.indexOf(currentLi);
-    let targetindex = liArray.indexOf(e.target);
 
-    console.log("liArray:", liArray);
-    console.log("currentIndex:", currentIndex);
-    console.log("targetindex:", targetindex);
+    // 将列表中的所有子元素（<li>元素）转换为数组
+    let liArray = Array.from(ul_zh.childNodes);
 
-    if (currentIndex < targetindex) {
-      list.insertBefore(currentLi, e.target.nextElementSibling);
-    } else {
-      list.insertBefore(currentLi, e.target);
+    // 获取当前正在拖动的元素在列表中的索引
+    let currentIndex = liArray.indexOf(curLi);
+
+    // 获取拖拽目标元素在列表中的索引
+    let targetIndex = liArray.indexOf(e.target);
+
+    // 打印转换后的数组和当前和目标元素的索引，用于调试
+    // console.log("liArray:", liArray);
+    // console.log("currentIndex:", currentIndex);
+    // console.log("targetIndex:", targetIndex);
+
+    // 如果当前元素的索引小于目标元素的索引，将当前元素插入到目标元素的下一个兄弟元素的位置
+    if (currentIndex < targetIndex) {
+      const referenceChild = e.target.nextElementSibling;
+      ul_zh.insertBefore(curLi, referenceChild);
+      ul_en.insertBefore(en_curLi, ul_en.querySelector(`[data-uuid="${referenceChild.dataset.uuid}"]`));
+    } else { // 否则，将当前元素插入到目标元素的位置
+      ul_zh.insertBefore(curLi, e.target);
+      ul_en.insertBefore(en_curLi, ul_en.querySelector(`[data-uuid="${e.target.dataset.uuid}"]`));
     }
   });
 
-  list.addEventListener("dragover", (e) => {
+  ul_zh.addEventListener("dragover", (e) => {
     e.preventDefault();
   });
 
-  list.addEventListener("dragend", (e) => {
-    currentLi.classList.remove("moving");
+  ul_zh.addEventListener("dragend", (e) => {
+    curLi.classList.remove("moving");
+    en_curLi.classList.remove("moving");
 
-    const liIndex = Array.from(currentLi.parentNode.children).indexOf(currentLi);
-    const en_li = ul_en.children[liIndex];
-    if (en_li) {
-      en_li.classList.remove("moving");
-    };
   });
 }
-
-
 
 // 键盘弹起
 function keyupEvent(event) {
@@ -1599,51 +1729,22 @@ function keydownEvent(event) {
   }
 }
 
-
-
-
-// init ---------------------------------------------------------------------------------
 JSONS.init()
 Prompt_favorites.load();
-keyword_drags(); // 项目拖拽
+keyword_drags(); // 项目
+
 new Resize(".rz1").main(); // 调整元素大小拖拽
 Prompt.load_last(); // 载入最后一次使用的提示词
 p_zh.focus(); // 设置输入框焦点
 
-// div_after --------------------------------------------------------------------------
-$(".div_after > div").on("wheel", tab_wheel);
+status_bar.addEventListener("mouseover", el_Status_bar.mouseover);
+status_bar.addEventListener("mouseout", el_Status_bar.mouseout);
+status_bar.addEventListener("click", Prompt_Words.load);
+status_bar.addEventListener("wheel", el_div_after.tab_wheel);
+div_after.addEventListener("wheel", el_div_after.tab_wheel);
 
-function tab_wheel(event) {
-  // console.log(event.target);
-  let ul;
-  let scrollDirection = (event.deltaX || event.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
-  let scrollAmount = 150;
-  if (event.target.tagName === "BUTTON") {
-    ul = document.querySelector(
-      `.div_after div[data-name="${event.target.dataset.name}"] > ul`,
-    );
-  } else {
-    ul = event.target.closest("ul");
-  }
+div_after.addEventListener("click", composition_click);
 
-  ul.scrollTop += scrollAmount * scrollDirection;
-  event.preventDefault(); // 阻止事件的默认行为，避免影响其他滚动
-}
-
-// status_bar ---------------------------------------------------------------------------------
-status_bar.addEventListener("mouseover", (e) => {
-  timeoutId = setTimeout(() => {
-    tab_switch(e);
-  }, 200);
-});
-
-status_bar.addEventListener("mouseout", () => {
-  clearTimeout(timeoutId);
-});
-
-status_bar.addEventListener("wheel", tab_wheel, { passive: true });
-
-// iframe ---------------------------------------------------------
 document.querySelector("#main .left").addEventListener("mouseover", function (event) {
   let left = document.querySelector("#main .left");
   left.classList.contains("on") && left.classList.remove("on")
@@ -1655,28 +1756,20 @@ document.querySelector("iframe").addEventListener('load', function () {
   console.log('外链网页加载完成！');
 });
 
-
-getElement(".div_after").addEventListener("click", composition_click);
-
-// resize ---------------------------------------------------------------
-
-$(".main_wrap .resize").on("click", () => {
+getEl(".main_wrap .resize").addEventListener("click", () => {
   clicks++;
   if (clicks === 1) {
     timer2 = setTimeout(function () {
-      // 处理单击事件
-      // console.log("单击");
       clicks = 0;
-    }, 300); // 等待第二次点击的时间（毫秒）
+    }, 300);
   } else if (clicks === 2) {
     clearTimeout(timer2);
-    // 处理双击事件
     resize_reset();
-    // console.log("双击");
     clicks = 0;
   }
 });
-$(".main_wrap .resize i").on("click", (e) => {
+
+getEl(".main_wrap .resize i").addEventListener("click", (e) => {
   if (e.target.parentNode.classList.contains("mgleft")) {
     resize_reset();
   } else {
@@ -1687,7 +1780,6 @@ $(".main_wrap .resize i").on("click", (e) => {
 const leftDiv = document.getElementById("word_edit_en");
 const rightDiv = document.getElementById("word_edit");
 let isLeftScrolling = false, isRightScrolling = false; // 记录左右两个 div 的滚动状态
-
 leftDiv.addEventListener("scroll", function () {
   if (!isLeftScrolling) {
     isRightScrolling = true;
@@ -1695,7 +1787,6 @@ leftDiv.addEventListener("scroll", function () {
   }
   isLeftScrolling = false;
 });
-
 rightDiv.addEventListener("scroll", function () {
   if (!isRightScrolling) {
     isLeftScrolling = true;
@@ -1704,138 +1795,80 @@ rightDiv.addEventListener("scroll", function () {
   isRightScrolling = false;
 });
 
-getElement(".commonds_wrap").addEventListener("change", comman_click);
-
-function comman_click(event) {
-  const tagname = event.target.tagName;
-  const promptcontent = p_en.innerText;
-  let paramName = "", regexPattern = "";
-  let commond = "";
-  let value = event.target.value;
-  if (tagname === "SELECT" || tagname === "INPUT") {
-    paramName = event.target.dataset.paramName;
-    if (value === "" || value === "---" || value === "0") {
-      regexPattern = paramName + "\\s+[^\\s]+";
-      commond = " ";
-      // console.log("paramName1", paramName);
-    } else {
-      regexPattern = paramName + "\\s+[^\\s]+";
-      commond = paramName + " " + event.target.value;
-      // console.log("paramName2", paramName);
-    }
-
-    let commond_after = Prompt.command_replace(
-      promptcontent,
-      regexPattern,
-      commond,
-    );
-    p_en.innerText = commond_after;
-    // console.log(commond_after);
-  }
-}
-
-// 提示词多行显示
-$(".tab_container").on("click", prompt_switch_multiLine);
-$(".button_wrap #view_bar-add").on("click", PromptWords.add_selected);
-$(".button_wrap #view_bar-unselect").on("click", PromptWords.unselect);  // 取消所选提示词
-$("#bt_add").on("click", PromptWords.load);  // 载入提示词库
-$("#bt_en").on("click", Translates.toZH); // 载入提示词库
-$("#bt_zh").on("click", Translates.toEN); // 载入提示词库
-$(".zh_wrap .status_bar button").on("click", PromptWords.load);  // 载入提示词库
-
-full_screen.addEventListener("mouseover", elFullScreen.mouseover);
-full_screen.addEventListener("mouseout", elFullScreen.mouseout);
-full_screen.addEventListener("click", elFullScreen.click);
-full_screen.querySelector("button.close").addEventListener("click", elFullScreen.close);
+getEl(".commonds_wrap").addEventListener("change", el_commonds.change);
+getElA(".tab_container").forEach((nav) => {
+  nav.addEventListener("click", Prompt.switch_multiLine);
+})
+getEl(".button_wrap #view_bar-add").addEventListener("click", Prompt_Words.add_selected);
+getEl(".button_wrap #view_bar-unselect").addEventListener("click", Prompt_Words.unselect);
+getEl("#bt_add").addEventListener("click", Prompt_Words.load);
+getEl("#bt_en").addEventListener("click", Translates.toZH);
+getEl("#bt_zh").addEventListener("click", Translates.toEN);
 
 
-$(".view_img4").on("mouseover", elViewList.mouseover);
-$(".view_img4").on("click", elViewList.click);
-$(".view_img4").on("wheel", elViewList.wheel)
-$(".view_img4").on("scroll", elViewList.scroll);
+full_screen.addEventListener("mouseover", el_FullScreen.mouseover);
+full_screen.addEventListener("mouseout", el_FullScreen.mouseout);
+full_screen.addEventListener("click", el_FullScreen.click, true);
+full_screen.querySelector("button.close").addEventListener("click", el_FullScreen.close);
 
-document.querySelector(".view_bar .lang_zh").addEventListener("click", () => {
+view_img4.addEventListener("mouseover", el_ViewList.mouseover);
+view_img4.addEventListener("click", el_ViewList.click);
+view_img4.addEventListener("wheel", el_ViewList.wheel)
+view_img4.addEventListener("scroll", el_ViewList.scroll);
+
+getEl(".view_bar .lang_zh").addEventListener("click", () => {
   view_img4.classList.toggle("en");
 })
 
+zh_tabs.addEventListener("click", () => { p_zh.focus(); });
 
-// zh_wrap  ------------------------------------------------------------
-zh_wrap.querySelector("#zh_tabs").addEventListener("click", () => {
-  p_zh.focus();
-});
-
-zh_wrap.querySelector("#p_zh").addEventListener("input",
-  debounce(Translates.live, 500)
-);
+p_zh.addEventListener("input", debounce(Translates.live, 500));
 
 ul_zh.addEventListener("click", el_ulzh.click)
 ul_zh.addEventListener("mouseover", el_ulzh.mouseover)
 ul_zh.addEventListener("mouseout", el_ulzh.mouseout)
-
-
 ul_en.addEventListener("click", el_ulen.click)
 ul_en.addEventListener("mouseover", el_ulen.mouseover)
 ul_en.addEventListener("mouseout", el_ulen.mouseout)
 
+getEl("#p_en").addEventListener("input", debounce(Translates.live, 500));
+getEl("#bt_new").addEventListener("click", Prompt.new);
+getEl("#bt_save").addEventListener("click", Prompt.nesavew);
+getEl("#bt_copy").addEventListener("click", Prompt.copy);
+getEl("#bt_paste").addEventListener("click", Prompt.paste);
+getEl("#bt_clear").addEventListener("click", Prompt.clear);
 
-$("#ul_en").on("click", "li", function () {
-  return;
-  const li = $(this);
-  if (!li.length) {
-    return;
-  }
-  let q = li.text();
-  $("#ul_en li.clicked").not(li).removeClass("clicked");
-  li.toggleClass("clicked");
-  let iframe = $("iframe");
-  let url1 = `https://lexica.art/?q=${q}`;
-  iframe.attr("src", url1);
-  let left = iframe.closest(".left");
-  const info = left.find(".info");
-  const hasClicked = $("#ul_en li.clicked").length > 0;
-  if (hasClicked) {
-    info.addClass("on");
-    left.addClass("on");
-  } else {
-    info.removeClass("on");
-    left.removeClass("on");
-  }
-});
+getEl("#p_en").addEventListener("mouseover", Prompt_Words.highlight_hover);
+getEl("#p_en").addEventListener("mouseout", Prompt_Words.highlight_clear);
+getEl("#en_tabs").addEventListener("click", () => { getEl("#p_en").focus() });
 
-en_wrap.querySelector("#p_en").addEventListener("input",
-  debounce(Translates.live, 500)
-);
-
-// en_wrap -------------------------------------------------------------
-$("#bt_new").on("click", Prompt.new); // 新建咒语
-$("#bt_save").on("click", Prompt.save); // 保存咒语
-$("#bt_copy").on("click", Prompt.copy); // 复制咒语
-$("#bt_paste").on("click", Prompt.paste); // 粘贴咒语
-$("#bt_clear").on("click", Prompt.clear); // 清空咒语
-$("#en_tabs").on("click", () => { $("#p_en").focus() });
-$("#p_en").on("mouseover", PromptWords.highlight_hover);
-$("#p_en").on("mouseout", PromptWords.highlight_clear);
-
-
-
-// tooltips ----------------------------------------------------------------
-$("button").on({
-  mouseover: button_mouseover,
-  mouseout: button_mouseout
+document.querySelectorAll("button").forEach(function (button) {
+  button.addEventListener("mouseover", el_Button.mouseover);
+  button.addEventListener("mouseout", el_Button.mouseout);
 });
 
 
-function button_mouseover(event) {
-  let anchorElem = event.target.closest("[data-tooltip]");
-  if (!anchorElem) return;
-  tooltip = show_Tooltip(anchorElem, anchorElem.dataset.tooltip);
-}
-function button_mouseout(event) {
-  if (tooltip) {
-    tooltip.remove();
-    tooltip = false;
+function show_close(anchorElem, html) {
+  let div = document.createElement("div");
+  div.className = "show_weight";
+  div.innerHTML = html;
+  document.body.append(div);
+
+  let coords = anchorElem.getBoundingClientRect();
+  let left = coords.left;
+  if (left < 0) left = 0;
+
+  let top = coords.top;
+  if (top < 0) {
+    top = coords.top + anchorElem.offsetHeight + 5;
   }
+
+  div.style.left = left + "px";
+  div.style.top = top + "px";
+
+  return div;
 }
+
 function show_Tooltip(anchorElem, html) {
   let tooltipElem = document.createElement("div");
   tooltipElem.className = "tooltip";
@@ -1860,7 +1893,6 @@ function show_Tooltip(anchorElem, html) {
   return tooltipElem;
 }
 
-// window ------------------------------------------------------------------
 window.addEventListener("load", delayedImageLoading); // 延迟加载图片
 function delayedImageLoading(event) {
   let images = document.querySelectorAll("img[data-src]");
@@ -1879,44 +1911,42 @@ function delayedImageLoading(event) {
   }
 
 }
+
 document.querySelectorAll(".div_after img").forEach(function (div) {
-  div.addEventListener("mouseover", button_mouseover);
-  div.addEventListener("mouseout", button_mouseout);
-});
-document.querySelectorAll(".commonds_wrap > div").forEach(function (div) {
-  div.addEventListener("mouseover", button_mouseover);
-  div.addEventListener("mouseout", button_mouseout);
-});
-document.querySelectorAll(".tab_container ul li").forEach(function (div) {
-  div.addEventListener("mouseover", button_mouseover);
-  div.addEventListener("mouseout", button_mouseout);
+  div.addEventListener("mouseover", el_Button.mouseover);
+  div.addEventListener("mouseout", el_Button.mouseout);
 });
 
-// full_version -------------------------------------------------------------
+document.querySelectorAll(".commonds_wrap > div").forEach(function (div) {
+  div.addEventListener("mouseover", el_Button.mouseover);
+  div.addEventListener("mouseout", el_Button.mouseout);
+});
+
+document.querySelectorAll(".tab_container ul li").forEach(function (div) {
+  div.addEventListener("mouseover", el_Button.mouseover);
+  div.addEventListener("mouseout", el_Button.mouseout);
+});
+
 full_version.addEventListener('click', function (event) {
   const classLists = event.target.classList;
   const full_version = document.querySelector("#full_version")
   const lang_en = document.querySelector("#full_version .lang_en");
   const lang_zh = document.querySelector("#full_version .lang_zh");
-
   // 折叠
-  if (classLists.contains('folding') || event.target.parentNode.classList.contains('folding')) {
+  if (event.target.closest(".folding")) {
     full_version.classList.toggle("on")
     return;
   }
-
   // 导出
   if (classLists.contains('export')) {
     Prompt_favorites.export();
     return;
   }
-
   //  清空数据
   if (classLists.contains('clearAll')) {
     Prompt_favorites.clearAll();
     return;
   }
-
   // 显示中文
   if (classLists.contains('lang_zh')) {
     show_en = false;
@@ -1973,12 +2003,10 @@ full_version.addEventListener('click', function (event) {
 
 })
 
-
-// list_wrap -------------------------------------------------------------
 let div_page_Triggered = false; // 标志，用于控制事件触发次数
-list_wrap.addEventListener("click", elListwrap.click);
-list_wrap.addEventListener("wheel", elListwrap.wheel);
-list_wrap.addEventListener("mouseover", elListwrap.mouseover);
+list_wrap.addEventListener("click", el_Listwrap.click);
+list_wrap.addEventListener("wheel", el_Listwrap.wheel);
+list_wrap.addEventListener("mouseover", el_Listwrap.mouseover);
 
 document.querySelectorAll(".list_wrap .page").forEach(function (page) {
   page.addEventListener("mouseout", (event) => {
@@ -1986,14 +2014,9 @@ document.querySelectorAll(".list_wrap .page").forEach(function (page) {
   });
 })
 
-// Excel -------------------------------------------------------------
 document.getElementById('file-input').addEventListener('change', Prompt_favorites.import);
-document.getElementById('file-excel').addEventListener('change', Excel.read);
-
-// keybord -------------------------------------------------------------
-document.addEventListener("keyup", keyupEvent); // 键盘弹起
-document.addEventListener("keydown", keydownEvent); // 键盘按下
-
+document.addEventListener("keyup", keyupEvent);
+document.addEventListener("keydown", keydownEvent);
 
 const ListSlider_width = document.getElementById("ListSlider_width");
 const ListSlider_width_value = document.getElementById("ListSlider_width_value");
@@ -2004,30 +2027,21 @@ ListSlider_width.addEventListener("input", function () {
   elements.forEach(el => {
     el.style.setProperty('width', ListSlider_width.value + "px");
   });
-
 });
-
-
 
 document.querySelector(".view_bar").addEventListener("click", function (e) {
   let li = e.target.closest("li");
   let imagelist = document.getElementById("imagelist2");
   if (!li) { return };
   let view_name = li.dataset.button;
-
   imagelist.classList.forEach(className => {
     if (className.startsWith("cssview_")) {
       imagelist.classList.remove(className);
     }
   });
   imagelist.classList.add(view_name);
-
 })
-
-
-
 
 function isMobileDevice() {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
-
