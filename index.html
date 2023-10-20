@@ -74,12 +74,16 @@
       <div class="right">
         <div class="list_wrap">
           <div class="page prev hide">
-            <i class="fa-solid fa-chevron-left"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="19" viewBox="0 0 12 19" fill="none">
+              <path d="M11 18L2 9.5L11 1" stroke="white" stroke-width="2" />
+            </svg>
           </div>
           <div class="view_img4" id="imagelist2">
           </div>
           <div class="page next">
-            <i class="fa-solid fa-chevron-right"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="19" viewBox="0 0 11 19" fill="none">
+              <path d="M1 1L9 9.5L1 18" stroke="white" stroke-width="2" />
+            </svg>
           </div>
         </div>
 
@@ -186,16 +190,39 @@
             <button id="bt_new" title="新建" data-name="新建" data-tooltip="新建咒语"> 新建咒语</button>
             <button id="bt_paste" title="粘贴" data-name="粘贴" data-tooltip="粘贴咒语">
               粘贴咒语</button>
-            <button id="bt_clear" title="清空" data-name="清空" data-tooltip="清空当前咒语" class="fa-solid fa-eraser"></button>
-            <button id="bt_save" title="保存" data-name="保存" data-tooltip="保存" class="fa-regular fa-floppy-disk"></button>
-            <button id="bt_en" title="翻译" data-name="翻译" data-tooltip="翻译" class="fa-solid fa-language"></button>
+            <button id="bt_clear" title="清空" data-name="清空" data-tooltip="清空当前咒语">
+              <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none">
+                <path d="M12.5 1.99994L19 8.5L9.00163 19.0027L7.00163 19.0027L1.99957 13.0012L12.5 1.99994Z"
+                  stroke="white" stroke-width="2" />
+                <path d="M12.4998 2.50022L17.5 8L13.9995 13.501L7.9996 7.00109L12.4998 2.50022Z" fill="white"
+                  stroke="white" stroke-width="2" />
+                <path d="M1 19L17 19" stroke="white" stroke-width="2" />
+              </svg>
+            </button>
+            <button id="bt_save" title="保存" data-name="保存" data-tooltip="保存">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <rect x="1" y="1" width="18" height="18" rx="4" stroke="white" stroke-width="2" />
+                <path d="M6 1L6 8C6 8.55228 6.44772 9 7 9H13C13.5523 9 14 8.55228 14 8L14 1" stroke="white"
+                  stroke-width="2" />
+                <path d="M15 14H5" stroke="white" stroke-width="2" />
+              </svg>
+            </button>
+            <button id="bt_en" title="翻译" data-name="翻译" data-tooltip="翻译">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <rect x="1" y="1" width="18" height="18" rx="4" stroke="white" stroke-width="2" />
+                <rect x="5" y="7" width="10" height="5" rx="1" stroke="white" stroke-width="2" />
+                <path d="M10 16V4" stroke="white" stroke-width="2" />
+              </svg>
+            </button>
             <button id="bt_copy" title="复制" data-name="复制" data-tooltip="复制">复制</button>
           </div>
 
         </div>
 
         <div class="resize rz1">
-          <i class="fa-solid fa-chevron-right"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="19" viewBox="0 0 11 19" fill="none">
+            <path d="M1 1L9 9.5L1 18" stroke="white" stroke-width="2" />
+          </svg>
         </div>
 
         <!-- 中文指令 -->
@@ -243,8 +270,12 @@
           </div>
 
           <div class="status_bar div_edit">
-            <button title="1" id="bt_add" data-name="艺术风格" data-tooltip="添加提示词" data-tab="尾缀"
-              class="fa-solid fa-plus"></button>
+            <button title="1" id="bt_add" data-name="艺术风格" data-tooltip="添加提示词" data-tab="尾缀">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M0 7H14" stroke="white" stroke-width="2" />
+                <path d="M7 0L7 14" stroke="white" stroke-width="2" />
+              </svg>
+            </button>
             <!-- <button title="1" data-name="艺术风格" data-tab="艺术风格">比例 16:9</button>
               <button title="1" data-name="艺术风格" data-tab="艺术风格">版本 v5.2</button> -->
             <button title="1" data-name="艺术风格" data-tab="艺术风格">风格</button>
@@ -573,7 +604,6 @@
   </div>
   <script src="js/xlsx.full.min.js"></script>
   <script type="module" src="main.js"></script>
-  <script src="js/fontawesome.js"></script>
 
 </body>
 

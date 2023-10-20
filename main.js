@@ -66,7 +66,16 @@ const Prompt_favorites = {
     let p = document.createElement('p');
     let h2_p = document.createElement('p');
     let span = document.createElement('span');
-    h2_p.innerHTML = `<i class="li_edit fa-solid fa-pen"></i><i class="del fa-solid fa-trash-can"></i>`
+    h2_p.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="19" viewBox="0 0 16 19" fill="none">
+  <path d="M1.01152 10.9688L9.01134 2.24538L14.4575 6.96875L5.95744 15.969L1.01149 15.969L1.01152 10.9688Z" stroke="white" stroke-width="2"/>
+  <path d="M5.95746 4.96875L11.9575 10.9688" stroke="white" stroke-width="2"/>
+  </svg><svg xmlns="http://www.w3.org/2000/svg" width="15" height="16" viewBox="0 0 15 16" fill="none">
+    <path d="M0.957458 2.96875H14.9575" stroke="white" stroke-width="2"/>
+    <path d="M7.95746 0.96875V2.96875" stroke="white" stroke-width="2"/>
+    <path d="M1.95746 5.96875V11.9688C1.95746 13.6256 3.3006 14.9688 4.95746 14.9688H10.9575C12.6143 14.9688 13.9575 13.6256 13.9575 11.9688V5.96875" stroke="white" stroke-width="2"/>
+    <path d="M5.95746 14.9688C5.95746 13.4688 5.95746 8.34375 5.95746 5.96875" stroke="white" stroke-width="2"/>
+    <path d="M9.95746 5.96875V14.9687" stroke="white" stroke-width="2"/>
+  </svg>`
     span.textContent = item.time;
     h2.appendChild(span);
     h2.appendChild(h2_p);
@@ -590,6 +599,7 @@ const Prompt = {
 const Prompt_Words = {
 
   load: function (event) {
+    console.log('Prompt_Words');
     const bt_title = event.target.dataset.name;
     let imagelist2 = getById("imagelist2");
 
@@ -1073,16 +1083,18 @@ const el_ViewList = {
   },
 
   wheel: (e) => {
+    console.log('el_ViewList');
     let tagName = e.target.tagName;
-    if (tagName === "H3" || tagName === "H3") {
-      let scrollwidth = view_img4.offsetWidth - e.target.offsetWidth;
+    if (tagName === "H3") {
+      let word_wrap = view_img4.querySelector('.word_wrap');
+      let scrollwidth = view_img4.offsetWidth - word_wrap.offsetWidth * 2;
       let scrollDirection = (e.deltaX || e.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
-      blur
       view_img4.classList.add("blur");
       view_img4.scrollLeft += scrollwidth * scrollDirection;
       view_img4.classList.remove("blur");
       return;
     }
+
     let ul = e.target.closest("ul");
 
     if (ul) {
@@ -1157,12 +1169,14 @@ const el_Listwrap = {
     // }
   },
 
-  wheel: (event) => {
-    let tagName = event.target.tagName;
-    if (tagName === "H3" || tagName === "DIV" || tagName === "I") {
-      let scrollwidth = view_img4.offsetWidth - event.target.offsetWidth;
-      let scrollDirection = (event.deltaX || event.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
-      blur
+  wheel: (e) => {
+    let tagName = e.target.tagName;
+    console.log(tagName);
+    if (e.target.closest('.page')) {
+      console.log('view_img4.offsetWidth:', view_img4.offsetWidth);
+      let word_wrap = view_img4.querySelector('.word_wrap');
+      let scrollwidth = view_img4.offsetWidth - word_wrap.offsetWidth * 2;
+      let scrollDirection = (e.deltaX || e.deltaY) > 0 ? 1 : -1; // 获取滚动的方向
       view_img4.classList.add("blur");
       view_img4.scrollLeft += scrollwidth * scrollDirection;
       view_img4.classList.remove("blur");
@@ -1702,6 +1716,8 @@ function keyupEvent(event) {
 // 键盘按下
 function keydownEvent(event) {
 
+  console.log('keyCode', event.keyCode);
+
   // 检查是否按下了Ctrl键（或Cmd键）
   let isCtrl = event.ctrlKey || event.metaKey;
 
@@ -1725,7 +1741,9 @@ function keydownEvent(event) {
   // 检查是否按下 `~` 键 (键码为 192)
   if (event.keyCode === 192) {
     // 处理 `~` 键事件
-    full_screen.classList.add("ontop")
+    console.log('Prompt_Words.load begin');
+    Prompt_Words.load(event);
+    console.log('Prompt_Words.load end');
   }
 }
 
@@ -1769,7 +1787,7 @@ getEl(".main_wrap .resize").addEventListener("click", () => {
   }
 });
 
-getEl(".main_wrap .resize i").addEventListener("click", (e) => {
+getEl(".main_wrap .resize svg").addEventListener("click", (e) => {
   if (e.target.parentNode.classList.contains("mgleft")) {
     resize_reset();
   } else {
