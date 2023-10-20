@@ -691,9 +691,9 @@ body
   align-content: center
   flex-wrap: nowrap
   border-radius: 8px
-  overflow: hidden
+  // overflow: hidden
   transition: top 0.3s ease
-  z-index: 1
+  z-index: 2
   >div
     position: absolute
     left: 0
@@ -741,20 +741,87 @@ body
               display: flex
               height: 30px
             section
+              position: relative
               display: flex
-              width: 156px
-              height: 90px
-              color: #999
-              background: #222
-              border: 2px solid #424242
               justify-content: center
               align-items: center
+              padding: 10px
               &:hover
                 color: #eee
                 background: #333
-              p
-                font-size: 26px
-                font-weight: bold
+                border-radius: 0 0 5px 5px
+                ul
+                  display: flex
+              > div
+                display: flex
+                width: 100%
+                width: 150px
+                height: 90px
+                transition: all 0.15s ease
+                align-items: center
+                justify-content: center
+                &:hover
+                  background-color: transparent
+                  // border: 4px solid #666
+                p
+                  border: 4px solid #424242
+                  color: #999
+                  display: flex
+                  text-align: center
+                  font-size: 26px
+                  font-weight: bold
+                  align-items: center
+                  justify-content: center
+              ul
+                width: auto
+                position: absolute
+                display: none
+                flex-direction: row
+                bottom: calc(100% + 0px)
+                // top: 0
+                left: 0
+                background: #333
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2)
+                li
+                  width: 180px
+                  height: 150px
+                  display: flex
+                  justify-content: center
+                  align-items: center
+                  position: relative
+                  user-select: none
+                  &:hover
+                    background: #111
+                    p
+                      font-size: 26px
+                      color: #ccc
+                      border-color: #ccc
+                    i
+                      opacity: 1
+                  p
+                    display: flex
+                    font-size: 22px
+                    border-width: 4px
+                    border-style: solid
+                    color: rgb(102, 102, 102)
+                    border-color: rgb(102, 102, 102)
+                    justify-content: center
+                    align-items: center
+                    transition: all 0.15s ease
+                    user-select: none
+                  i
+                    position: absolute
+                    width: 30px
+                    height: 30px
+                    top: 0
+                    right: 0
+                    opacity: 0
+                    transition: all 0.15s ease
+                    &:hover
+                      svg
+                        path
+                          stroke: #fff !important
+
         .right
           display: flex
           height: 100%

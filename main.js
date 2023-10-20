@@ -1466,6 +1466,107 @@ const el_commonds = {
 
 
 
+const el_id_aspect = {
+  click: (e) => {
+
+    const tagName = e.target.tagName;
+    console.log('tagName11:', tagName);
+    if (tagName === "svg" || tagName === "path") {
+      const li = e.target.closest('li');
+      const p = li.querySelector('p');
+      const [widthRatio, heightRatio] = p.textContent.split(' : ').map(Number);
+
+      const liWidth = 170;
+      const liHeight = 80;
+      p.textContent = `${heightRatio} : ${widthRatio}`;
+
+      const calculatedWidth = Math.min(liWidth, widthRatio * (liHeight / heightRatio));
+      const calculatedHeight = Math.min(liHeight, heightRatio * (liWidth / widthRatio));
+      p.style.width = `${calculatedHeight}px`;
+      p.style.height = `${calculatedWidth}px`;
+      return;
+    }
+
+    if (tagName === "P" || tagName === "li") {
+      const ul = document.querySelector('#id_aspect ul');
+      const p = getEl('.aspect_wrap section > div p');
+      const li = e.target.closest('li');
+      const p2 = li.querySelector('p');
+      p.textContent = p2.textContent;
+      console.log(p2.style.width);
+      p.style.width = p2.style.width;
+      p.style.height = p2.style.height;
+      ul.dataset.status = 'off';
+      return;
+    }
+  },
+
+  wheel: (e) => {
+    const li = e.target.closest('li');
+    if (!li) { return };
+    const p = li.querySelector('p');
+    const [widthRatio, heightRatio] = p.textContent.split(' : ').map(Number);
+
+    const liWidth = 170;
+    const liHeight = 80;
+    p.textContent = `${heightRatio} : ${widthRatio}`;
+
+    const calculatedWidth = Math.min(liWidth, widthRatio * (liHeight / heightRatio));
+    const calculatedHeight = Math.min(liHeight, heightRatio * (liWidth / widthRatio));
+    p.style.width = `${calculatedHeight}px`;
+    p.style.height = `${calculatedWidth}px`;
+    return;
+  },
+
+  mouseover: (e) => {
+    const ul = document.querySelector('#id_aspect ul');
+    if (!ul) { return };
+    const lis = document.querySelectorAll('#id_aspect ul li');
+    if (ul.dataset.status === "on") { return };
+    ul.dataset.status = "on";
+    lis.forEach((li) => {
+      const p = li.querySelector('p');
+      const [widthRatio, heightRatio] = p.textContent.split(' : ').map(Number);
+
+      const liWidth = 170;
+      const liHeight = 80;
+
+      const calculatedWidth = Math.min(liWidth, widthRatio * (liHeight / heightRatio));
+      const calculatedHeight = Math.min(liHeight, heightRatio * (liWidth / widthRatio));
+
+      p.style.width = `${calculatedWidth}px`;
+      p.style.height = `${calculatedHeight}px`;
+
+      if (li.querySelector("i")) {
+      } else {
+        const i = document.createElement("I")
+        i.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="21" height="23" viewBox="0 0 21 23" fill="none"><path d="M0.999862 7.00014L6.00011 7.0002C10.4184 7.00025 14 10.582 14 15.0002L14 21M14 21L9 16M14 21L19 16" stroke="white" stroke-width="2" /></svg>`;
+        li.appendChild(i);
+      }
+    })
+  },
+
+  mouseout: (e) => {
+    const ul = document.querySelector('#id_aspect ul');
+    ul.dataset.status = "off";
+  },
+  keyup: (e) => {
+  },
+  keydown: (e) => {
+  },
+  change: (e) => {
+  },
+  input: (e) => {
+  },
+
+}
+
+getById("id_aspect").addEventListener("mousemove", el_id_aspect.mouseover)
+getById("id_aspect").addEventListener("mouseout", el_id_aspect.mouseout)
+getById("id_aspect").addEventListener("click", el_id_aspect.click)
+getById("id_aspect").addEventListener("wheel", el_id_aspect.wheel)
+
+
 const el_Template = {
   click: (e) => {
   },
@@ -1562,7 +1663,7 @@ function tab_switch(event) {
 
 function composition_click(event) {
   let li;
-  console.log(event);
+  // console.log(event);
   if (event.target.tagName === "LI") {
     li = event.target;
   } else {
@@ -1596,7 +1697,7 @@ function checkElementType(
   if (node.nodeType !== 1) {
     return;
   }
-  console.log(node.textContent, word, operation);
+  // console.log(node.textContent, word, operation);
   switch (node.tagName) {
     case "P":
       const Text = node.textContent;

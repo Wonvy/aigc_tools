@@ -1322,9 +1322,8 @@ body {
   align-content: center;
   flex-wrap: nowrap;
   border-radius: 8px;
-  overflow: hidden;
   transition: top 0.3s ease;
-  z-index: 1;
+  z-index: 2;
 }
 .div_after > div {
   position: absolute;
@@ -1382,22 +1381,95 @@ body {
   height: 30px;
 }
 .div_after > div.tab_default #commonds .left .aspect_wrap section {
+  position: relative;
   display: flex;
-  width: 156px;
-  height: 90px;
-  color: #999;
-  background: #222;
-  border: 2px solid #424242;
   justify-content: center;
   align-items: center;
+  padding: 10px;
 }
 .div_after > div.tab_default #commonds .left .aspect_wrap section:hover {
   color: #eee;
   background: #333;
+  border-radius: 0 0 5px 5px;
 }
-.div_after > div.tab_default #commonds .left .aspect_wrap section p {
+.div_after > div.tab_default #commonds .left .aspect_wrap section:hover ul {
+  display: flex;
+}
+.div_after > div.tab_default #commonds .left .aspect_wrap section > div {
+  display: flex;
+  width: 100%;
+  width: 150px;
+  height: 90px;
+  transition: all 0.15s ease;
+  align-items: center;
+  justify-content: center;
+}
+.div_after > div.tab_default #commonds .left .aspect_wrap section > div:hover {
+  background-color: transparent;
+}
+.div_after > div.tab_default #commonds .left .aspect_wrap section > div p {
+  border: 4px solid #424242;
+  color: #999;
+  display: flex;
+  text-align: center;
   font-size: 26px;
   font-weight: bold;
+  align-items: center;
+  justify-content: center;
+}
+.div_after > div.tab_default #commonds .left .aspect_wrap section ul {
+  width: auto;
+  position: absolute;
+  display: none;
+  flex-direction: row;
+  bottom: calc(100% + 0px);
+  left: 0;
+  background: #333;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+.div_after > div.tab_default #commonds .left .aspect_wrap section ul li {
+  width: 180px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  user-select: none;
+}
+.div_after > div.tab_default #commonds .left .aspect_wrap section ul li:hover {
+  background: #111;
+}
+.div_after > div.tab_default #commonds .left .aspect_wrap section ul li:hover p {
+  font-size: 26px;
+  color: #ccc;
+  border-color: #ccc;
+}
+.div_after > div.tab_default #commonds .left .aspect_wrap section ul li:hover i {
+  opacity: 1;
+}
+.div_after > div.tab_default #commonds .left .aspect_wrap section ul li p {
+  display: flex;
+  font-size: 22px;
+  border-width: 4px;
+  border-style: solid;
+  color: rgb(102, 102, 102);
+  border-color: rgb(102, 102, 102);
+  justify-content: center;
+  align-items: center;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.div_after > div.tab_default #commonds .left .aspect_wrap section ul li i {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  top: 0;
+  right: 0;
+  opacity: 0;
+  transition: all 0.15s ease;
+}
+.div_after > div.tab_default #commonds .left .aspect_wrap section ul li i:hover svg path {
+  stroke: #fff !important;
 }
 .div_after > div.tab_default #commonds .right {
   display: flex;
