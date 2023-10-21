@@ -634,7 +634,7 @@ body
     cursor: w-resize
     z-index: 77
     transition: opacity,border-radius,width 0.3s
-    i
+    svg
       opacity: 0
       cursor: pointer
       user-select: none
@@ -650,11 +650,14 @@ body
       align-content: center
       justify-content: center
       align-items: center
-      i
+      svg
         opacity: 1
       &:hover
         color: #ccc
         background: #111
+        svg
+          path
+            stroke: #fff !important
 
     &.mgleft
       left: 0
@@ -663,7 +666,7 @@ body
       background: #191919
       user-select: none
       -web-kit-user-select: none
-      i
+      svg
         &:hover
           transform: scale(1.3)
 
@@ -672,7 +675,7 @@ body
       width: 40px
       border-radius: 0 8px 8px 0
       background: #191919
-      i
+      svg
         transform: scaleX(-1)
         &:hover
           transform: scale(-1.3, 1.3)
@@ -734,94 +737,6 @@ body
           justify-content: space-between
           >div
             width: 50%
-          .aspect_wrap
-            display: flex
-            flex-direction: column
-            label
-              display: flex
-              height: 30px
-            section
-              position: relative
-              display: flex
-              justify-content: center
-              align-items: center
-              padding: 10px
-              &:hover
-                color: #eee
-                background: #333
-                border-radius: 0 0 5px 5px
-                ul
-                  display: flex
-              > div
-                display: flex
-                width: 100%
-                width: 150px
-                height: 90px
-                transition: all 0.15s ease
-                align-items: center
-                justify-content: center
-                &:hover
-                  background-color: transparent
-                  // border: 4px solid #666
-                p
-                  border: 4px solid #424242
-                  color: #999
-                  display: flex
-                  text-align: center
-                  font-size: 26px
-                  font-weight: bold
-                  align-items: center
-                  justify-content: center
-              ul
-                width: auto
-                position: absolute
-                display: none
-                flex-direction: row
-                bottom: calc(100% + 0px)
-                // top: 0
-                left: 0
-                background: #333
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2)
-                li
-                  width: 180px
-                  height: 150px
-                  display: flex
-                  justify-content: center
-                  align-items: center
-                  position: relative
-                  user-select: none
-                  &:hover
-                    background: #111
-                    p
-                      font-size: 26px
-                      color: #ccc
-                      border-color: #ccc
-                    i
-                      opacity: 1
-                  p
-                    display: flex
-                    font-size: 22px
-                    border-width: 4px
-                    border-style: solid
-                    color: rgb(102, 102, 102)
-                    border-color: rgb(102, 102, 102)
-                    justify-content: center
-                    align-items: center
-                    transition: all 0.15s ease
-                    user-select: none
-                  i
-                    position: absolute
-                    width: 30px
-                    height: 30px
-                    top: 0
-                    right: 0
-                    opacity: 0
-                    transition: all 0.15s ease
-                    &:hover
-                      svg
-                        path
-                          stroke: #fff !important
-
         .right
           display: flex
           height: 100%
@@ -870,6 +785,154 @@ body
           option
             background-color: #666
             color: #fff
+
+.aspect_wrap
+  display: flex
+  flex-direction: column
+  label
+    display: flex
+    justify-content: center
+    height: 30px
+  section
+    position: relative
+    display: flex
+    justify-content: center
+    align-items: center
+    padding: 10px
+    &:hover
+      color: #eee
+      background: #333
+      border-radius: 0 0 5px 5px
+      ul
+        display: flex
+    > div
+      display: flex
+      width: 100%
+      width: 150px
+      height: 90px
+      transition: all 0.15s ease
+      align-items: center
+      justify-content: center
+      &:hover
+        background-color: transparent
+      p
+        border: 4px solid #424242
+        color: #999
+        display: flex
+        text-align: center
+        font-size: 26px
+        font-weight: bold
+        align-items: center
+        justify-content: center
+    ul
+      width: auto
+      position: absolute
+      display: none
+      flex-direction: row
+      bottom: calc(100% + 0px)
+          // top: 0
+      left: 0
+      background: #333
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2)
+      li
+        width: 180px
+        height: 150px
+        display: flex
+        justify-content: center
+        align-items: center
+        position: relative
+        user-select: none
+        &:hover
+          background: #111
+          p
+            font-size: 26px
+            color: #ccc
+            border-color: #ccc
+          i
+            opacity: 1
+        p
+          display: flex
+          font-size: 22px
+          border-width: 4px
+          border-style: solid
+          color: rgb(102, 102, 102)
+          border-color: rgb(102, 102, 102)
+          justify-content: center
+          align-items: center
+          transition: all 0.15s ease
+          user-select: none
+        i
+          position: absolute
+          width: 30px
+          height: 30px
+          top: 0
+          right: 0
+          opacity: 0
+          transition: all 0.15s ease
+          &:hover
+            svg
+              path
+                stroke: #fff !important
+
+.version_wrap
+  display: flex
+  flex-direction: column
+  label
+    display: flex
+    justify-content: center
+    height: 30px
+  section
+    position: relative
+    display: flex
+    justify-content: center
+    align-items: center
+    padding: 10px
+    &:hover
+      color: #eee
+      background: #333
+      border-radius: 0 0 5px 5px
+      ul
+        display: grid
+    > div
+      display: flex
+      width: 100%
+      width: 150px
+      height: 90px
+      transition: all 0.15s ease
+      align-items: center
+      justify-content: center
+      &:hover
+        background-color: transparent
+      img
+        width: 30px
+        height: 30px
+
+    ul
+      width: auto
+      position: absolute
+      display: none
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr
+      flex-direction: row
+      bottom: calc(100% + 0px)
+          // top: 0
+      left: 0
+      background: #333
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2)
+      li
+        width: 180px
+        height: 150px
+        display: flex
+        justify-content: center
+        align-items: center
+        position: relative
+        user-select: none
+        img
+          width: 30px
+          height: 30px
+        &:hover
+          background: #111
+    aside
+      display: none
 
 .tab1,.tab2
   position: absolute

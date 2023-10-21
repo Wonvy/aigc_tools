@@ -1259,7 +1259,7 @@ body {
   z-index: 77;
   transition: opacity, border-radius, width 0.3s;
 }
-.main_wrap .resize i {
+.main_wrap .resize svg {
   opacity: 0;
   cursor: pointer;
   user-select: none;
@@ -1278,12 +1278,15 @@ body {
   justify-content: center;
   align-items: center;
 }
-.main_wrap .resize.mgleft i, .main_wrap .resize.mgright i {
+.main_wrap .resize.mgleft svg, .main_wrap .resize.mgright svg {
   opacity: 1;
 }
 .main_wrap .resize.mgleft:hover, .main_wrap .resize.mgright:hover {
   color: #ccc;
   background: #111;
+}
+.main_wrap .resize.mgleft:hover svg path, .main_wrap .resize.mgright:hover svg path {
+  stroke: #fff !important;
 }
 .main_wrap .resize.mgleft {
   left: 0;
@@ -1293,7 +1296,7 @@ body {
   user-select: none;
   -web-kit-user-select: none;
 }
-.main_wrap .resize.mgleft i:hover {
+.main_wrap .resize.mgleft svg:hover {
   transform: scale(1.3);
 }
 .main_wrap .resize.mgright {
@@ -1302,10 +1305,10 @@ body {
   border-radius: 0 8px 8px 0;
   background: #191919;
 }
-.main_wrap .resize.mgright i {
+.main_wrap .resize.mgright svg {
   transform: scaleX(-1);
 }
-.main_wrap .resize.mgright i:hover {
+.main_wrap .resize.mgright svg:hover {
   transform: scale(-1.3, 1.3);
 }
 
@@ -1372,105 +1375,6 @@ body {
 .div_after > div.tab_default #commonds .left > div {
   width: 50%;
 }
-.div_after > div.tab_default #commonds .left .aspect_wrap {
-  display: flex;
-  flex-direction: column;
-}
-.div_after > div.tab_default #commonds .left .aspect_wrap label {
-  display: flex;
-  height: 30px;
-}
-.div_after > div.tab_default #commonds .left .aspect_wrap section {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-}
-.div_after > div.tab_default #commonds .left .aspect_wrap section:hover {
-  color: #eee;
-  background: #333;
-  border-radius: 0 0 5px 5px;
-}
-.div_after > div.tab_default #commonds .left .aspect_wrap section:hover ul {
-  display: flex;
-}
-.div_after > div.tab_default #commonds .left .aspect_wrap section > div {
-  display: flex;
-  width: 100%;
-  width: 150px;
-  height: 90px;
-  transition: all 0.15s ease;
-  align-items: center;
-  justify-content: center;
-}
-.div_after > div.tab_default #commonds .left .aspect_wrap section > div:hover {
-  background-color: transparent;
-}
-.div_after > div.tab_default #commonds .left .aspect_wrap section > div p {
-  border: 4px solid #424242;
-  color: #999;
-  display: flex;
-  text-align: center;
-  font-size: 26px;
-  font-weight: bold;
-  align-items: center;
-  justify-content: center;
-}
-.div_after > div.tab_default #commonds .left .aspect_wrap section ul {
-  width: auto;
-  position: absolute;
-  display: none;
-  flex-direction: row;
-  bottom: calc(100% + 0px);
-  left: 0;
-  background: #333;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-.div_after > div.tab_default #commonds .left .aspect_wrap section ul li {
-  width: 180px;
-  height: 150px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  user-select: none;
-}
-.div_after > div.tab_default #commonds .left .aspect_wrap section ul li:hover {
-  background: #111;
-}
-.div_after > div.tab_default #commonds .left .aspect_wrap section ul li:hover p {
-  font-size: 26px;
-  color: #ccc;
-  border-color: #ccc;
-}
-.div_after > div.tab_default #commonds .left .aspect_wrap section ul li:hover i {
-  opacity: 1;
-}
-.div_after > div.tab_default #commonds .left .aspect_wrap section ul li p {
-  display: flex;
-  font-size: 22px;
-  border-width: 4px;
-  border-style: solid;
-  color: rgb(102, 102, 102);
-  border-color: rgb(102, 102, 102);
-  justify-content: center;
-  align-items: center;
-  transition: all 0.15s ease;
-  user-select: none;
-}
-.div_after > div.tab_default #commonds .left .aspect_wrap section ul li i {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  top: 0;
-  right: 0;
-  opacity: 0;
-  transition: all 0.15s ease;
-}
-.div_after > div.tab_default #commonds .left .aspect_wrap section ul li i:hover svg path {
-  stroke: #fff !important;
-}
 .div_after > div.tab_default #commonds .right {
   display: flex;
   height: 100%;
@@ -1525,6 +1429,178 @@ body {
 .div_after > div.tab_default #commonds select option {
   background-color: #666;
   color: #fff;
+}
+
+.aspect_wrap {
+  display: flex;
+  flex-direction: column;
+}
+.aspect_wrap label {
+  display: flex;
+  justify-content: center;
+  height: 30px;
+}
+.aspect_wrap section {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+.aspect_wrap section:hover {
+  color: #eee;
+  background: #333;
+  border-radius: 0 0 5px 5px;
+}
+.aspect_wrap section:hover ul {
+  display: flex;
+}
+.aspect_wrap section > div {
+  display: flex;
+  width: 100%;
+  width: 150px;
+  height: 90px;
+  transition: all 0.15s ease;
+  align-items: center;
+  justify-content: center;
+}
+.aspect_wrap section > div:hover {
+  background-color: transparent;
+}
+.aspect_wrap section > div p {
+  border: 4px solid #424242;
+  color: #999;
+  display: flex;
+  text-align: center;
+  font-size: 26px;
+  font-weight: bold;
+  align-items: center;
+  justify-content: center;
+}
+.aspect_wrap section ul {
+  width: auto;
+  position: absolute;
+  display: none;
+  flex-direction: row;
+  bottom: calc(100% + 0px);
+  left: 0;
+  background: #333;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+.aspect_wrap section ul li {
+  width: 180px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  user-select: none;
+}
+.aspect_wrap section ul li:hover {
+  background: #111;
+}
+.aspect_wrap section ul li:hover p {
+  font-size: 26px;
+  color: #ccc;
+  border-color: #ccc;
+}
+.aspect_wrap section ul li:hover i {
+  opacity: 1;
+}
+.aspect_wrap section ul li p {
+  display: flex;
+  font-size: 22px;
+  border-width: 4px;
+  border-style: solid;
+  color: rgb(102, 102, 102);
+  border-color: rgb(102, 102, 102);
+  justify-content: center;
+  align-items: center;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.aspect_wrap section ul li i {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  top: 0;
+  right: 0;
+  opacity: 0;
+  transition: all 0.15s ease;
+}
+.aspect_wrap section ul li i:hover svg path {
+  stroke: #fff !important;
+}
+
+.version_wrap {
+  display: flex;
+  flex-direction: column;
+}
+.version_wrap label {
+  display: flex;
+  justify-content: center;
+  height: 30px;
+}
+.version_wrap section {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+.version_wrap section:hover {
+  color: #eee;
+  background: #333;
+  border-radius: 0 0 5px 5px;
+}
+.version_wrap section:hover ul {
+  display: grid;
+}
+.version_wrap section > div {
+  display: flex;
+  width: 100%;
+  width: 150px;
+  height: 90px;
+  transition: all 0.15s ease;
+  align-items: center;
+  justify-content: center;
+}
+.version_wrap section > div:hover {
+  background-color: transparent;
+}
+.version_wrap section > div img {
+  width: 30px;
+  height: 30px;
+}
+.version_wrap section ul {
+  width: auto;
+  position: absolute;
+  display: none;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  flex-direction: row;
+  bottom: calc(100% + 0px);
+  left: 0;
+  background: #333;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+.version_wrap section ul li {
+  width: 180px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  user-select: none;
+}
+.version_wrap section ul li img {
+  width: 30px;
+  height: 30px;
+}
+.version_wrap section ul li:hover {
+  background: #111;
+}
+.version_wrap section aside {
+  display: none;
 }
 
 .tab1, .tab2 {
